@@ -1,4 +1,4 @@
-bitcoin-coupon
+BitCoin Coupon
 ==============
 
 [insert sales pitch here]
