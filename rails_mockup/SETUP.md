@@ -15,7 +15,8 @@
 
     'rake db:setup'
     'rake db:migrate'
-    'rake db:seed => development only!'
+    'rake db:seed'
+    => Do not use seeds in production :)
 
 #### Run tests
 
