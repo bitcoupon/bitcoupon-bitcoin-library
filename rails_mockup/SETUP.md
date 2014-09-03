@@ -1,13 +1,13 @@
-#### Setup
+## Setup
 
-## Download rvm (Ruby Version Manager).
+#### Download rvm (Ruby Version Manager).
     $ '\curl -sSL https://get.rvm.io | bash -s stable'
 
-## Install latest version of ruby
+#### Install latest version of ruby
     'rvm install ruby-2.1.2'
-    'rvm use 2.1.2 —default'
+    'rvm use 2.1.2 --default'
 
-## Install Ruby on Rails
+#### Install Ruby on Rails
     'gem install rails'
 
     'cd #{project_path}/bitcoin_coupon/rails_mockup'
@@ -17,6 +17,6 @@
     'rake db:migrate'
     'rake db:seed => development only!'
 
-## Run tests
+#### Run tests
 
     'rake test'
