@@ -3,6 +3,7 @@ rvm:
   - 1.9.3
   - 2.0.0
   - 2.1.2
+gemfile: rails_mockup/Gemfile
 bundler_args: --without development --deployment
 cache: bundler
 script: "cd rails_mockup && bundle exec rake test"
