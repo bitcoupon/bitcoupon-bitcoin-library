@@ -1,0 +1,7 @@
+Thu, 11 Sep 2014 17:31:38 +0200
+README.rdoc	Thu, 11 Sep 2014 17:18:51 +0200
+app/controllers/application_controller.rb	Thu, 11 Sep 2014 17:18:51 +0200
+app/controllers/users_controller.rb	Thu, 11 Sep 2014 17:18:51 +0200
+app/helpers/application_helper.rb	Thu, 11 Sep 2014 17:18:51 +0200
+app/helpers/users_helper.rb	Thu, 11 Sep 2014 17:18:51 +0200
+app/models/user.rb	Thu, 11 Sep 2014 17:18:51 +0200
