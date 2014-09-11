@@ -24,6 +24,6 @@ namespace :doc do
     }" +
     "/documentation/backend"
     `rmdir doc`
-    puts "Removed doc from rails_mockup"
+    puts "Removed doc from backend"
   end
 end

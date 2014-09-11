@@ -10,7 +10,7 @@
 #### Install Ruby on Rails
     'gem install rails'
 
-    'cd #{project_path}/bitcoin_coupon/rails_mockup'
+    'cd #{project_path}/bitcoin_coupon/backend'
     'bundle install'
 
     'rake db:setup'
