@@ -13,8 +13,8 @@
 namespace :doc do
   task :app do
     puts "Documentation created in #{`pwd`.chomp}/doc/app"
-    `rm -r ../documentation/backend/app`
-    `mv doc/app ../documentation/backend`
+    `rm -r ../documentation/admin/app`
+    `mv doc/app ../documentation/admin`
     puts "Documentation moved to " +
       "#{`pwd`.split(/\//)
                  .reverse
@@ -22,7 +22,7 @@ namespace :doc do
                  .reverse
                  .join("/")
     }" +
-    "/documentation/backend"
+    "/documentation/admin"
     `rmdir doc`
     puts "Removed doc from backend"
   end

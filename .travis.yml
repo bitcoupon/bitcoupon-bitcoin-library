@@ -6,4 +6,4 @@ rvm:
 gemfile: rails_mockup/Gemfile
 bundler_args: --without development --deployment
 cache: bundler
-script: "cd rails_mockup && bundle exec rake test"
+script: "cd admin && bundle exec rake test && cd ../backend && bundle exec rake test"
