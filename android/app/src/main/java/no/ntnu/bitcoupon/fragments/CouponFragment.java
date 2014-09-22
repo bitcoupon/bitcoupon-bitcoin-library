@@ -12,6 +12,8 @@ import no.ntnu.bitcoupon.models.Coupon;
 
 /**
  * Created by Patrick on 22.09.2014.
+ *
+ * The CouponFragment holds information about a specific coupon
  */
 public class CouponFragment extends BaseFragment {
 

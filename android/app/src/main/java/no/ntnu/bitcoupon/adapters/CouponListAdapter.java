@@ -16,6 +16,9 @@ import no.ntnu.bitcoupon.models.Coupon;
 
 /**
  * Created by Patrick on 22.09.2014.
+ *
+ * The coupon list adapter holds the actual coupons. The coupon list fragment uses this adapter as a model, and whenever
+ * the adapter is updated, the list should also automatically update the view in the app.
  */
 public class CouponListAdapter extends BaseAdapter {
 

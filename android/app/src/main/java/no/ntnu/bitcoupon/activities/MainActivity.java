@@ -9,6 +9,12 @@ import no.ntnu.bitcoupon.listeners.CouponListFragmentListener;
 import no.ntnu.bitcoupon.models.Coupon;
 
 
+/**
+ * The MainActivity acts as an entry point for the application, and holds the fragments. It should handle all
+ * communication between the fragments relevant to this activity.
+ *
+ * For the time being this is limited to the coupon fragment and the list of coupons.
+ */
 public class MainActivity extends BaseActivity implements CouponListFragmentListener {
 
   @Override
@@ -23,6 +29,7 @@ public class MainActivity extends BaseActivity implements CouponListFragmentList
   @Override
   public void onCouponClicked(Coupon coupon) {
     coupon.setModified();
-    getFragmentManager().beginTransaction().replace(R.id.container, CouponFragment.newInstance(coupon)).addToBackStack(CouponFragment.TAG).commit();
+    getFragmentManager().beginTransaction().replace(R.id.container, CouponFragment.newInstance(coupon))
+        .addToBackStack(CouponFragment.TAG).commit();
   }
 }
