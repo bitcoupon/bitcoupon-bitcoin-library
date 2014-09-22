@@ -1,9 +1,11 @@
 language: ruby
 rvm:
-  - 1.9.3
-  - 2.0.0
   - 2.1.2
-gemfile: rails_mockup/Gemfile
+#  - 1.9.3
+#  - 2.0.0
+gemfile:
+  - admin/Gemfile
+  - backend/Gemfile
 bundler_args: --without development --deployment
 cache: bundler
 script: "cd admin && bundle exec rake test && cd ../backend && bundle exec rake test"
