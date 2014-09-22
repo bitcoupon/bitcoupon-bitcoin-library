@@ -7,6 +7,11 @@ import android.widget.Toast;
 
 /**
  * Created by Patrick on 22.09.2014.
+ *
+ * The main reason for the BaseActivity is to supply helper methods common to all activities in the app.
+ *
+ * It also makes it easy to change the underlying activity implementation to one from the support library or similar, at
+ * a later stage.
  */
 public abstract class BaseActivity extends Activity {
 

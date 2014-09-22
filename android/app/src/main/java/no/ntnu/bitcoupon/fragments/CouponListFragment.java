@@ -15,6 +15,9 @@ import no.ntnu.bitcoupon.adapters.CouponListAdapter;
 import no.ntnu.bitcoupon.listeners.CouponListFragmentListener;
 import no.ntnu.bitcoupon.models.Coupon;
 
+/**
+ * The CouponListFragment holds and maintains a list of coupons.
+ */
 public class CouponListFragment extends BaseFragment implements AbsListView.OnItemClickListener {
 
 
