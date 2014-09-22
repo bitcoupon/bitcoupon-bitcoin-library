@@ -1,0 +1,10 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  email: admin@gmail.com
+
+two:
+  email: user@gmail.com
+
+short_password:
+  email: short@gmail.com
