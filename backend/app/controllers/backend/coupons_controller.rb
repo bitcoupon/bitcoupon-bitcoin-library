@@ -35,12 +35,12 @@ module Backend
           ]
       }
 
-      10.times do |i|
-        coupon = @coupons[:coupons][0].clone
-        #binding.pry
-        coupon[:id] = (coupon[:id].to_i + 10 + i).to_s
-        @coupons[:coupons] << coupon
-      end
+      #10.times do |i|
+      #  coupon = @coupons[:coupons][0].clone
+      #  #binding.pry
+      #  coupon[:id] = (coupon[:id].to_i + 10 + i).to_s
+      #  @coupons[:coupons] << coupon
+      #end
 
       if @public_key.nil?
         render json: "NO PUBLIC KEY PROVIDED"
