@@ -3,6 +3,7 @@ package no.ntnu.bitcoupon.fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +11,11 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.util.List;
+
 import no.ntnu.bitcoupon.R;
 import no.ntnu.bitcoupon.adapters.CouponListAdapter;
+import no.ntnu.bitcoupon.callbacks.FetchAllCallback;
 import no.ntnu.bitcoupon.listeners.CouponListFragmentListener;
 import no.ntnu.bitcoupon.models.Coupon;
 
@@ -21,6 +25,7 @@ import no.ntnu.bitcoupon.models.Coupon;
 public class CouponListFragment extends BaseFragment implements AbsListView.OnItemClickListener {
 
 
+  private static final String TAG = CouponListFragment.class.getSimpleName();
   private no.ntnu.bitcoupon.listeners.CouponListFragmentListener mListener;
   private AbsListView couponList;
   private CouponListAdapter couponAdapter;
@@ -56,8 +61,34 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
     generateButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        couponAdapter.add(Coupon.createDummy());
-        couponAdapter.notifyDataSetChanged();
+        Coupon.fetchAllCoupons(new FetchAllCallback() {
+          @Override
+          public void onComplete(int statusCode, List<Coupon> coupons) {
+            for (Coupon coupon : coupons) {
+              couponAdapter.add(coupon);
+              Log.v(TAG, "fetch complete: " + statusCode);
+            }
+            couponAdapter.notifyDataSetChanged();
+          }
+
+          @Override
+          public void onFail(int statusCode) {
+            Log.v(TAG, "fetch failed: " + statusCode);
+          }
+        });
+//        Coupon.fetchCouponById("2", new FetchCallback() {
+//          @Override
+//          public void onComplete(int statusCode, Coupon coupon) {
+//            Log.v(TAG, "fetch complete: " + statusCode);
+//            couponAdapter.add(coupon);
+//            couponAdapter.notifyDataSetChanged();
+//          }
+//
+//          @Override
+//          public void onFail(int statusCode) {
+//            Log.v(TAG, "fetch failed: " + statusCode);
+//          }
+//        });
       }
     });
     // Set the adapter
