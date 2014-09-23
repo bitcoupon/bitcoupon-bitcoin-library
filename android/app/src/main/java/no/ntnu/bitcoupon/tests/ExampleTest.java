@@ -3,7 +3,7 @@ package no.ntnu.bitcoupon.tests;
 import android.test.InstrumentationTestCase;
 
 /**
- * Created by bompi88 on 23.09.14.
+ * Created by Bjørn Bråthen on 23.09.14.
  * This just test the test framework.
  */
 public class ExampleTest extends InstrumentationTestCase {
@@ -16,5 +16,13 @@ public class ExampleTest extends InstrumentationTestCase {
     final int expected = 1;
     final int reality = 5;
     assertNotSame(expected, reality);
+  }
+
+  /**
+   * Assure that 1 is actual 1.
+   * @throws Exception
+   */
+  public void testOneIsOne() throws Exception {
+    assertEquals(1, 1);
   }
 }
