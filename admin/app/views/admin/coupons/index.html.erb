@@ -1,5 +1,6 @@
 <% @coupons.each do |coupon| %>
-  <p><%= coupon %></p>
+  <% @coupon = coupon %>
+  <%= render 'coupon', locals: { coupon: @coupon } %>
 <% end %>
 
 <% content_for :sidebar do %>
