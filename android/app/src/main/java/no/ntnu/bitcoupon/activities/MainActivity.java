@@ -2,6 +2,7 @@ package no.ntnu.bitcoupon.activities;
 
 import android.os.Bundle;
 
+import com.crashlytics.android.Crashlytics;
 import no.ntnu.bitcoupon.R;
 import no.ntnu.bitcoupon.fragments.CouponFragment;
 import no.ntnu.bitcoupon.fragments.CouponListFragment;
@@ -20,6 +21,7 @@ public class MainActivity extends BaseActivity implements CouponListFragmentList
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    Crashlytics.start(this);
     setContentView(R.layout.activity_main);
     if (savedInstanceState == null) {
       getFragmentManager().beginTransaction().add(R.id.container, CouponListFragment.newInstance()).commit();
