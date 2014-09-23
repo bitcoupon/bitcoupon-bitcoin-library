@@ -29,10 +29,7 @@ module Backend
         },
       ]
 
-      respond_to do |format|
-        format.html
-        format.json { render json: @coupons }
-      end
+      render json: @coupons
     end
 
     def show
@@ -45,9 +42,7 @@ module Backend
         created:  "1311499999999",
       }
 
-      respond_to do |format|
-        format.json { render json: @coupon }
-      end
+      render json: @coupon
     end
   end
 end
