@@ -1,13 +1,11 @@
 package no.ntnu.bitcoupon.callbacks;
 
-import no.ntnu.bitcoupon.models.Coupon;
-
 /**
  * Created by Patrick on 23.09.2014.
  */
-public interface FetchCallback {
+public interface FetchCallback<T> {
 
-  void onComplete(int statusCode, Coupon coupon);
+  void onComplete(int statusCode, T coupon);
 
   void onFail(int statusCode);
 
