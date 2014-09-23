@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-  resources :users
+  namespace :backend do
+    post "/new_coupons", to: "coupons#create"
+  end
 
-  root "users#index"
+  root "admin/coupons#index"
 end
