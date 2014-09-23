@@ -6,4 +6,8 @@ class ApplicationController < ActionController::Base
   def api
     "http://localhost:3002/backend"
   end
+
+  def pubkey
+    "sdgkj32pidklj23lkjd"
+  end
 end
