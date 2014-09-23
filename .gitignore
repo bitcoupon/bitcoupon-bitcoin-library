@@ -218,4 +218,4 @@ pip-log.txt
 .idea
 out
 *.iml
-android/app/crashlytics.properties
+crashlytics.properties
