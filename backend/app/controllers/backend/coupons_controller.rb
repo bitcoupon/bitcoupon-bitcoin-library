@@ -1,4 +1,4 @@
-module Admin
+module Backend
   class CouponsController < ApplicationController
     def create
       coupons = [
@@ -7,7 +7,7 @@ module Admin
       ]
 
       respond_to do |format|
-        format.json { coupons.to_json }
+        format.json { render json: coupons }
       end
     end
 
@@ -17,6 +17,11 @@ module Admin
         "lsdfj",
         "lkjsdf",
       ]
+
+      respond_to do |format|
+        format.html
+        format.json { render json: @coupons }
+      end
     end
   end
 end
