@@ -3,7 +3,9 @@ package no.ntnu.bitcoupon.activities;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
 import android.widget.Toast;
 
 /**
@@ -19,6 +21,12 @@ public abstract class BaseActivity extends Activity {
   private static final String TAG = BaseActivity.class.getSimpleName();
 
   private int runningJobs;
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+    super.onCreate(savedInstanceState);
+  }
 
   public void setLoading(final boolean loading) {
     if (loading) {
