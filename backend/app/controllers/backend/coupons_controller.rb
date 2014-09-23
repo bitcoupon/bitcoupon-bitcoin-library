@@ -12,22 +12,24 @@ module Backend
     end
 
     def index
-      @coupons = [
-        {
-          title: "Dummy Coupon 1",
-          description: "This is the dummy coupons\ndescription!",
-          id: "2",
-          modified: "1311495190384",
-          created:  "1311499999999",
-        },
-        {
-          title: "Dummy Coupon 2",
-          description: "This is the dummy coupons\ndescription 2!",
-          id: "3",
-          modified: "1311495190384",
-          created:  "1311999999999",
-        },
-      ]
+      @coupons = { coupons:
+        [
+          {
+            title: "Dummy Coupon 1",
+            description: "This is the dummy coupons\ndescription!",
+            id: "2",
+            modified: "1311495190384",
+            created:  "1311499999999",
+          },
+          {
+            title: "Dummy Coupon 2",
+            description: "This is the dummy coupons\ndescription 2!",
+            id: "3",
+            modified: "1311495190384",
+            created:  "1311999999999",
+          },
+        ]
+      }
 
       render json: @coupons
     end
