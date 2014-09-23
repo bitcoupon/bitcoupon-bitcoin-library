@@ -2,6 +2,8 @@ package no.ntnu.bitcoupon.fragments;
 
 import android.app.Fragment;
 
+import no.ntnu.bitcoupon.activities.BaseActivity;
+
 /**
  * Created by Patrick on 22.09.2014.
  *
@@ -12,4 +14,11 @@ import android.app.Fragment;
  */
 public abstract class BaseFragment extends Fragment {
 
+  public BaseActivity getBaseActivity() {
+    return (BaseActivity) getActivity();
+  }
+
+  protected void setLoading(boolean b) {
+    getBaseActivity().setLoading(b);
+  }
 }
