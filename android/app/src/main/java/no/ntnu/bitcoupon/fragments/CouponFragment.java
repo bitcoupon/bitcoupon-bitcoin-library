@@ -44,7 +44,7 @@ public class CouponFragment extends BaseFragment {
     id.setText("ID: " + coupon.getId());
     title.setText(coupon.getTitle());
     created.setText("Created: " + coupon.getCreated());
-    description.setText(coupon.getDescription());
+    description.setText(Coupon.toJson(coupon));
     title.setText(coupon.getTitle());
     modified.setText("Modified:  " + coupon.getModified());
     return view;
