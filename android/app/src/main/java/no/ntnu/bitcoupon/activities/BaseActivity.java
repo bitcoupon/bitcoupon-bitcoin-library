@@ -3,6 +3,7 @@ package no.ntnu.bitcoupon.activities;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -15,43 +16,49 @@ import android.widget.Toast;
  */
 public abstract class BaseActivity extends Activity {
 
+  private static final String TAG = BaseActivity.class.getSimpleName();
+
+  private int runningJobs;
+
+  public void setLoading(final boolean loading) {
+    if (loading) {
+      ++runningJobs;
+    } else {
+      --runningJobs;
+    }
+    Log.d(TAG, loading ? " started" : " finished - Running jobs left: " + runningJobs);
+    updateProgressbarState();
+  }
+
+  private void updateProgressbarState() {
+    boolean shouldLoad = runningJobs > 0;
+    setProgressBarIndeterminateVisibility(shouldLoad);
+  }
+
+
   public void displayToast(final String toast) {
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        Toast.makeText(BaseActivity.this, toast, Toast.LENGTH_LONG).show();
-      }
-    });
+    Toast.makeText(BaseActivity.this, toast, Toast.LENGTH_LONG).show();
   }
 
   public void displayErrorDialog(final String title, final String message) {
 
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(BaseActivity.this);
-        builder.setMessage(message)//
-            .setTitle(title) //
-            .setPositiveButton(android.R.string.ok, null)//
-            .create()//
-            .show();//
-      }
-    });
+    AlertDialog.Builder builder = new AlertDialog.Builder(BaseActivity.this);
+    builder.setMessage(message)//
+        .setTitle(title) //
+        .setPositiveButton(android.R.string.ok, null)//
+        .create()//
+        .show();//
   }
+
 
   public void displayPromptDialog(final String title, final String question,
                                   final DialogInterface.OnClickListener dialogClickListener) {
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(BaseActivity.this);
-        builder.setTitle(title) //
-            .setMessage(question)//
-            .setPositiveButton(android.R.string.yes, dialogClickListener)//
-            .setNegativeButton(android.R.string.no, dialogClickListener)//
-            .create() //
-            .show();
-      }
-    });
+    AlertDialog.Builder builder = new AlertDialog.Builder(BaseActivity.this);
+    builder.setTitle(title) //
+        .setMessage(question)//
+        .setPositiveButton(android.R.string.yes, dialogClickListener)//
+        .setNegativeButton(android.R.string.no, dialogClickListener)//
+        .create() //
+        .show();
   }
 }
