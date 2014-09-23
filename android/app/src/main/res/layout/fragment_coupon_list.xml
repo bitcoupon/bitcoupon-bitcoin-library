@@ -6,7 +6,6 @@
         >
 
 
-
     <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -31,14 +30,45 @@
                 android:textSize="40sp"
                 android:layout_gravity="center_horizontal|center_vertical"
                 />
-        <Button
+
+        <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Generate"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="0dp"
-                android:padding="0dp"
-                android:id="@+id/b_generate"
-                />
+                android:orientation="horizontal"
+                >
+
+            <Button
+                    android:layout_width="0dp"
+                    android:layout_weight=".3"
+                    android:layout_height="wrap_content"
+                    android:text="Generate"
+                    android:layout_alignParentBottom="true"
+                    android:layout_margin="0dp"
+                    android:padding="0dp"
+                    android:id="@+id/b_generate"
+                    />
+
+            <Button
+                    android:layout_width="0dp"
+                    android:layout_weight=".3"
+                    android:layout_height="wrap_content"
+                    android:text="Fetch All"
+                    android:layout_alignParentBottom="true"
+                    android:layout_margin="0dp"
+                    android:padding="0dp"
+                    android:id="@+id/b_fetch_all"
+                    />
+
+            <Button
+                    android:layout_width="0dp"
+                    android:layout_weight=".3"
+                    android:layout_height="wrap_content"
+                    android:text="Fetch Single"
+                    android:layout_alignParentBottom="true"
+                    android:layout_margin="0dp"
+                    android:padding="0dp"
+                    android:id="@+id/b_fetch_single"
+                    />
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

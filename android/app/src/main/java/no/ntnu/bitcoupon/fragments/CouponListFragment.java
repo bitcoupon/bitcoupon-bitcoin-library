@@ -15,7 +15,7 @@ import java.util.List;
 
 import no.ntnu.bitcoupon.R;
 import no.ntnu.bitcoupon.adapters.CouponListAdapter;
-import no.ntnu.bitcoupon.callbacks.FetchAllCallback;
+import no.ntnu.bitcoupon.callbacks.FetchCallback;
 import no.ntnu.bitcoupon.listeners.CouponListFragmentListener;
 import no.ntnu.bitcoupon.models.Coupon;
 
@@ -58,10 +58,41 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
     View view = inflater.inflate(R.layout.fragment_coupon_list, container, false);
 
     View generateButton = view.findViewById(R.id.b_generate);
-    generateButton.setOnClickListener(new View.OnClickListener() {
+    View fetchAllButton = view.findViewById(R.id.b_fetch_all);
+    View fetchSingleButton = view.findViewById(R.id.b_fetch_single);
+    View.OnClickListener generateButtonListener = new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        Coupon.fetchAllCoupons(new FetchAllCallback() {
+        couponAdapter.add(Coupon.createDummy());
+        couponAdapter.notifyDataSetChanged();
+      }
+    };
+    View.OnClickListener fetchSingleButtonListener = new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        setLoading(true);
+        Coupon.fetchCouponById("2", new FetchCallback<Coupon>() {
+          @Override
+          public void onComplete(int statusCode, Coupon coupon) {
+            couponAdapter.add(coupon);
+            couponAdapter.notifyDataSetChanged();
+            Log.v(TAG, "fetch complete: " + statusCode);
+            setLoading(false);
+          }
+
+          @Override
+          public void onFail(int statusCode) {
+            Log.v(TAG, "fetch failed: " + statusCode);
+            setLoading(false);
+          }
+        });
+      }
+    };
+    View.OnClickListener fetchAllButtonListener = new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        setLoading(true);
+        Coupon.fetchAllCoupons(new FetchCallback<List<Coupon>>() {
           @Override
           public void onComplete(int statusCode, List<Coupon> coupons) {
             for (Coupon coupon : coupons) {
@@ -69,28 +100,22 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
               Log.v(TAG, "fetch complete: " + statusCode);
             }
             couponAdapter.notifyDataSetChanged();
+            setLoading(false);
           }
 
           @Override
           public void onFail(int statusCode) {
             Log.v(TAG, "fetch failed: " + statusCode);
+            setLoading(false);
           }
         });
-//        Coupon.fetchCouponById("2", new FetchCallback() {
-//          @Override
-//          public void onComplete(int statusCode, Coupon coupon) {
-//            Log.v(TAG, "fetch complete: " + statusCode);
-//            couponAdapter.add(coupon);
-//            couponAdapter.notifyDataSetChanged();
-//          }
-//
-//          @Override
-//          public void onFail(int statusCode) {
-//            Log.v(TAG, "fetch failed: " + statusCode);
-//          }
-//        });
+
       }
-    });
+    };
+    // set the button listeners
+    generateButton.setOnClickListener(generateButtonListener);
+    fetchSingleButton.setOnClickListener(fetchSingleButtonListener);
+    fetchAllButton.setOnClickListener(fetchAllButtonListener);
     // Set the adapter
     couponList = (ListView) view.findViewById(R.id.coupon_list);
     couponList.setAdapter(couponAdapter);
@@ -101,6 +126,7 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
 
     return view;
   }
+
 
   @Override
   public void onAttach(Activity activity) {
