@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Admin::CouponsControllerTest < ActionController::TestCase
+class Backend::CouponsControllerTest < ActionController::TestCase
   setup do
     @coupon = coupons(:one)
   end
