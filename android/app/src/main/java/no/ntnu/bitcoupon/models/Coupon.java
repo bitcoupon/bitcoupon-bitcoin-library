@@ -5,10 +5,12 @@ import com.google.gson.Gson;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
 import org.joda.time.DateTime;
 
 import java.io.BufferedReader;
@@ -17,8 +19,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
-import no.ntnu.bitcoupon.callbacks.FetchAllCallback;
 import no.ntnu.bitcoupon.callbacks.FetchCallback;
 
 /**
@@ -28,6 +30,10 @@ public class Coupon {
 
   public static final String COUPON_JSON = "coupon_id";
   private static final String TAG = Coupon.class.getSimpleName();
+  private static final String API_ROOT = "http://bitcoupon.no-ip.org:3002/backend/";
+  private static final String API_COUPONS = "coupons/";
+  private static final String PUBLIC_KEY = "123123/";
+  private static final String API_COUPON = "coupon/";
   private String title;
   private String description;
   private String id;
@@ -78,14 +84,16 @@ public class Coupon {
     return dummy;
   }
 
-  public static void fetchAllCoupons(final FetchAllCallback callback) {
+  public static void fetchAllCoupons(final FetchCallback<List<Coupon>> callback) {
     new AsyncTask<Void, Void, CouponList>() {
       @Override
       protected CouponList doInBackground(Void... params) {
-        String url = "http://bitcoupon.no-ip.org:3002/backend/coupons/";
+        String url = API_ROOT + API_COUPONS;
         HttpResponse response = null;
         try {
+          Log.v(TAG, "requesting ... " + url);
           HttpGet request = new HttpGet(new URI(url));
+          request.addHeader(getRequestTokenHeader());
           HttpClient httpClient = new DefaultHttpClient();
           response = httpClient.execute(request);
 
@@ -105,7 +113,13 @@ public class Coupon {
 
   }
 
-  public static void fetchCouponById(String id, final FetchCallback callback) {
+  public static Header getRequestTokenHeader() {
+    Header header = new BasicHeader("Token", PUBLIC_KEY);
+    header.toString();
+    return header;
+  }
+
+  public static void fetchCouponById(String id, final FetchCallback<Coupon> callback) {
     /**
      * Creates a default http client, executes a GET to the URL, and returns the response
      */
@@ -113,12 +127,15 @@ public class Coupon {
       @Override
       protected Coupon doInBackground(String... params) {
         String id = params[0];
-        String url = "http://bitcoupon.no-ip.org:3002/backend/coupon/" + id;
+        String url = API_ROOT + API_COUPON + id;
         HttpResponse response = null;
         try {
+          Log.v(TAG, "requesting ... " + url);
           HttpGet request = new HttpGet(new URI(url));
+          request.addHeader(getRequestTokenHeader());
           HttpClient httpClient = new DefaultHttpClient();
           response = httpClient.execute(request);
+
 
         } catch (URISyntaxException e) {
           Log.e(TAG, "URISyntaxException", e);
@@ -158,4 +175,6 @@ public class Coupon {
            + " Created: " + getCreated() //
         ;
   }
+
+
 }
