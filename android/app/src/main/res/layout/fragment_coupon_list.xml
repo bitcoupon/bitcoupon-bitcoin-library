@@ -28,7 +28,8 @@
                 android:text="No coupons:("
                 android:textColor="@color/gray_light"
                 android:textSize="40sp"
-                android:layout_gravity="center_horizontal|center_vertical"
+                android:layout_gravity="center"
+                android:gravity="center"
                 />
 
         <LinearLayout

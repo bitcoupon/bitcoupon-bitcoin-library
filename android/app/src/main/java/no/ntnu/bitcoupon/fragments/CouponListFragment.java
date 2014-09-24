@@ -65,6 +65,7 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
       public void onClick(View v) {
         couponAdapter.add(Coupon.createDummy());
         couponAdapter.notifyDataSetChanged();
+        displayToast("Generated dummy coupon!");
       }
     };
     View.OnClickListener fetchSingleButtonListener = new View.OnClickListener() {
@@ -78,12 +79,14 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
             couponAdapter.notifyDataSetChanged();
             Log.v(TAG, "fetch complete: " + statusCode);
             setLoading(false);
+            displayToast("Received coupon with id: " + coupon.getId());
           }
 
           @Override
           public void onFail(int statusCode) {
             Log.v(TAG, "fetch failed: " + statusCode);
             setLoading(false);
+            displayToast("Error fetching:" + statusCode);
           }
         });
       }
@@ -101,12 +104,14 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
             }
             couponAdapter.notifyDataSetChanged();
             setLoading(false);
+            displayToast("Received " + coupons.size() + " coupons from the server!");
           }
 
           @Override
           public void onFail(int statusCode) {
             Log.v(TAG, "fetch failed: " + statusCode);
             setLoading(false);
+            displayToast("Error fetching:" + statusCode);
           }
         });
 

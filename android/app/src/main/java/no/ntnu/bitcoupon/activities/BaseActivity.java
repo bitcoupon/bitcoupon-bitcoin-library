@@ -45,7 +45,7 @@ public abstract class BaseActivity extends Activity {
 
 
   public void displayToast(final String toast) {
-    Toast.makeText(BaseActivity.this, toast, Toast.LENGTH_LONG).show();
+    Toast.makeText(BaseActivity.this, toast, Toast.LENGTH_SHORT).show();
   }
 
   public void displayErrorDialog(final String title, final String message) {
