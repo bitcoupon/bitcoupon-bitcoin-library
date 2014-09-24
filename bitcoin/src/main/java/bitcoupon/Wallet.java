@@ -1,21 +1,10 @@
 package bitcoupon;
 
-import java.math.BigInteger;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.SecureRandom;
-import java.security.Signature;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
+
 import java.util.ArrayList;
 import java.util.Set;
-
-import javax.print.DocFlavor;
-import javax.sound.sampled.AudioFormat.Encoding;
-import javax.xml.bind.DatatypeConverter;
-import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
 public class Wallet {
 
@@ -28,21 +17,27 @@ public class Wallet {
   }
 
   Transaction createCoupons(String subType, int amount) {
+    try {
+      ArrayList<Creation> creations = new ArrayList<Creation>();
+      ArrayList<Input> inputs = new ArrayList<Input>();
+      ArrayList<Output> outputs = new ArrayList<Output>();
 
-    ArrayList<Creation> creations = new ArrayList<Creation>();
-    ArrayList<Input> inputs = new ArrayList<Input>();
-    ArrayList<Output> outputs = new ArrayList<Output>();
+      byte[] bPublicKey = Hex.decodeHex(publicKey.toCharArray());
+      byte[] bHashedPublicKey = Bitcoin.hash160(bPublicKey);
+      String hashedPublicKey = Hex.encodeHexString(bHashedPublicKey);
+      Creation creation = new Creation(hashedPublicKey, subType, amount);
+      creations.add(creation);
+      Output output = new Output(hashedPublicKey + " - " + subType, amount, hashedPublicKey);
+      outputs.add(output);
 
-    String address = Bitcoin.getAddress(publicKey);
-    Creation creation = new Creation(0, address, subType, amount);
-    creations.add(creation);
-    Output output = new Output(0, address + " - " + subType, amount, address, 0);
-    outputs.add(output);
+      Transaction transaction = new Transaction(creations, inputs, outputs);
+      transaction.signTransaction(privateKey, publicKey);
+      return transaction;
 
-    Transaction transaction = new Transaction(0,creations, inputs, outputs);
-    transaction.signTransaction(privateKey, publicKey);
-    return transaction;
-
+    } catch (DecoderException e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 
   Set<Coupon> getCoupons() {
