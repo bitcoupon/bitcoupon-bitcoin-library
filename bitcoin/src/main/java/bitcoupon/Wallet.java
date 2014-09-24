@@ -9,52 +9,48 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.Signature;
+import java.util.ArrayList;
 import java.util.Set;
 
+import javax.print.DocFlavor;
 import javax.sound.sampled.AudioFormat.Encoding;
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
 public class Wallet {
-	
-	public static void main(String[] args) {
-		new Wallet("0450863AD64A87AE8A2FE83C1AF1A8403CB53F53E486D8511DAD8A04887E5B23522CD470243453A299FA9E77237716103ABC11A1DF38855ED6F2EE187E9C582BA6", "");
-	}
-	
-	private String publicKey;
-	
-	Wallet(String publicKey, String privateKey) {
-		this.publicKey = publicKey;
-		createCoupons("abc", 1);
-	}
-	
-	Transaction createCoupons(String subType, int amount) {
-		
-		
-		
-		Creation creation = new Creation();
-		creation.scriptPubKey = "OP_DUP OP_HASH160 " + "" + " OP_EQUALVERIFY OP_CHECKSIG";
-		creation.subType = subType;
-		creation.amount = amount;
-		Output output = new Output();
-		output.couponType = creation.scriptPubKey + " - " + creation.subType;
-		output.amount = creation.amount;
-		output.scriptPubKey = "OP_DUP OP_HASH160 " + "" + " OP_EQUALVERIFY OP_CHECKSIG";
-		
-		
-		
-		
-		
-		
-		return null;
-	}
-	
-	Set<Coupon> getCoupons() {
-		return null;
-	}
-	
-	private Set<Transaction> getTransactions(String publicKey) {
-		return null;
-	}
-	
+
+  private String privateKey;
+  private String publicKey;
+
+  Wallet(String privateKey, String publicKey) {
+    this.privateKey = privateKey;
+    this.publicKey = publicKey;
+  }
+
+  Transaction createCoupons(String subType, int amount) {
+
+    ArrayList<Creation> creations = new ArrayList<Creation>();
+    ArrayList<Input> inputs = new ArrayList<Input>();
+    ArrayList<Output> outputs = new ArrayList<Output>();
+
+    String address = Bitcoin.getAddress(publicKey);
+    Creation creation = new Creation(0, address, subType, amount);
+    creations.add(creation);
+    Output output = new Output(0, address + " - " + subType, amount, address, 0);
+    outputs.add(output);
+
+    Transaction transaction = new Transaction(0,creations, inputs, outputs);
+    transaction.signTransaction(privateKey, publicKey);
+    return transaction;
+
+  }
+
+  Set<Coupon> getCoupons() {
+    return null;
+  }
+
+  private Set<Transaction> getTransactions(String publicKey) {
+    return null;
+  }
+
 }
