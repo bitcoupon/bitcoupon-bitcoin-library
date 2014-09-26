@@ -1,14 +1,31 @@
 package bitcoupon;
 
+import org.apache.commons.codec.binary.Hex;
+import org.bouncycastle.asn1.ASN1Integer;
+import org.bouncycastle.asn1.DERInteger;
+import org.bouncycastle.asn1.DERSequenceGenerator;
 import org.bouncycastle.asn1.sec.SECNamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;
 import org.bouncycastle.crypto.params.ECDomainParameters;
+import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
+import org.bouncycastle.crypto.params.ParametersWithRandom;
 import org.bouncycastle.crypto.signers.ECDSASigner;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 
 public class Transaction {
+
+  private static final ECDomainParameters EC_PARAMS;
+
+  static {
+    X9ECParameters params = SECNamedCurves.getByName("secp256k1");
+    EC_PARAMS =
+        new ECDomainParameters(params.getCurve(), params.getG(), params.getN(), params.getH(), params.getSeed());
+  }
 
   private long transactionId;
   private ArrayList<Creation> creations;
@@ -60,12 +77,32 @@ public class Transaction {
 
   }
 
-  void signTransaction(String privateKey, String publicKey) {
-    byte[] bTransaction = getBytes();
-    byte[] bHashedTransaction = Bitcoin.hash256(bTransaction);
-    X9ECParameters params = SECNamedCurves.getByName("secp256k1");
-    ECDomainParameters ecParams = new ECDomainParameters(params.getCurve(), params.getG(), params.getN(), params.getH());
+  boolean signTransaction(BigInteger privateKey) {
+    ECPrivateKeyParameters privateKeyParams = new ECPrivateKeyParameters(privateKey, EC_PARAMS);
     ECDSASigner signer = new ECDSASigner();
+    signer.init(true, privateKeyParams);
+    byte[] hashedTransaction = Bitcoin.hash256(getBytes());
+    BigInteger[] rawSignature = signer.generateSignature(hashedTransaction);
+    try {
+      ByteArrayOutputStream baos = new ByteArrayOutputStream(72);
+      DERSequenceGenerator derGen = new DERSequenceGenerator(baos);
+      derGen.addObject(new ASN1Integer(rawSignature[0]));
+      derGen.addObject(new ASN1Integer(rawSignature[1]));
+      derGen.close();
+      byte[] signature = baos.toByteArray();
+      byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
+      String scriptSig = Hex.encodeHexString(signature) + " " + Hex.encodeHexString(publicKey);
+      for (int i = 0; i < creations.size(); i++) {
+        creations.get(i).setScriptSig(scriptSig);
+      }
+      for (int i = 0; i < inputs.size(); i++) {
+        inputs.get(i).setScriptSig(scriptSig);
+      }
+      return true;
+    } catch (IOException e) {
+      e.printStackTrace();
+      return false;
+    }
   }
 
 }

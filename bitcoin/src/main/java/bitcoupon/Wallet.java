@@ -3,41 +3,38 @@ package bitcoupon;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Set;
 
 public class Wallet {
 
-  private String privateKey;
-  private String publicKey;
+  private String strPrivateKey;
 
-  Wallet(String privateKey, String publicKey) {
-    this.privateKey = privateKey;
-    this.publicKey = publicKey;
+  Wallet(String privateKey) {
+    this.strPrivateKey = privateKey;
   }
 
   Transaction createCoupons(String subType, int amount) {
-    try {
-      ArrayList<Creation> creations = new ArrayList<Creation>();
-      ArrayList<Input> inputs = new ArrayList<Input>();
-      ArrayList<Output> outputs = new ArrayList<Output>();
 
-      byte[] bPublicKey = Hex.decodeHex(publicKey.toCharArray());
-      byte[] bHashedPublicKey = Bitcoin.hash160(bPublicKey);
-      String hashedPublicKey = Hex.encodeHexString(bHashedPublicKey);
-      Creation creation = new Creation(hashedPublicKey, subType, amount);
-      creations.add(creation);
-      Output output = new Output(hashedPublicKey + " - " + subType, amount, hashedPublicKey);
-      outputs.add(output);
+    ArrayList<Creation> creations = new ArrayList<Creation>();
+    ArrayList<Input> inputs = new ArrayList<Input>();
+    ArrayList<Output> outputs = new ArrayList<Output>();
 
-      Transaction transaction = new Transaction(creations, inputs, outputs);
-      transaction.signTransaction(privateKey, publicKey);
-      return transaction;
+    BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
+    byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
+    byte[] hashedPublicKey = Bitcoin.hash160(publicKey);
+    String strHashedPublicKey = Hex.encodeHexString(hashedPublicKey);
 
-    } catch (DecoderException e) {
-      e.printStackTrace();
-      return null;
-    }
+    Creation creation = new Creation(strHashedPublicKey, subType, amount);
+    creations.add(creation);
+    Output output = new Output(strHashedPublicKey + "-" + subType, amount, strHashedPublicKey);
+    outputs.add(output);
+
+    Transaction transaction = new Transaction(creations, inputs, outputs);
+    transaction.signTransaction(privateKey);
+    return transaction;
+
   }
 
   Set<Coupon> getCoupons() {

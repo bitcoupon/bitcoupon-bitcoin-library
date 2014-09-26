@@ -2,10 +2,15 @@ package bitcoupon;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.bouncycastle.asn1.sec.SECNamedCurves;
+import org.bouncycastle.asn1.x9.X9ECParameters;
 import org.bouncycastle.crypto.digests.RIPEMD160Digest;
 import org.bouncycastle.crypto.digests.SHA256Digest;
+import org.bouncycastle.crypto.params.ECDomainParameters;
+import org.bouncycastle.math.ec.ECPoint;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 
 public class Bitcoin {
 
@@ -27,6 +32,35 @@ public class Bitcoin {
        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+
+  private static final ECDomainParameters EC_PARAMS;
+
+  static {
+    X9ECParameters params = SECNamedCurves.getByName("secp256k1");
+    EC_PARAMS =
+        new ECDomainParameters(params.getCurve(), params.getG(), params.getN(), params.getH(), params.getSeed());
+  }
+
+  static BigInteger decodePrivateKey(String encodedPrivateKey) {
+    byte[] data = decodeBase58(encodedPrivateKey);
+    if (data != null && data.length == 33 && (data[0] & 0xff) == 0x80) {
+      byte[] decodedPrivateKey = new byte[32];
+      System.arraycopy(data, 1, decodedPrivateKey, 0, 32);
+      return new BigInteger(1, decodedPrivateKey);
+    }
+    return null;
+  }
+
+  static byte[] generatePublicKey(BigInteger privateKey) {
+    return EC_PARAMS.getG().multiply(privateKey).getEncoded();
+  }
+
+  static String publicKeyToAddress(byte[] publicKey) {
+    byte[] hashedPublicKey = hash160(publicKey);
+    byte[] data = new byte[hashedPublicKey.length + 1];
+    System.arraycopy(hashedPublicKey, 0, data, 1, hashedPublicKey.length);
+    return encodeBase58(data);
+  }
 
   static byte[] hash256(byte[] bytes) {
     SHA256Digest firstDigest = new SHA256Digest();
@@ -52,26 +86,11 @@ public class Bitcoin {
     return secondHash;
   }
 
-  static String getAddress(String publicKey) {
-    try {
-      byte[] bPublicKey = Hex.decodeHex(publicKey.toCharArray());
-      byte[] bHash = hash160(bPublicKey);
-      byte[] bExtendedHash = new byte[bHash.length + 1];
-      bExtendedHash[0] = 0;
-      System.arraycopy(bHash, 0, bExtendedHash, 1, bHash.length);
-      byte[] bChecksum = hash256(bExtendedHash);
-      byte[] bAddress = new byte[25];
-      System.arraycopy(bExtendedHash, 0, bAddress, 0, bExtendedHash.length);
-      System.arraycopy(bChecksum, 0, bAddress, bExtendedHash.length, 4);
-      String address = encodeBase58(bAddress);
-      return address;
-    } catch (DecoderException e) {
-      e.printStackTrace();
-      return null;
-    }
-  }
-
-  static String encodeBase58(byte[] bytes) {
+  static String encodeBase58(byte[] data) {
+    byte[] checksum = hash256(data);
+    byte[] bytes = new byte[data.length + 4];
+    System.arraycopy(data, 0, bytes, 0, data.length);
+    System.arraycopy(checksum, 0, bytes, data.length, 4);
     BigInteger value = new BigInteger(1, bytes);
     BigInteger base = BigInteger.valueOf(58);
     BigInteger zero = BigInteger.valueOf(0);
@@ -109,7 +128,15 @@ public class Bitcoin {
       bytes = new byte[bValue.length + zeros];
       System.arraycopy(bValue, 0, bytes, zeros, bValue.length);
     }
-    return bytes;
+    byte[] data = new byte[bytes.length - 4];
+    System.arraycopy(bytes, 0, data, 0, data.length);
+    byte[] checksum = hash256(data);
+    for (int i = 0; i < 4; i++) {
+      if (checksum[i] != bytes[data.length + i]) {
+        return null;
+      }
+    }
+    return data;
   }
 
   static byte[] intToByteArray(int i) {
