@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ $ADMIN == true ]; then
   cd backend
-  bundle exec bin/rails s -p 8080 &
+  bundle exec bin/rails s -p 3002 &
   pid=$!
   export RAILSPID=$pid
   echo "pid - $pid"
