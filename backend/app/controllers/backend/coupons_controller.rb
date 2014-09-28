@@ -1,5 +1,7 @@
 module Backend
   class CouponsController < ApplicationController
+    before_action :set_public_key, only: [:create, :index, :show]
+
     def create
       coupons = [
         "12345678",
@@ -12,12 +14,6 @@ module Backend
     end
 
     def index
-      @public_key = request.headers["token"]
-      if @public_key.nil?
-        if params[:token]
-          @public_key = params[:token]
-        end
-      end
       response.headers["token"] = "Your token: #{@public_key}"
       @coupons = {
         pubkey: @public_key,
@@ -40,15 +36,8 @@ module Backend
           ]
       }
 
-      #10.times do |i|
-      #  coupon = @coupons[:coupons][0].clone
-      #  #binding.pry
-      #  coupon[:id] = (coupon[:id].to_i + 10 + i).to_s
-      #  @coupons[:coupons] << coupon
-      #end
-
       if @public_key.nil?
-        render json: "NO PUBLIC KEY PROVIDED"
+        render json: '{"error":"NO PUBLIC KEY PROVIDED"}'
       else
         render json: @coupons
       end
@@ -67,6 +56,20 @@ module Backend
       }
 
       render json: @coupon
+    end
+
+  private
+    def set_public_key
+      @public_key = request.headers["token"]
+      if @public_key.nil?
+        if params[:token]
+          @public_key = params[:token]
+        end
+      end
+    end
+
+    def coupon_params
+      params.require(:coupon).permit(:title, :description, :user_id)
     end
   end
 end
