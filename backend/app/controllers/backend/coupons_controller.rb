@@ -13,6 +13,11 @@ module Backend
 
     def index
       @public_key = request.headers["token"]
+      if @public_key.nil?
+        if params[:token]
+          @public_key = params[:token]
+        end
+      end
       response.headers["token"] = "Your token: #{@public_key}"
       @coupons = {
         pubkey: @public_key,
