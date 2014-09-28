@@ -7,5 +7,5 @@ for i in `seq 1 $1`
 do
   java Json
 done
-rm json.class
+rm Json.class
 kill $pid
