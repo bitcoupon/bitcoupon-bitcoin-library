@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ $ADMIN == true ]; then
+if [ "$ADMIN" == true ]; then
   cd backend
   bundle exec bin/rails s -p 3002 &
   pid=$!
