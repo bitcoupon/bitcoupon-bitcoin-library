@@ -39,6 +39,23 @@ module Admin
       redirect_to admin_coupon_path(id)
     end
 
+    def destroy
+      api = "http://localhost:3002/backend"
+      uri = URI.parse(api + '/coupon' + '/' + params["id"])
+
+      request = Net::HTTP::Delete.new(uri.path)
+
+      request.add_field "token", "lulz"
+
+      result = Net::HTTP.start(uri.hostname, uri.port) {|http|
+        http.request(request)
+      }
+
+      token = result.header["token"]
+      #binding.pry
+      redirect_to admin_coupons_path
+    end
+
     private
       def coupon_params
         #binding.pry

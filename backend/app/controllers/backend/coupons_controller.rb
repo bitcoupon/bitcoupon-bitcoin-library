@@ -1,7 +1,7 @@
 module Backend
   class CouponsController < ApplicationController
     before_action :set_public_key, only: [:create, :index, :show]
-    skip_before_filter :verify_authenticity_token, :only => [:create]
+    skip_before_filter :verify_authenticity_token, :only => [:create, :destroy]
 
     def create
       #binding.pry
@@ -15,6 +15,12 @@ module Backend
       else
         render json: '{"error":"Invalid coupon"}'
       end
+    end
+
+    def destroy
+      Coupon.find(params["id"]).destroy
+
+      render json: { head: :no_content }
     end
 
     def new
