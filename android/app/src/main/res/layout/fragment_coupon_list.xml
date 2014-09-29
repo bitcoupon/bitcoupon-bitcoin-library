@@ -47,6 +47,12 @@
                 style="@style/Roboto_Button"
                 />
 
+        <View
+                android:layout_width=".5dp"
+                android:background="@color/gray_very_light"
+                android:layout_height="fill_parent"
+                />
+
         <Button
                 android:layout_width="0dp"
                 android:layout_weight=".3"
@@ -54,6 +60,12 @@
                 android:text="Fetch All"
                 android:id="@+id/b_fetch_all"
                 style="@style/Roboto_Button"
+                />
+
+        <View
+                android:layout_width=".5dp"
+                android:background="@color/gray_very_light"
+                android:layout_height="fill_parent"
                 />
 
         <Button

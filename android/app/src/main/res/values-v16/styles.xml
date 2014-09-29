@@ -4,6 +4,7 @@
     <style name="Roboto_Button">
         <item name="android:background">@color/white</item>
         <item name="android:textAllCaps">true</item>
+        <item name="android:height">40dp</item>
         <item name="android:textSize">@dimen/button_text_size</item>
         
         <item name="android:fontFamily">sans-serif</item>
