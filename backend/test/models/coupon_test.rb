@@ -1,8 +1,8 @@
 require 'test_helper'
 
 class CouponTest < ActiveSupport::TestCase
-  test "coupon should have name" do
+  test "coupon should have title" do
     coupon = coupons(:one)
-    assert coupon.name.length > 0
+    assert coupon.title.length > 0
   end
 end
