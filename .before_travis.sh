@@ -2,6 +2,7 @@
 if [ "$ADMIN" == true ]; then
   cd backend
   bundle exec rake db:migrate
+  bundle exec rake db:seed
   bundle exec bin/rails s -p 3002 &
   pid=$!
   export RAILSPID=$pid
