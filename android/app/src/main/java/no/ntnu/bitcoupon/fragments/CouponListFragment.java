@@ -11,6 +11,11 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
+import uk.co.senab.actionbarpulltorefresh.library.Options;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
+import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
+
 import java.util.List;
 
 import no.ntnu.bitcoupon.R;
@@ -29,6 +34,7 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
   private no.ntnu.bitcoupon.listeners.CouponListFragmentListener mListener;
   private AbsListView couponList;
   private CouponListAdapter couponAdapter;
+  private PullToRefreshLayout mPullToRefreshLayout;
 
   public static Fragment newInstance() {
     CouponListFragment fragment = new CouponListFragment();
@@ -56,6 +62,7 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_coupon_list, container, false);
+    initializeRefreshOnDrag(view);
 
     View generateButton = view.findViewById(R.id.b_generate);
     View fetchAllButton = view.findViewById(R.id.b_fetch_all);
@@ -95,25 +102,7 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
       @Override
       public void onClick(View v) {
         setLoading(true);
-        Coupon.fetchAllCoupons(new FetchCallback<List<Coupon>>() {
-          @Override
-          public void onComplete(int statusCode, List<Coupon> coupons) {
-            for (Coupon coupon : coupons) {
-              couponAdapter.add(coupon);
-              Log.v(TAG, "fetch complete: " + statusCode);
-            }
-            couponAdapter.notifyDataSetChanged();
-            setLoading(false);
-            displayToast("Received " + coupons.size() + " coupons from the server!");
-          }
-
-          @Override
-          public void onFail(int statusCode) {
-            Log.v(TAG, "fetch failed: " + statusCode);
-            setLoading(false);
-            displayToast("Error fetching:" + statusCode);
-          }
-        });
+        fetchAll();
 
       }
     };
@@ -130,6 +119,50 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
     couponList.setOnItemClickListener(this);
 
     return view;
+  }
+
+  private void fetchAll() {
+    Coupon.fetchAllCoupons(new FetchCallback<List<Coupon>>() {
+      @Override
+      public void onComplete(int statusCode, List<Coupon> coupons) {
+        for (Coupon coupon : coupons) {
+          couponAdapter.add(coupon);
+          Log.v(TAG, "fetch complete: " + statusCode);
+        }
+        couponAdapter.notifyDataSetChanged();
+        setLoading(false);
+        displayToast("Received " + coupons.size() + " coupons from the server!");
+        mPullToRefreshLayout.setRefreshComplete();
+      }
+
+      @Override
+      public void onFail(int statusCode) {
+        Log.v(TAG, "fetch failed: " + statusCode);
+        setLoading(false);
+        displayToast("Error fetching:" + statusCode);
+        mPullToRefreshLayout.setRefreshComplete();
+      }
+    });
+  }
+
+  private void initializeRefreshOnDrag(View rootView) {
+    // Now find the PullToRefreshLayout to setup
+    mPullToRefreshLayout = (PullToRefreshLayout) rootView.findViewById(R.id.ptr_layout);
+
+    // Now setup the PullToRefreshLayout
+    ActionBarPullToRefresh.from(getActivity()).options(
+        Options.create().refreshOnUp(true).build())
+        // Mark All Children as pullable
+        .allChildrenArePullable()
+            // Set a OnRefreshListener
+        .listener(new OnRefreshListener() {
+          @Override
+          public void onRefreshStarted(View view) {
+            fetchAll();
+          }
+        })
+            // Finally commit the setup to our PullToRefreshLayout
+        .setup(mPullToRefreshLayout);
   }
 
 
