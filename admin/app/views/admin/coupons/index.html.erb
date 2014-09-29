@@ -34,7 +34,7 @@
           <td><%= coupon["id"] %></td>
           <td><%= coupon["title"] %></td>
           <td><input type="text" name="fname"> <%= link_to 'Issue', coupon, class: "btn btn-primary" %><td>
-          <td><%= link_to 'Show', admin_path(coupon["id"].to_i), class: "btn btn-warning" %></td>
+          <td><%= link_to 'Show', admin_coupon_path(coupon["id"].to_i), class: "btn btn-warning" %></td>
           <td><%= link_to 'Destroy', root_path, class: "btn btn-danger", method: :delete, data: { confirm: 'Are you sure?' } %></td>
         </tr>
       <% end %>
