@@ -36,4 +36,13 @@ public abstract class BaseFragment extends Fragment {
                                      final DialogInterface.OnClickListener dialogClickListener) {
     getBaseActivity().displayPromptDialog(title, question, dialogClickListener);
   }
+
+  public void displayInputDialog(final String title, final String desc,
+                                 final DialogInterface.OnClickListener listener) {
+    getBaseActivity().displayInputDialog(title, desc, listener);
+  }
+
+  public String getInputText(){
+return     getBaseActivity().getInputText();
+  }
 }

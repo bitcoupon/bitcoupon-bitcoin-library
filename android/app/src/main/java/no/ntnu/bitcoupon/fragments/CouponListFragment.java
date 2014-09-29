@@ -1,6 +1,7 @@
 package no.ntnu.bitcoupon.fragments;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -90,23 +91,32 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
       @Override
       public void onClick(View v) {
         setLoading(true);
-        Coupon.fetchCouponById("2", new CouponCallback<Coupon>() {
+        displayInputDialog("Fetch by ID", "Enter the ID you want to fetch", new DialogInterface.OnClickListener() {
           @Override
-          public void onComplete(int statusCode, Coupon coupon) {
-            couponAdapter.add(coupon);
-            couponAdapter.notifyDataSetChanged();
-            Log.v(TAG, "fetch complete: " + statusCode);
-            setLoading(false);
-            displayToast("Received coupon with id: " + coupon.getId());
-          }
+          public void onClick(DialogInterface dialog, int which) {
+            if (which == DialogInterface.BUTTON_POSITIVE) {
+              final String id = getInputText();
+              Coupon.fetchCouponById(id, new CouponCallback<Coupon>() {
+                @Override
+                public void onComplete(int statusCode, Coupon coupon) {
+                  couponAdapter.add(coupon);
+                  couponAdapter.notifyDataSetChanged();
+                  Log.v(TAG, "fetch complete: " + statusCode);
+                  setLoading(false);
+                  displayToast("Received coupon with id: " + coupon.getId());
+                }
 
-          @Override
-          public void onFail(int statusCode) {
-            Log.v(TAG, "fetch failed: " + statusCode);
-            setLoading(false);
-            displayToast("Error fetching:" + statusCode);
+                @Override
+                public void onFail(int statusCode) {
+                  Log.v(TAG, "fetch failed: " + statusCode);
+                  setLoading(false);
+                  displayToast("Error fetching coupon with id " + id + ". Status: " + statusCode);
+                }
+              });
+            }
           }
         });
+
       }
     };
     View.OnClickListener fetchAllButtonListener = new View.OnClickListener() {
@@ -151,7 +161,7 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
       public void onFail(int statusCode) {
         Log.v(TAG, "fetch failed: " + statusCode);
         setLoading(false);
-        displayToast("Error fetching:" + statusCode);
+        displayToast("Error fetching: " + statusCode);
         mPullToRefreshLayout.setRefreshComplete();
       }
     });
@@ -162,8 +172,7 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
     mPullToRefreshLayout = (PullToRefreshLayout) rootView.findViewById(R.id.ptr_layout);
 
     // Now setup the PullToRefreshLayout
-    ActionBarPullToRefresh.from(getActivity()).options(
-        Options.create().refreshOnUp(true).build())
+    ActionBarPullToRefresh.from(getActivity()).options(Options.create().refreshOnUp(true).build())
         // Mark All Children as pullable
         .allChildrenArePullable()
             // Set a OnRefreshListener

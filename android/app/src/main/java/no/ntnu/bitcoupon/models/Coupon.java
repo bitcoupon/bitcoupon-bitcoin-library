@@ -9,6 +9,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -100,17 +101,23 @@ public class Coupon {
           HttpClient httpClient = new DefaultHttpClient();
           response = httpClient.execute(request);
 
+          return CouponList.fromJson(getReader(response));
+
         } catch (URISyntaxException e) {
           Log.e(TAG, "URISyntaxException", e);
         } catch (IOException e) {
           Log.e(TAG, "IOException", e);
         }
-        return CouponList.fromJson(getReader(response));
+        return null;
       }
 
       @Override
       protected void onPostExecute(CouponList coupons) {
-        callback.onComplete(0, coupons.getList());
+        if (coupons != null) {
+          callback.onComplete(0, coupons.getList());
+        } else {
+          callback.onFail(-1);
+        }
       }
     }.execute();
 
@@ -132,17 +139,21 @@ public class Coupon {
           HttpClient httpClient = new DefaultHttpClient();
           response = httpClient.execute(post);
 
-        } catch (URISyntaxException e) {
-          Log.e(TAG, "URISyntaxException", e);
-        } catch (IOException e) {
-          Log.e(TAG, "IOException", e);
+          return Coupon.fromJson(getReader(response));
+
+        } catch (Exception e) {
+          Log.e(TAG, "Exception", e);
         }
-        return Coupon.fromJson(getReader(response));
+        return null;
       }
 
       @Override
       protected void onPostExecute(Coupon coupon) {
-        callback.onComplete(0, coupon);
+        if (coupon != null) {
+          callback.onComplete(0, coupon);
+        } else {
+          callback.onFail(-1);
+        }
       }
     }.execute();
 
@@ -171,18 +182,53 @@ public class Coupon {
           HttpClient httpClient = new DefaultHttpClient();
           response = httpClient.execute(request);
 
+          return Coupon.fromJson(getReader(response));
 
-        } catch (URISyntaxException e) {
-          Log.e(TAG, "URISyntaxException", e);
-        } catch (IOException e) {
-          Log.e(TAG, "IOException", e);
+        } catch (Exception e) {
+          Log.e(TAG, "Exception", e);
         }
-        return Coupon.fromJson(getReader(response));
+        return null;
       }
 
       @Override
       protected void onPostExecute(Coupon coupon) {
-        callback.onComplete(0, coupon);
+        if (coupon != null) {
+          callback.onComplete(0, coupon);
+        } else {
+          callback.onFail(-1);
+        }
+      }
+    }.execute(id);
+
+  }
+
+  public void spendInBackground(final CouponCallback<Coupon> callback) {
+
+    new AsyncTask<String, Void, Integer>() {
+      @Override
+      protected Integer doInBackground(String... params) {
+        String id = params[0];
+        String url = API_ROOT + API_COUPON + id;
+        HttpResponse response = null;
+        try {
+          Log.v(TAG, "requesting ... " + url);
+          HttpDelete delete = new HttpDelete(new URI(url));
+          delete.addHeader(getRequestTokenHeader());
+
+          HttpClient httpClient = new DefaultHttpClient();
+          response = httpClient.execute(delete);
+
+          return response.getStatusLine().getStatusCode();
+
+        } catch (Exception e) {
+          Log.e(TAG, "xception", e);
+        }
+        return -1;
+      }
+
+      @Override
+      protected void onPostExecute(Integer status) {
+        callback.onComplete(status, Coupon.this);
       }
     }.execute(id);
 
@@ -192,14 +238,9 @@ public class Coupon {
     return new Gson().fromJson(reader, Coupon.class);
   }
 
-  private static BufferedReader getReader(HttpResponse response) {
-    BufferedReader reader = null;
-    try {
-      InputStream is = response.getEntity().getContent();
-      reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-    } catch (IOException e) {
-      Log.e(TAG, "IOException", e);
-    }
+  private static BufferedReader getReader(HttpResponse response) throws IOException {
+    InputStream is = response.getEntity().getContent();
+    BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
     return reader;
   }
 
@@ -211,9 +252,6 @@ public class Coupon {
         ;
   }
 
-  public void spend() {
-
-  }
 
   // Due to the object being serializable, override equals and hashcode to make sure an object remains the same before and after the serialization
   @Override
@@ -230,5 +268,6 @@ public class Coupon {
     }
     return id.equals(((Coupon) o).getId());
   }
+
 
 }

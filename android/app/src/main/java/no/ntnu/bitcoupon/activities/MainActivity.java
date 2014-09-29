@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.crashlytics.android.Crashlytics;
 
 import no.ntnu.bitcoupon.R;
+import no.ntnu.bitcoupon.callbacks.CouponCallback;
 import no.ntnu.bitcoupon.fragments.CouponFragment;
 import no.ntnu.bitcoupon.fragments.CouponListFragment;
 import no.ntnu.bitcoupon.listeners.CouponFragmentListener;
@@ -41,9 +42,20 @@ public class MainActivity extends BaseActivity implements CouponListFragmentList
   }
 
   @Override
-  public void spendCoupon(Coupon coupon) {
-    displayToast("Coupon with id " + coupon.getId() + " spent!");
-    getFragmentManager().popBackStack();
-    couponListFragment.removeCoupon(coupon);
+  public void spendCoupon(final Coupon coupon) {
+    coupon.spendInBackground(new CouponCallback<Coupon>() {
+      @Override
+      public void onComplete(int statusCode, Coupon coupon) {
+        displayToast("Coupon with id " + coupon.getId() + " spent!");
+        getFragmentManager().popBackStack();
+        couponListFragment.removeCoupon(coupon);
+      }
+
+      @Override
+      public void onFail(int statusCode) {
+        displayToast("Failed to spend coupon with id " + coupon.getId());
+        getFragmentManager().popBackStack();
+      }
+    });
   }
 }

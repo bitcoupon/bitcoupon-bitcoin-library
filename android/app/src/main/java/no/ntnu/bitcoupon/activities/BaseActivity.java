@@ -2,10 +2,17 @@ package no.ntnu.bitcoupon.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
 /**
@@ -21,6 +28,7 @@ public abstract class BaseActivity extends Activity {
   private static final String TAG = BaseActivity.class.getSimpleName();
 
   private int runningJobs;
+  private EditText input;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -68,5 +76,53 @@ public abstract class BaseActivity extends Activity {
         .setNegativeButton(android.R.string.no, dialogClickListener)//
         .create() //
         .show();
+  }
+
+  public void displayInputDialog(final String title, final String desc,
+                                 final DialogInterface.OnClickListener listener) {
+    if (input != null) {
+      // empty the input field from the last dialog
+      input.setText("");
+    }
+
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    input = new EditText(this);
+    builder.setView(input);
+    builder.setTitle(title) //
+        .setMessage(desc)//
+        .setPositiveButton(android.R.string.yes, listener) //
+        .create() //
+        .show();
+    showKeyboard(input);
+    input.setOnKeyListener(new View.OnKeyListener() {
+      @Override
+      public boolean onKey(View v, int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+          hideKeyboard(input);
+          return true;
+        }
+        return false;
+      }
+    });
+  }
+
+  public void showKeyboard(EditText edit) {
+    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+    imm.showSoftInput(edit, InputMethodManager.SHOW_IMPLICIT);
+
+    edit.dispatchTouchEvent(
+        MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, 0, 0, 0));
+    edit.dispatchTouchEvent(
+        MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, 0, 0, 0));
+
+  }
+
+  public void hideKeyboard(EditText edit) {
+    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+    imm.hideSoftInputFromWindow(edit.getWindowToken(), 0);
+  }
+
+  public String getInputText() {
+    return input.getText().toString().trim();
   }
 }
