@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     get "coupon", to: "coupons#new"
     get "coupons", to: "coupons#index"
     get "coupon/:id", to: "coupons#show"
+    delete "coupon/:id", to: "coupons#destroy"
   end
 
   root "backend/coupons#index"
