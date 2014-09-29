@@ -37,7 +37,7 @@ module Backend
       }
 
       if @public_key.nil?
-        render json: '{"error":"NO PUBLIC KEY PROVIDED"}'
+        render json: '{"error":"NO PUBLIC KEY PROVIDED"}', status: 401
       else
         render json: @coupons
       end
