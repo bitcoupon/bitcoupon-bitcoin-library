@@ -16,7 +16,7 @@ class ApiTest < ActionDispatch::IntegrationTest
                     "\"created\":\"1311999999999\"" +
                   "}]" +
                 "}"
-    @api = "http://localhost:3002/backend/coupons"
+    @api = "http://localhost:8080/backend/coupons"
     @pubkey = "sdflkj3209ikldjf23kljsd"
   end
 
@@ -29,6 +29,7 @@ class ApiTest < ActionDispatch::IntegrationTest
     result = Net::HTTP.start(uri.hostname, uri.port) do |http|
       http.request(req)
     end
+
     body = JSON.parse(result.body)
     result = body["coupons"]
 
