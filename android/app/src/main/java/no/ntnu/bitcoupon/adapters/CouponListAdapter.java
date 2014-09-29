@@ -87,4 +87,8 @@ public class CouponListAdapter extends BaseAdapter {
   public void remove(Coupon coupon) {
     items.remove(coupon);
   }
+
+  public void clear() {
+    items.clear();
+  }
 }

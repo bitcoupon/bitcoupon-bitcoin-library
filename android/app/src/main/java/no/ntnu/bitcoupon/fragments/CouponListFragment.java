@@ -19,7 +19,7 @@ import java.util.List;
 
 import no.ntnu.bitcoupon.R;
 import no.ntnu.bitcoupon.adapters.CouponListAdapter;
-import no.ntnu.bitcoupon.callbacks.FetchCallback;
+import no.ntnu.bitcoupon.callbacks.CouponCallback;
 import no.ntnu.bitcoupon.listeners.CouponListFragmentListener;
 import no.ntnu.bitcoupon.models.Coupon;
 
@@ -69,16 +69,28 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
     View.OnClickListener generateButtonListener = new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        couponAdapter.add(Coupon.createDummy());
-        couponAdapter.notifyDataSetChanged();
-        displayToast("Generated dummy coupon!");
+        Coupon coupon = Coupon.createDummy();
+        coupon.postInBackground(new CouponCallback<Coupon>() {
+          @Override
+          public void onComplete(int statusCode, Coupon coupon) {
+            couponAdapter.add(Coupon.createDummy());
+            couponAdapter.notifyDataSetChanged();
+            displayToast("Generated dummy coupon!");
+          }
+
+          @Override
+          public void onFail(int statusCode) {
+            displayToast("Dummy coupon creation failed!");
+          }
+        });
+
       }
     };
     View.OnClickListener fetchSingleButtonListener = new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         setLoading(true);
-        Coupon.fetchCouponById("2", new FetchCallback<Coupon>() {
+        Coupon.fetchCouponById("2", new CouponCallback<Coupon>() {
           @Override
           public void onComplete(int statusCode, Coupon coupon) {
             couponAdapter.add(coupon);
@@ -121,9 +133,10 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
   }
 
   private void fetchAll() {
-    Coupon.fetchAllCoupons(new FetchCallback<List<Coupon>>() {
+    Coupon.fetchAllCoupons(new CouponCallback<List<Coupon>>() {
       @Override
       public void onComplete(int statusCode, List<Coupon> coupons) {
+        couponAdapter.clear();
         for (Coupon coupon : coupons) {
           couponAdapter.add(coupon);
           Log.v(TAG, "fetch complete: " + statusCode);

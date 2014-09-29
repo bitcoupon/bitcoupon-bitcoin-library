@@ -10,6 +10,8 @@ import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.joda.time.DateTime;
@@ -22,7 +24,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import no.ntnu.bitcoupon.callbacks.FetchCallback;
+import no.ntnu.bitcoupon.callbacks.CouponCallback;
 
 /**
  * Created by Patrick on 22.09.2014.
@@ -85,7 +87,7 @@ public class Coupon {
     return dummy;
   }
 
-  public static void fetchAllCoupons(final FetchCallback<List<Coupon>> callback) {
+  public static void fetchAllCoupons(final CouponCallback<List<Coupon>> callback) {
     new AsyncTask<Void, Void, CouponList>() {
       @Override
       protected CouponList doInBackground(Void... params) {
@@ -114,13 +116,45 @@ public class Coupon {
 
   }
 
+  public void postInBackground(final CouponCallback<Coupon> callback) {
+    new AsyncTask<Void, Void, Coupon>() {
+      @Override
+      protected Coupon doInBackground(Void... params) {
+        String url = API_ROOT + API_COUPONS;
+        HttpResponse response = null;
+        try {
+          Log.v(TAG, "requesting ... " + url);
+          HttpPost post = new HttpPost(new URI(url));
+          post.addHeader(getRequestTokenHeader());
+
+          post.addHeader("Content-type", "application/json");
+          post.setEntity(new StringEntity(toJson(Coupon.this), "UTF-8"));
+          HttpClient httpClient = new DefaultHttpClient();
+          response = httpClient.execute(post);
+
+        } catch (URISyntaxException e) {
+          Log.e(TAG, "URISyntaxException", e);
+        } catch (IOException e) {
+          Log.e(TAG, "IOException", e);
+        }
+        return Coupon.fromJson(getReader(response));
+      }
+
+      @Override
+      protected void onPostExecute(Coupon coupon) {
+        callback.onComplete(0, coupon);
+      }
+    }.execute();
+
+  }
+
   public static Header getRequestTokenHeader() {
     Header header = new BasicHeader("Token", PUBLIC_KEY);
     header.toString();
     return header;
   }
 
-  public static void fetchCouponById(String id, final FetchCallback<Coupon> callback) {
+  public static void fetchCouponById(String id, final CouponCallback<Coupon> callback) {
     /**
      * Creates a default http client, executes a GET to the URL, and returns the response
      */
@@ -176,6 +210,7 @@ public class Coupon {
            + " Created: " + getCreated() //
         ;
   }
+
   public void spend() {
 
   }
