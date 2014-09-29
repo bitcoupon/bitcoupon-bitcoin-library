@@ -16,7 +16,7 @@ class ApiTest < ActionDispatch::IntegrationTest
                     "\"created\":\"1311999999999\"" +
                   "}]" +
                 "}"
-    @api = "http://localhost:8080/backend/coupons"
+    @api = "http://localhost:3002/backend/coupons"
     @pubkey = "sdflkj3209ikldjf23kljsd"
   end
 

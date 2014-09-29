@@ -9,7 +9,7 @@ module Admin
 
     def show
       id = params[:id]
-      api = "http://bitcoupon.noip.me:8080/backend"
+      api = "http://bitcoupon.no-ip.org:3002/backend"
       result = Net::HTTP.get(URI.parse(api + "/coupon/#{id}"))
       @coupon = JSON.parse(result)
     end

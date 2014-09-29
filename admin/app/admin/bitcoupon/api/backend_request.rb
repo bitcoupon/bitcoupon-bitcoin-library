@@ -9,9 +9,9 @@ module Admin
         def initialize path
           @path = path
           @api = if Rails.env.test?
-            "http://localhost:8080/backend"
+            "http://localhost:3002/backend"
           else
-            "http://bitcoupon.noip.me:8080/backend"
+            "http://localhost:3002/backend"
           end
           @pubkey = "sdgkj32pidklj23lkjd"
         end
