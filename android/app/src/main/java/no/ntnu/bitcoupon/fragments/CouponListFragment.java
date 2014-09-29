@@ -1,7 +1,6 @@
 package no.ntnu.bitcoupon.fragments;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,7 +35,7 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
   private CouponListAdapter couponAdapter;
   private PullToRefreshLayout mPullToRefreshLayout;
 
-  public static Fragment newInstance() {
+  public static CouponListFragment newInstance() {
     CouponListFragment fragment = new CouponListFragment();
     return fragment;
   }
@@ -189,5 +188,10 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
     if (null != mListener) {
       mListener.onCouponClicked(couponAdapter.getItem(position));
     }
+  }
+
+  public void removeCoupon(Coupon coupon) {
+    couponAdapter.remove(coupon);
+    couponAdapter.notifyDataSetChanged();
   }
 }

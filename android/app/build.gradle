@@ -32,6 +32,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/LICENSE.txt'
+    }
 }
 
 dependencies {
@@ -40,4 +44,5 @@ dependencies {
     compile 'com.google.code.gson:gson:2+'
     compile 'com.github.chrisbanes.actionbarpulltorefresh:library:+'
     compile 'com.crashlytics.android:crashlytics:1.+'
+    compile 'org.apache.commons:commons-lang3:3.0'
 }

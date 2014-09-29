@@ -1,6 +1,8 @@
 package no.ntnu.bitcoupon.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import no.ntnu.bitcoupon.R;
+import no.ntnu.bitcoupon.listeners.CouponFragmentListener;
 import no.ntnu.bitcoupon.models.Coupon;
 
 /**
@@ -18,6 +21,7 @@ import no.ntnu.bitcoupon.models.Coupon;
 public class CouponFragment extends BaseFragment {
 
   public static final String TAG = CouponFragment.class.getSimpleName();
+  private CouponFragmentListener mListener;
 
   public CouponFragment() {
   }
@@ -31,6 +35,18 @@ public class CouponFragment extends BaseFragment {
   }
 
   @Override
+  public void onAttach(Activity activity) {
+    super.onAttach(activity);
+    try {
+      mListener = (CouponFragmentListener) activity;
+    } catch (ClassCastException e) {
+      throw new ClassCastException(
+          activity.toString() + " must implement " + CouponFragmentListener.class.getSimpleName());
+    }
+  }
+
+
+  @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_coupon, container, false);
 
@@ -39,6 +55,24 @@ public class CouponFragment extends BaseFragment {
     TextView description = (TextView) view.findViewById(R.id.tv_coupon_description);
     TextView modified = (TextView) view.findViewById(R.id.tv_coupon_modified);
     TextView created = (TextView) view.findViewById(R.id.tv_coupon_created);
+    TextView spendButton = (TextView) view.findViewById(R.id.b_spend_coupon);
+    spendButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        displayPromptDialog("Spend Coupon Confirmation", "Are you sure you want to spend this coupon?",
+                            new DialogInterface.OnClickListener() {
+                              @Override
+                              public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                  case DialogInterface.BUTTON_POSITIVE:
+                                    Coupon coupon = Coupon.fromJson(getArguments().getString(Coupon.COUPON_JSON));
+                                    mListener.spendCoupon(coupon);
+                                    break;
+                                }
+                              }
+                            });
+      }
+    });
 
     Coupon coupon = Coupon.fromJson(getArguments().getString(Coupon.COUPON_JSON));
     id.setText("ID: " + coupon.getId());
@@ -49,5 +83,6 @@ public class CouponFragment extends BaseFragment {
     modified.setText("Modified:  " + coupon.getModified());
     return view;
   }
+
 }
 

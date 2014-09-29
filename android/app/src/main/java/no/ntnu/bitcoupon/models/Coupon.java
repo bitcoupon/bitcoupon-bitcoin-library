@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -175,6 +176,24 @@ public class Coupon {
            + " Created: " + getCreated() //
         ;
   }
+  public void spend() {
 
+  }
+
+  // Due to the object being serializable, override equals and hashcode to make sure an object remains the same before and after the serialization
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(17, 31). // two random primes
+        append(id.toCharArray()).
+        toHashCode();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof Coupon)) {
+      return false;
+    }
+    return id.equals(((Coupon) o).getId());
+  }
 
 }
