@@ -39,11 +39,6 @@ public class BitCoupon {
 
   }
 
-  public static Transaction generateSendTransaction(String privateKey, String creatorPublicKey, String address,
-                                                    String transactionHistoryJson) {
-    return null;
-  }
-
 
   public static boolean verifyTransaction(Transaction transaction, List<Transaction> transactionHistory) {
     return false;
