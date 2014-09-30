@@ -18,10 +18,17 @@ class Admin::CouponsControllerTest < ActionController::TestCase
   end
 
   test "should get index" do
-    Net::HTTP.stub :get, @coupons do
+    uri = URI.parse("http://localhost:3002/backend/coupons")
+    request = Net::HTTP::Get.new(uri.path)
+    request.add_field "token", "sdgkj32pidklj23lkjd"
+
+    @http = Minitest::Mock.new
+    @http.expect :request, @coupons, [ Net::HTTP::Get ]
+
+    Net::HTTP.stub :start, @coupons, @http do
       get :index
       assert_response :success
-      assert_not_nil assigns(:coupons)
+      assert_not_nil assigns(:result)
     end
   end
 end

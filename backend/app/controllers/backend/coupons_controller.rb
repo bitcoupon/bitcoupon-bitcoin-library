@@ -1,49 +1,43 @@
 module Backend
   class CouponsController < ApplicationController
-    def create
-      coupons = [
-        "12345678",
-        "87654321",
-      ]
+    before_action :set_public_key, only: [:create, :index, :show]
+    skip_before_filter :verify_authenticity_token, :only => [:create, :destroy]
 
-      respond_to do |format|
-        format.json { render json: coupons }
+    def create
+      #binding.pry
+      coupon = Coupon.new(coupon_params)
+
+      #binding.pry
+
+      if coupon.save
+        response.headers["id"] = coupon.id.to_s
+        render json: coupon
+      else
+        render json: '{"error":"Invalid coupon"}'
       end
     end
 
+    def destroy
+      Coupon.find(params["id"]).destroy
+
+      render json: { head: :no_content }
+    end
+
+    def new
+      @coupon = Coupon.new
+    end
+
     def index
-      @public_key = request.headers["token"]
       response.headers["token"] = "Your token: #{@public_key}"
+      #binding.pry
+      @coupons_all = Coupon.all
       @coupons = {
         pubkey: @public_key,
-        coupons:
-          [
-            {
-              title: "Dummy Coupon 1",
-              description: "This is the dummy coupons\ndescription!",
-              id: "2",
-              modified: "1311495190384",
-              created:  "1311499999999",
-            },
-            {
-              title: "Dummy Coupon 2",
-              description: "This is the dummy coupons\ndescription 2!",
-              id: "3",
-              modified: "1311495190384",
-              created:  "1311999999999",
-            },
-          ]
+        coupons: @coupons_all
       }
 
-      #10.times do |i|
-      #  coupon = @coupons[:coupons][0].clone
-      #  #binding.pry
-      #  coupon[:id] = (coupon[:id].to_i + 10 + i).to_s
-      #  @coupons[:coupons] << coupon
-      #end
-
       if @public_key.nil?
-        render json: "NO PUBLIC KEY PROVIDED"
+        render json: '{"error":"NO PUBLIC KEY PROVIDED"}', status: 401
       else
         render json: @coupons
       end
@@ -53,15 +47,32 @@ module Backend
       @public_key = request.headers["TOKEN"]
       #response.headers["TOKEN"] = "Your token: #{@public_key}"
       id = params[:id]
-      @coupon = {
+      @coupon = Coupon.find(id)
+      %#@coupon = {
         title: "Dummy Coupon 1",
         description: "This is the dummy coupons\ndescription!",
         id: id,
         modified: "1311495190384",
         created:  "1311499999999",
       }
-
+      %#
       render json: @coupon
+    end
+
+  private
+    def set_public_key
+      @public_key = request.headers["token"]
+      if @public_key.nil?
+        if params[:token]
+          @public_key = params[:token]
+        end
+      end
+    end
+
+    def coupon_params
+      #c = JSON.parse params["coupon"]
+      #params["coupon"] = c
+      params.require(:coupon).permit(:title, :description, :user_id)
     end
   end
 end
