@@ -6,13 +6,13 @@ import java.io.UnsupportedEncodingException;
 public class Creation {
 
   private long creationId;
-  private String creatorPublicKey;
+  private String creatorAddress;
   private int amount;
   private String signature;
 
-  Creation(String creatorPublicKey, int amount) {
+  Creation(String creatorAddress, int amount) {
     this.creationId = 0;
-    this.creatorPublicKey = creatorPublicKey;
+    this.creatorAddress = creatorAddress;
     this.amount = amount;
     this.signature = "";
   }
@@ -24,7 +24,7 @@ public class Creation {
       byte[] bCreationId = Bitcoin.longToByteArray(creationId);
       baos.write(bCreationId, 0, bCreationId.length);
 
-      byte[] bScriptPubKey = creatorPublicKey.getBytes("UTF-8");
+      byte[] bScriptPubKey = creatorAddress.getBytes("UTF-8");
       byte[] bScriptPubKeyLength = Bitcoin.intToByteArray(bScriptPubKey.length);
       baos.write(bScriptPubKeyLength, 0, bScriptPubKeyLength.length);
       baos.write(bScriptPubKey, 0, bScriptPubKey.length);
