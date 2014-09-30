@@ -1,5 +1,7 @@
 package bitcoupon;
 
+import com.google.gson.Gson;
+
 import org.apache.commons.codec.binary.Hex;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.DERSequenceGenerator;
@@ -9,10 +11,12 @@ import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.signers.ECDSASigner;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Transaction {
 
@@ -100,6 +104,14 @@ public class Transaction {
       e.printStackTrace();
       return false;
     }
+  }
+
+  public static Transaction fromJson(String transactionJson) {
+    return new Gson().fromJson(transactionJson, Transaction.class);
+  }
+
+  public static String toJson(String transactionJson) {
+    return new Gson().toJson(transactionJson, Transaction.class);
   }
 
 }

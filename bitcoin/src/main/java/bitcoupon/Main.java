@@ -1,15 +1,46 @@
 package bitcoupon;
 
-import java.math.BigInteger;
+import java.util.List;
 
 public class Main {
 
+  private static final String GENERATE_CREATION_TRANSACTION = "generateCreationTransaction";
+  private static final String GENERATE_SEND_TRANSACTION = "generateSendTransaction";
+  private static final String GET_CREATOR_PUBLIC_KEYS = "getCreatorPublicKeys";
+  private static final String VERIY_TRANSACTION = "verifyTransaction";
+
   public static void main(String[] args) {
-    String strPrivateKey = "5JeaLSdKKpgkwjWUMQG3s5fTmYdKZTYUuggFxarkbvLbQdy48Lh";
-    BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
-    byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
-    String address = Bitcoin.publicKeyToAddress(publicKey);
-    System.out.println(address);
+    String methodName = args[0];
+
+    if (methodName.equalsIgnoreCase(GENERATE_CREATION_TRANSACTION)) {
+      generateCreationTransaction(args[1]);
+    } else if (methodName.equalsIgnoreCase(GENERATE_SEND_TRANSACTION)) {
+      generateSendTransaction(args[1], args[2], args[3], args[4]);
+    } else if (methodName.equalsIgnoreCase(GET_CREATOR_PUBLIC_KEYS)) {
+      getCreatorPublicKeys(args[1]);
+    } else if (methodName.equalsIgnoreCase(VERIY_TRANSACTION)) {
+      verifyTransaction(args[1], args[2]);
+    }
   }
 
+  private static void verifyTransaction(String transactionJson, String transactionHistoryJson) {
+    Transaction transaction = Transaction.fromJson(transactionJson);
+    List<Transaction> transactionHistory = TransactionList.fromJson(transactionHistoryJson).getList();
+    BitCoupon.verifyTransaction(transaction,transactionHistory);
+  }
+
+  private static void getCreatorPublicKeys(String transactionHistoryJson) {
+    List<Transaction> transactionHistory = TransactionList.fromJson(transactionHistoryJson).getList();
+    BitCoupon.getCreatorPublicKeys(transactionHistory);
+  }
+
+  private static void generateSendTransaction(String privateKey, String creatorPublicKey, String transactionHistoryJson,
+                                              String receiverAddress) {
+    List<Transaction> transactionHistory = TransactionList.fromJson(transactionHistoryJson).getList();
+    BitCoupon.generateSendTransaction(privateKey, creatorPublicKey, transactionHistory, receiverAddress);
+  }
+
+  private static void generateCreationTransaction(String privateKey) {
+    BitCoupon.generateCreationTransaction(privateKey);
+  }
 }
