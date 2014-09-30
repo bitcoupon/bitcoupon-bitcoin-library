@@ -6,17 +6,17 @@ import java.io.UnsupportedEncodingException;
 public class Creation {
 
   private long creationId;
-  private String scriptPubKey;
+  private String creatorPublicKey;
   private String subType;
   private int amount;
-  private String scriptSig;
+  private String signature;
 
-  Creation(String scriptPubKey, String subType, int amount) {
+  Creation(String creatorPublicKey, String subType, int amount) {
     this.creationId = 0;
-    this.scriptPubKey = scriptPubKey;
+    this.creatorPublicKey = creatorPublicKey;
     this.subType = subType;
     this.amount = amount;
-    this.scriptSig = "";
+    this.signature = "";
   }
 
   byte[] getBytes() {
@@ -26,7 +26,7 @@ public class Creation {
       byte[] bCreationId = Bitcoin.longToByteArray(creationId);
       baos.write(bCreationId, 0, bCreationId.length);
 
-      byte[] bScriptPubKey = scriptPubKey.getBytes("UTF-8");
+      byte[] bScriptPubKey = creatorPublicKey.getBytes("UTF-8");
       byte[] bScriptPubKeyLength = Bitcoin.intToByteArray(bScriptPubKey.length);
       baos.write(bScriptPubKeyLength, 0, bScriptPubKeyLength.length);
       baos.write(bScriptPubKey, 0, bScriptPubKey.length);
@@ -39,7 +39,7 @@ public class Creation {
       byte[] bAmount = Bitcoin.intToByteArray(amount);
       baos.write(bAmount, 0, bAmount.length);
 
-      byte[] bScriptSig = scriptSig.getBytes("UTF-8");
+      byte[] bScriptSig = signature.getBytes("UTF-8");
       byte[] bScriptSigLength = Bitcoin.intToByteArray(bScriptSig.length);
       baos.write(bScriptSigLength, 0, bScriptSigLength.length);
       baos.write(bScriptSig, 0, bScriptSig.length);
@@ -53,7 +53,7 @@ public class Creation {
   }
 
   void setScriptSig(String scriptSig) {
-    this.scriptSig = scriptSig;
+    this.signature = scriptSig;
   }
 
 }

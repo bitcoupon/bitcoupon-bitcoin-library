@@ -8,14 +8,14 @@ public class Output {
   private long outputId;
   private String couponType;
   private int amount;
-  private String scriptPubKey;
+  private String address;
   private long inputId;
 
-  Output(String couponType, int amount, String scriptPubKey) {
+  Output(String couponType, int amount, String address) {
     this.outputId = 0;
     this.couponType = couponType;
     this.amount = amount;
-    this.scriptPubKey = scriptPubKey;
+    this.address = address;
     this.inputId = 0;
   }
 
@@ -34,7 +34,7 @@ public class Output {
       byte[] bAmount = Bitcoin.intToByteArray(amount);
       baos.write(bAmount, 0, bAmount.length);
 
-      byte[] bScriptPubKey = scriptPubKey.getBytes("UTF-8");
+      byte[] bScriptPubKey = address.getBytes("UTF-8");
       byte[] bScriptPubKeyLength = Bitcoin.intToByteArray(bScriptPubKey.length);
       baos.write(bScriptPubKeyLength, 0, bScriptPubKeyLength.length);
       baos.write(bScriptPubKey, 0, bScriptPubKey.length);
