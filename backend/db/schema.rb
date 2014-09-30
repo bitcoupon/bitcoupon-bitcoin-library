@@ -22,27 +22,28 @@ ActiveRecord::Schema.define(version: 20140930113305) do
   end
 
   create_table "creations", force: true do |t|
-    t.integer  "transactions_id"
-    t.string   "creator_public_key"
-    t.string   "sub_type"
-    t.integer  "amount",             default: 0
+    t.integer  "transaction_id"
+    t.string   "creator_address"
+    t.integer  "amount",          default: 0
     t.string   "signature"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "inputs", force: true do |t|
-    t.integer  "outputs_id"
+    t.integer  "transaction_id"
+    t.integer  "output_id"
     t.string   "signature"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "outputs", force: true do |t|
+    t.integer  "transaction_id"
     t.string   "coupon_type"
     t.integer  "amount"
     t.string   "address"
-    t.integer  "inputs_id"
+    t.integer  "input_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
