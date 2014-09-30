@@ -10,6 +10,10 @@ public class Main {
   private static final String VERIFY_TRANSACTION = "verifyTransaction";
 
   public static void main(String[] args) {
+    evaluateMethod(args);
+  }
+
+  private static void evaluateMethod(String[] args) {
     String methodName = args[0];
 
     if (methodName.equalsIgnoreCase(GENERATE_CREATION_TRANSACTION)) {
