@@ -7,14 +7,12 @@ public class Creation {
 
   private long creationId;
   private String creatorPublicKey;
-  private String subType;
   private int amount;
   private String signature;
 
-  Creation(String creatorPublicKey, String subType, int amount) {
+  Creation(String creatorPublicKey, int amount) {
     this.creationId = 0;
     this.creatorPublicKey = creatorPublicKey;
-    this.subType = subType;
     this.amount = amount;
     this.signature = "";
   }
@@ -30,11 +28,6 @@ public class Creation {
       byte[] bScriptPubKeyLength = Bitcoin.intToByteArray(bScriptPubKey.length);
       baos.write(bScriptPubKeyLength, 0, bScriptPubKeyLength.length);
       baos.write(bScriptPubKey, 0, bScriptPubKey.length);
-
-      byte[] bSubType = subType.getBytes("UTF-8");
-      byte[] bSubTypeLength = Bitcoin.intToByteArray(bSubType.length);
-      baos.write(bSubTypeLength, 0, bSubTypeLength.length);
-      baos.write(bSubType, 0, bSubType.length);
 
       byte[] bAmount = Bitcoin.intToByteArray(amount);
       baos.write(bAmount, 0, bAmount.length);

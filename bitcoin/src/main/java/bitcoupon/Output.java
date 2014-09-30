@@ -6,14 +6,14 @@ import java.io.UnsupportedEncodingException;
 public class Output {
 
   private long outputId;
-  private String couponType;
+  private String creatorPublicKey;
   private int amount;
   private String address;
   private long inputId;
 
-  Output(String couponType, int amount, String address) {
+  Output(String creatorPublicKey, int amount, String address) {
     this.outputId = 0;
-    this.couponType = couponType;
+    this.creatorPublicKey = creatorPublicKey;
     this.amount = amount;
     this.address = address;
     this.inputId = 0;
@@ -26,7 +26,7 @@ public class Output {
       byte[] bOutputId = Bitcoin.longToByteArray(outputId);
       baos.write(bOutputId, 0, bOutputId.length);
 
-      byte[] bCouponType = couponType.getBytes("UTF-8");
+      byte[] bCouponType = creatorPublicKey.getBytes("UTF-8");
       byte[] bCouponTypeLength = Bitcoin.intToByteArray(bCouponType.length);
       baos.write(bCouponTypeLength, 0, bCouponTypeLength.length);
       baos.write(bCouponType, 0, bCouponType.length);
