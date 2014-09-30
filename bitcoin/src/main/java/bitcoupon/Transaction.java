@@ -108,8 +108,33 @@ public class Transaction {
     return new Gson().fromJson(transactionJson, Transaction.class);
   }
 
-  public static String toJson(String transactionJson) {
-    return new Gson().toJson(transactionJson, Transaction.class);
+//  The transaction looks like this in json:
+//  {
+//    "transactionid":0,
+//      "creations":[
+//    {
+//      "creationid":0,
+//        "creatoraddress":"d7b3e15eefbb19945b2671025c846ba18164abce",
+//        "amount":1,
+//        "signature":"3046022100841b07fbeda96b5474e9465fbf1a105b6874b2f15479f74f59afb633e01a825a022100cc9a0ff991e7f0c9882057c96986d0fae326a478a6501d03c69e80dadc4ea7e5 047825706d44fc680a454aa4071b4df24c2087f2e48ab2d31e06fa58511b2872bd313c984a3dde16732cd9b995833ca41ecf1f1c5e1d57607134080b0d8fddcb72"
+//    }
+//    ],
+//    "inputs":[
+//
+//    ],
+//    "outputs":[
+//    {
+//      "outputid":0,
+//        "creatoraddress":"d7b3e15eefbb19945b2671025c846ba18164abce",
+//        "amount":1,
+//        "address":"d7b3e15eefbb19945b2671025c846ba18164abce",
+//        "inputid":0
+//    }
+//    ]
+//  }
+
+  public static String toJson(Transaction transaction) {
+    return new Gson().toJson(transaction, Transaction.class);
   }
 
 }

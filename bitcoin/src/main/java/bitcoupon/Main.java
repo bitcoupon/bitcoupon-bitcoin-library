@@ -1,5 +1,6 @@
 package bitcoupon;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
@@ -10,7 +11,30 @@ public class Main {
   private static final String VERIFY_TRANSACTION = "verifyTransaction";
 
   public static void main(String[] args) {
-    evaluateMethod(args);
+//    evaluateMethod(args);
+
+    testTransaction();
+  }
+
+  private static void testTransaction() {
+    Transaction trans = BitCoupon.generateCreationTransaction("5Kf9gd8faKhhq9jZTsNhq2MtViHA1dWdhRg9k4ovszTKz5DCeBT");
+    String json = Transaction.toJson(trans);
+    Transaction fromJson = Transaction.fromJson(json);
+    System.out.println(json);
+
+    Transaction trans2 = BitCoupon.generateCreationTransaction("5Kf9gd8faKhhq9jZTsNhq2MtViHA1dWdhRg9k4ovszTKz5DCeBT");
+    Transaction trans3 = BitCoupon.generateCreationTransaction("5Kf9gd8faKhhq9jZTsNhq2MtViHA1dWdhRg9k4ovszTKz5DCeBT");
+    Transaction trans4 = BitCoupon.generateCreationTransaction("5Kf9gd8faKhhq9jZTsNhq2MtViHA1dWdhRg9k4ovszTKz5DCeBT");
+
+    List<Transaction> transactionList = new ArrayList<Transaction>();
+    transactionList.add(trans2);
+    transactionList.add(trans3);
+    transactionList.add(trans4);
+
+    String jsonTransactionList = TransactionList.toJson(transactionList);
+    System.out.println(jsonTransactionList);
+
+    List<Transaction> listFromJson = TransactionList.fromJson(jsonTransactionList).getList();
   }
 
   private static void evaluateMethod(String[] args) {
@@ -30,7 +54,7 @@ public class Main {
   private static void verifyTransaction(String transactionJson, String transactionHistoryJson) {
     Transaction transaction = Transaction.fromJson(transactionJson);
     List<Transaction> transactionHistory = TransactionList.fromJson(transactionHistoryJson).getList();
-    BitCoupon.verifyTransaction(transaction,transactionHistory);
+    BitCoupon.verifyTransaction(transaction, transactionHistory);
   }
 
   private static void getCreatorPublicKeys(String transactionHistoryJson) {

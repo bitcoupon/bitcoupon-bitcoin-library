@@ -25,7 +25,7 @@ public class Wallet {
     byte[] hashedPublicKey = Bitcoin.hash160(publicKey);
     String strHashedPublicKey = Hex.encodeHexString(hashedPublicKey);
 
-    Creation creation = new Creation(strHashedPublicKey, subType, amount);
+    Creation creation = new Creation(strHashedPublicKey, amount);
     creations.add(creation);
     Output output = new Output(strHashedPublicKey + "-" + subType, amount, strHashedPublicKey);
     outputs.add(output);
