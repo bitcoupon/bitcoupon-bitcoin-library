@@ -28,7 +28,7 @@ public class BitCoupon {
     byte[] hashedPublicKey = Bitcoin.hash160(publicKey);
     String strHashedPublicKey = Hex.encodeHexString(hashedPublicKey);
 
-    Creation creation = new Creation(strHashedPublicKey, "0", 1);
+    Creation creation = new Creation(strHashedPublicKey,  1);
     creations.add(creation);
     Output output = new Output(strHashedPublicKey + "-" + "0", 1, strHashedPublicKey);
     outputs.add(output);
