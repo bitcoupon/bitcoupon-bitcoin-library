@@ -30,7 +30,7 @@ public class BitCoupon {
 
     Creation creation = new Creation(strHashedPublicKey,  1);
     creations.add(creation);
-    Output output = new Output(strHashedPublicKey + "-" + "0", 1, strHashedPublicKey);
+    Output output = new Output(strHashedPublicKey, 1, strHashedPublicKey);
     outputs.add(output);
 
     Transaction transaction = new Transaction(creations, inputs, outputs);
