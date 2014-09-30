@@ -1,7 +1,5 @@
 package bitcoupon;
 
-import org.apache.commons.codec.binary.Hex;
-
 import java.math.BigInteger;
 
 public class Main {

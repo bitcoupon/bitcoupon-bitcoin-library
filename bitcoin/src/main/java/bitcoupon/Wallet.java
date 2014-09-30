@@ -1,6 +1,5 @@
 package bitcoupon;
 
-import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 
 import java.math.BigInteger;
