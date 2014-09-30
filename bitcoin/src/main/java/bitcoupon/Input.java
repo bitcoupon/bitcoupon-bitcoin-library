@@ -7,12 +7,12 @@ public class Input {
 
   private long inputId;
   private long outputId;
-  private String scriptSig;
+  private String signature;
 
   Input(long outputId) {
     this.inputId = 0;
     this.outputId = outputId;
-    this.scriptSig = "";
+    this.signature = "";
   }
 
   byte[] getBytes() {
@@ -25,7 +25,7 @@ public class Input {
       byte[] bOutputId = Bitcoin.longToByteArray(outputId);
       baos.write(bOutputId, 0, bOutputId.length);
 
-      byte[] bScriptSig = scriptSig.getBytes("UTF-8");
+      byte[] bScriptSig = signature.getBytes("UTF-8");
       byte[] bScriptSigLength = Bitcoin.intToByteArray(bScriptSig.length);
       baos.write(bScriptSigLength, 0, bScriptSigLength.length);
       baos.write(bScriptSig, 0, bScriptSig.length);
@@ -39,7 +39,7 @@ public class Input {
   }
 
   void setScriptSig(String scriptSig) {
-    this.scriptSig = scriptSig;
+    this.signature = scriptSig;
   }
 
 }

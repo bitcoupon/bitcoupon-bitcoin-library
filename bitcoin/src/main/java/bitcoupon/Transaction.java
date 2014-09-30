@@ -11,11 +11,9 @@ import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.signers.ECDSASigner;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Transaction {
@@ -29,11 +27,11 @@ public class Transaction {
   }
 
   private long transactionId;
-  private ArrayList<Creation> creations;
-  private ArrayList<Input> inputs;
-  private ArrayList<Output> outputs;
+  private List<Creation> creations;
+  private List<Input> inputs;
+  private List<Output> outputs;
 
-  Transaction(ArrayList<Creation> creations, ArrayList<Input> inputs, ArrayList<Output> outputs) {
+  Transaction(List<Creation> creations, List<Input> inputs, List<Output> outputs) {
     this.transactionId = 0;
     this.creations = creations;
     this.inputs = inputs;
