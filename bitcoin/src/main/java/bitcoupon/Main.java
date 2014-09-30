@@ -7,7 +7,7 @@ public class Main {
   private static final String GENERATE_CREATION_TRANSACTION = "generateCreationTransaction";
   private static final String GENERATE_SEND_TRANSACTION = "generateSendTransaction";
   private static final String GET_CREATOR_PUBLIC_KEYS = "getCreatorPublicKeys";
-  private static final String VERIY_TRANSACTION = "verifyTransaction";
+  private static final String VERIFY_TRANSACTION = "verifyTransaction";
 
   public static void main(String[] args) {
     String methodName = args[0];
@@ -18,7 +18,7 @@ public class Main {
       generateSendTransaction(args[1], args[2], args[3], args[4]);
     } else if (methodName.equalsIgnoreCase(GET_CREATOR_PUBLIC_KEYS)) {
       getCreatorPublicKeys(args[1]);
-    } else if (methodName.equalsIgnoreCase(VERIY_TRANSACTION)) {
+    } else if (methodName.equalsIgnoreCase(VERIFY_TRANSACTION)) {
       verifyTransaction(args[1], args[2]);
     }
   }
