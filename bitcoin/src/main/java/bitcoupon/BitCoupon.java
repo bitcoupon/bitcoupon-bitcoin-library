@@ -75,7 +75,8 @@ public class BitCoupon {
 
   }
 
-
+  // This function verifies that a transaction is consistent with previous transactions
+  // and that all signatures are correct
   public static boolean verifyTransaction(Transaction transaction, List<Transaction> transactionHistory) {
 
     if (DEBUG) {
