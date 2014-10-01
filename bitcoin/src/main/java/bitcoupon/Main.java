@@ -1,8 +1,5 @@
 package bitcoupon;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Main {
 
   private static final String GENERATE_CREATION_TRANSACTION = "generateCreationTransaction";
@@ -16,38 +13,19 @@ public class Main {
 //    testTransaction();
   }
 
-  private static void testTransaction() {
-    Transaction trans = BitCoupon.generateCreationTransaction("5Kf9gd8faKhhq9jZTsNhq2MtViHA1dWdhRg9k4ovszTKz5DCeBT");
-    String json = Transaction.toJson(trans);
-    Transaction fromJson = Transaction.fromJson(json);
-    System.out.println(json);
 
-    Transaction trans2 = BitCoupon.generateCreationTransaction("5Kf9gd8faKhhq9jZTsNhq2MtViHA1dWdhRg9k4ovszTKz5DCeBT");
-    Transaction trans3 = BitCoupon.generateCreationTransaction("5Kf9gd8faKhhq9jZTsNhq2MtViHA1dWdhRg9k4ovszTKz5DCeBT");
-    Transaction trans4 = BitCoupon.generateCreationTransaction("5Kf9gd8faKhhq9jZTsNhq2MtViHA1dWdhRg9k4ovszTKz5DCeBT");
-
-    List<Transaction> transactionList = new ArrayList<Transaction>();
-    transactionList.add(trans2);
-    transactionList.add(trans3);
-    transactionList.add(trans4);
-
-    String jsonTransactionList = TransactionList.toJson(transactionList);
-    System.out.println(jsonTransactionList);
-
-    List<Transaction> listFromJson = TransactionList.fromJson(jsonTransactionList).getList();
-  }
 
   private static void evaluateMethod(String[] args) {
     String methodName = args[0];
 
     if (methodName.equalsIgnoreCase(GENERATE_CREATION_TRANSACTION)) {
-      BitcoinCli.generateCreationTransaction(args[1]);
+      BitCouponCli.generateCreationTransaction(args[1]);
     } else if (methodName.equalsIgnoreCase(GENERATE_SEND_TRANSACTION)) {
-      BitcoinCli.generateSendTransaction(args[1], args[2], args[3], args[4]);
+      BitCouponCli.generateSendTransaction(args[1], args[2], args[3], args[4]);
     } else if (methodName.equalsIgnoreCase(GET_CREATOR_PUBLIC_KEYS)) {
-      BitcoinCli.getCreatorPublicKeys(args[1]);
+      BitCouponCli.getCreatorPublicKeys(args[1]);
     } else if (methodName.equalsIgnoreCase(VERIFY_TRANSACTION)) {
-      BitcoinCli.verifyTransaction(args[1], args[2]);
+      BitCouponCli.verifyTransaction(args[1], args[2]);
     }
   }
 
