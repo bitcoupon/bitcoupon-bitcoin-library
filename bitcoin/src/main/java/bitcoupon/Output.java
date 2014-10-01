@@ -44,4 +44,8 @@ public class Output {
     }
   }
 
+  long getOutputId() {
+    return outputId;
+  }
+
 }
