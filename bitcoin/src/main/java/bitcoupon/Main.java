@@ -23,7 +23,7 @@ public class Main {
     } else if (methodName.equalsIgnoreCase(GENERATE_SEND_TRANSACTION)) {
       BitCouponCli.generateSendTransaction(args[1], args[2], args[3], args[4]);
     } else if (methodName.equalsIgnoreCase(GET_CREATOR_PUBLIC_KEYS)) {
-      BitCouponCli.getCreatorPublicKeys(args[1]);
+      BitCouponCli.getCreatorPublicKeys(args[1], args[2]);
     } else if (methodName.equalsIgnoreCase(VERIFY_TRANSACTION)) {
       BitCouponCli.verifyTransaction(args[1], args[2]);
     }

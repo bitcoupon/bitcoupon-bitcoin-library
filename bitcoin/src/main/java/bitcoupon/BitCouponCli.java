@@ -14,9 +14,9 @@ public class BitCouponCli {
     BitCoupon.verifyTransaction(transaction, transactionHistory);
   }
 
-  static void getCreatorPublicKeys(String transactionHistoryJson) {
+  static void getCreatorPublicKeys(String privateKey, String transactionHistoryJson) {
     List<Transaction> transactionHistory = TransactionList.fromJson(transactionHistoryJson).getList();
-    BitCoupon.getCreatorAddresses(transactionHistory);
+    BitCoupon.getCreatorAddresses(privateKey, transactionHistory);
   }
 
   static void generateSendTransaction(String privateKey, String creatorPublicKey, String transactionHistoryJson,
