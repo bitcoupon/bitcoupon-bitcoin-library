@@ -6,9 +6,39 @@ import java.util.List;
 
 public class BitCoupon {
 
-  public static Transaction generateSendTransaction(String privateKey, String creatorAddress,
+  public static Transaction generateSendTransaction(String strPrivateKey, String creatorAddress,
                                                     String receiverAddress, List<Transaction> transactionHistory) {
-    return null;
+
+    List<Creation> creations = new ArrayList<Creation>();
+    List<Input> inputs = new ArrayList<Input>();
+    List<Output> outputs = new ArrayList<Output>();
+
+    BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
+    byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
+    String address = Bitcoin.publicKeyToAddress(publicKey);
+
+    for (int i = 0; i < transactionHistory.size() && inputs.size() == 0; i++) {
+      List<Output> outputHistory = transactionHistory.get(i).getOutputs();
+      for (int j = 0; j < outputHistory.size() && inputs.size() == 0; j++) {
+        Output output = outputHistory.get(i);
+        if (output.getAddress().equals(address) && output.getInputId() == 0 && output.getCreatorAddress()
+            .equals(creatorAddress) && output.getAmount() == 1) {
+          Input input = new Input(output.getOutputId());
+          inputs.add(input);
+        }
+      }
+    }
+    if (inputs.size() == 0) {
+      throw new IllegalArgumentException();
+    }
+
+    Output output = new Output(creatorAddress, 1, receiverAddress);
+    outputs.add(output);
+
+    Transaction transaction = new Transaction(creations, inputs, outputs);
+    transaction.signTransaction(privateKey);
+    return transaction;
+
   }
 
   public static List<String> getCreatorAddresses(String strPrivateKey, List<Transaction> transactionHistory) {
@@ -26,7 +56,7 @@ public class BitCoupon {
     byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
     String address = Bitcoin.publicKeyToAddress(publicKey);
 
-    Creation creation = new Creation(address,  1);
+    Creation creation = new Creation(address, 1);
     creations.add(creation);
     Output output = new Output(address, 1, address);
     outputs.add(output);
@@ -39,8 +69,9 @@ public class BitCoupon {
 
 
   public static boolean verifyTransaction(Transaction transaction, List<Transaction> transactionHistory) {
-    if (transaction.verifyInput(transactionHistory) && transaction.verifySignatures(transactionHistory) && transaction.verifyAmount(transactionHistory)){
-        return true;
+    if (transaction.verifyInput(transactionHistory) && transaction.verifySignatures(transactionHistory) && transaction
+        .verifyAmount(transactionHistory)) {
+      return true;
     }
     return false;
   }
