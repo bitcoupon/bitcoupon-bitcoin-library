@@ -40,6 +40,8 @@ public class Main {
   private static void evaluateMethod(String[] args) {
     String methodName = args[0];
 
+    checkArgumentsLength(methodName, args.length);
+
     if (methodName.equalsIgnoreCase(GENERATE_CREATION_TRANSACTION)) {
       generateCreationTransaction(args[1]);
     } else if (methodName.equalsIgnoreCase(GENERATE_SEND_TRANSACTION)) {
@@ -49,6 +51,33 @@ public class Main {
     } else if (methodName.equalsIgnoreCase(VERIFY_TRANSACTION)) {
       verifyTransaction(args[1], args[2]);
     }
+  }
+
+  private static void checkArgumentsLength(String methodName, int argsLength) {
+    boolean correct = checkLength(methodName, argsLength);
+    if (! correct) {
+      String message = "Wrong number of arguments to method: " + methodName;
+
+      // TODO Choose between exception or exit with failure.
+      //throw new IllegalArgumentException("Wrong number of arguments to method: " + methodName);
+
+      System.err.println("Wrong number of arguments to method: " + methodName);
+      System.exit(1);
+    }
+  }
+
+  private static boolean checkLength(String methodName, int argsLength) {
+    int length = 0;
+    if (methodName.equalsIgnoreCase(GENERATE_CREATION_TRANSACTION)) {
+      length = 2;
+    } else if (methodName.equalsIgnoreCase(GENERATE_SEND_TRANSACTION)) {
+      length = 5;
+    } else if (methodName.equalsIgnoreCase(GET_CREATOR_PUBLIC_KEYS)) {
+      length = 2;
+    } else if (methodName.equalsIgnoreCase(VERIFY_TRANSACTION)) {
+      length = 3;
+    }
+    return length == argsLength;
   }
 
   private static void verifyTransaction(String transactionJson, String transactionHistoryJson) {
