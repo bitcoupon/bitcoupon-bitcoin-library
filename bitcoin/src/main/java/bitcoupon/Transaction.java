@@ -131,6 +131,17 @@ public class Transaction {
     }
   }
 
+    boolean verifyInput(Transaction transaction, List<Transaction> transactionHistory){
+        List<Input> transInput = transaction.getInputs();
+        while (transactionHistory.listIterator().hasNext()){
+            Transaction temp = transactionHistory.listIterator().next();
+            List<Output> tempOutput = temp.getOutputs();
+            if (transaction.inputs)
+        }
+
+        return false;
+    }
+
   public static Transaction fromJson(String transactionJson) {
     return new Gson().fromJson(transactionJson, Transaction.class);
   }

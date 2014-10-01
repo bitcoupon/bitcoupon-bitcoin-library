@@ -41,12 +41,7 @@ public class BitCoupon {
 
 
   public static boolean verifyTransaction(Transaction transaction, List<Transaction> transactionHistory) {
-      List<Input> transInput = transaction.getInputs();
-      while (transactionHistory.listIterator().hasNext()){
-          Transaction temp = transactionHistory.listIterator().next();
-          List<Output> tempOutput = temp.getOutputs();
 
-      }
     return false;
 
   }
