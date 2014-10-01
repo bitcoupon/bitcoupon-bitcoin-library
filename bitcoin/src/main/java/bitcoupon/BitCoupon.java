@@ -37,8 +37,10 @@ public class BitCoupon {
   }
 
 
-  public static boolean verifyTransaction(Transaction transaction, List<Transaction> transactionHistory) {
-
+  public static boolean verifyTransaction(Transaction transaction, List<Output> transactionHistory) {
+    if (transaction.verifyInput(transactionHistory) && transaction.verifySignatures(transactionHistory) && transaction.verifyAmount(transactionHistory)){
+        return true;
+    }
     return false;
 
   }

@@ -193,7 +193,7 @@ public class Transaction {
     }
 
     boolean verifyAmount(List<Output> transactionHistory){
-        
+
 
         return false;
     }
