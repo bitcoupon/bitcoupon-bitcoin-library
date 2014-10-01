@@ -6,12 +6,22 @@ import java.util.List;
 
 public class BitCoupon {
 
-  public static Transaction generateSendTransaction(String privateKey, String creatorAddress,
-                                                    String receiverAddress, List<Transaction> transactionHistory) {
+  private static final boolean DEBUG = true;
+
+  public static Transaction generateSendTransaction(String privateKey, String creatorAddress, String receiverAddress,
+                                                    List<Transaction> transactionHistory) {
+    if (DEBUG) {
+      return generateCreationTransaction(privateKey);
+    }
     return null;
   }
 
   public static List<String> getCreatorAddresses(String strPrivateKey, List<Transaction> transactionHistory) {
+    if (DEBUG) {
+      List<String> debugList = new ArrayList<String>();
+      debugList.add("1Epd2EJNW7H6ecufQnRzR54maU42AJMNmk");
+      debugList.add("1PWUsWjxxex9mgVBD5wWcDc8VYxZabVjSB");
+    }
 
     return null;
   }
@@ -26,7 +36,7 @@ public class BitCoupon {
     byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
     String address = Bitcoin.publicKeyToAddress(publicKey);
 
-    Creation creation = new Creation(address,  1);
+    Creation creation = new Creation(address, 1);
     creations.add(creation);
     Output output = new Output(address, 1, address);
     outputs.add(output);
@@ -39,8 +49,12 @@ public class BitCoupon {
 
 
   public static boolean verifyTransaction(Transaction transaction, List<Transaction> transactionHistory) {
-    if (transaction.verifyInput(transactionHistory) && transaction.verifySignatures(transactionHistory) && transaction.verifyAmount(transactionHistory)){
-        return true;
+    if (DEBUG) {
+      return true;
+    }
+    if (transaction.verifyInput(transactionHistory) && transaction.verifySignatures(transactionHistory) && transaction
+        .verifyAmount(transactionHistory)) {
+      return true;
     }
     return false;
   }

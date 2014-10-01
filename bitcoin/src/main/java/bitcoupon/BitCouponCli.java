@@ -7,25 +7,32 @@ import java.util.List;
  */
 public class BitCouponCli {
 
-
   static void verifyTransaction(String transactionJson, String transactionHistoryJson) {
     Transaction transaction = Transaction.fromJson(transactionJson);
     List<Transaction> transactionHistory = TransactionList.fromJson(transactionHistoryJson).getList();
-    BitCoupon.verifyTransaction(transaction, transactionHistory);
+    boolean out = BitCoupon.verifyTransaction(transaction, transactionHistory);
+    System.out.println("" + out);
   }
 
   static void getCreatorPublicKeys(String privateKey, String transactionHistoryJson) {
     List<Transaction> transactionHistory = TransactionList.fromJson(transactionHistoryJson).getList();
-    BitCoupon.getCreatorAddresses(privateKey, transactionHistory);
+    List<String> out = BitCoupon.getCreatorAddresses(privateKey, transactionHistory);
+    for(String s : out){
+      System.out.println(s);
+    }
   }
 
   static void generateSendTransaction(String privateKey, String creatorPublicKey, String transactionHistoryJson,
                                       String receiverAddress) {
     List<Transaction> transactionHistory = TransactionList.fromJson(transactionHistoryJson).getList();
-    BitCoupon.generateSendTransaction(privateKey, creatorPublicKey, receiverAddress, transactionHistory);
+    Transaction
+        out =
+        BitCoupon.generateSendTransaction(privateKey, creatorPublicKey, receiverAddress, transactionHistory);
+    System.out.println(Transaction.toJson(out));
   }
 
   static void generateCreationTransaction(String privateKey) {
-    BitCoupon.generateCreationTransaction(privateKey);
+    Transaction out = BitCoupon.generateCreationTransaction(privateKey);
+    System.out.println(Transaction.toJson(out));
   }
 }
