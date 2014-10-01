@@ -2,8 +2,6 @@ package bitcoupon;
 
 import com.google.gson.Gson;
 
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
 import org.spongycastle.asn1.ASN1InputStream;
 import org.spongycastle.asn1.ASN1Integer;
 import org.spongycastle.asn1.DERSequenceGenerator;
@@ -169,6 +167,9 @@ public class Transaction {
         return false;
       }
     }
+    // added return statement to run the code
+    // TODO: return the actual value
+    return true;
   }
 
   public static Transaction fromJson(String transactionJson) {
