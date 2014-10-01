@@ -1,9 +1,6 @@
 package bitcoupon;
 
-import org.spongycastle.asn1.x500.style.RFC4519Style;
-
 import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
 
 public class Input {
 

@@ -2,8 +2,6 @@ package bitcoupon;
 
 import com.google.gson.Gson;
 
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
 import org.spongycastle.asn1.ASN1InputStream;
 import org.spongycastle.asn1.ASN1Integer;
 import org.spongycastle.asn1.DERSequenceGenerator;
@@ -18,6 +16,7 @@ import org.spongycastle.crypto.signers.ECDSASigner;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
 
 public class Transaction {
@@ -113,7 +112,7 @@ public class Transaction {
     }
   }
 
-  boolean verifySignatures(List<Transaction> transactionHistory) {
+  boolean verifySignatures(List<Output> transactionHistory) {
     byte[] hashedTransaction = Bitcoin.hash256(getBytes());
     for (int i = 0; i < creations.size(); i++) {
       String creatorAddress = creations.get(i).getCreatorAddress();
@@ -141,14 +140,18 @@ public class Transaction {
         return false;
       }
     }
+    HashMap<Long, Output> outputMap = new HashMap<Long, Output>();
+    for (int i = 0; i < transactionHistory.size(); i++) {
+      outputMap.put(transactionHistory.get(i).getOutputId(), transactionHistory.get(i));
+    }
     for (int i = 0; i < inputs.size(); i++) {
       long outputId = inputs.get(i).getOutputId();
-
-      String creatorAddress = creations.get(i).getCreatorAddress();
-      String signature = creations.get(i).getSignature();
+      Output output = outputMap.get(outputId);
+      String address = output.getAddress();
+      String signature = inputs.get(i).getSignature();
       byte[] ecdsaSignature = Bitcoin.decodeBase58(signature.split(" ")[0]);
       byte[] publicKey = Bitcoin.decodeBase58(signature.split(" ")[1]);
-      if (Bitcoin.publicKeyToAddress(publicKey).equals(creatorAddress)) {
+      if (Bitcoin.publicKeyToAddress(publicKey).equals(address)) {
         ECPublicKeyParameters publicKeyParams = new ECPublicKeyParameters(EC_PARAMS.getCurve().decodePoint(publicKey), EC_PARAMS);
         ECDSASigner signer = new ECDSASigner();
         signer.init(false, publicKeyParams);
@@ -169,6 +172,7 @@ public class Transaction {
         return false;
       }
     }
+    return true;
   }
 
     boolean verifyInput(List<Output> transactionHistory){
