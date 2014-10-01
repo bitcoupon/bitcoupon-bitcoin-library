@@ -192,6 +192,12 @@ public class Transaction {
         return false;
     }
 
+    boolean verifyAmount(List<Output> transactionHistory){
+        
+
+        return false;
+    }
+
   public static Transaction fromJson(String transactionJson) {
     return new Gson().fromJson(transactionJson, Transaction.class);
   }
