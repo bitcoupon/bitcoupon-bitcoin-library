@@ -65,7 +65,7 @@ public class Main {
   private static void generateSendTransaction(String privateKey, String creatorPublicKey, String transactionHistoryJson,
                                               String receiverAddress) {
     List<Transaction> transactionHistory = TransactionList.fromJson(transactionHistoryJson).getList();
-    BitCoupon.generateSendTransaction(privateKey, creatorPublicKey, transactionHistory, receiverAddress);
+    BitCoupon.generateSendTransaction(privateKey, creatorPublicKey, receiverAddress, transactionHistory);
   }
 
   private static void generateCreationTransaction(String privateKey) {
