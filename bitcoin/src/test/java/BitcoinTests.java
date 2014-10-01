@@ -42,11 +42,11 @@ public class BitcoinTests {
     privateKeys.put("5K4gQUNnxuJe1gtbCp4qrGysRXVdGE9jZW1vJZ1jdFzV6W93QDP", true);
     privateKeys.put("5JcK7bvAFjCwTcERJsbRetGkwmqA8BuydVFRffrQj3LjuqWsTy5", true);
     privateKeys.put("5JcG67FmXQtfjEJJd6To8988WqH7X5byXQPqbCYjh9RS27bdNMA", true);
-    privateKeys.put("9JcG67FmXQtfjEJJd6To8988WqH7X5byXQPqbCYjh9RS27bdNMA", true);
-    privateKeys.put("JcG67FmXQtfjEJJd6To8988WqH7X5byXQPqbCYjh9RS27bdNMA", true);
+    privateKeys.put("9JcG67FmXQtfjEJJd6To8988WqH7X5byXQPqbCYjh9RS27bdNMA", false);
+    privateKeys.put("JcG67FmXQtfjEJJd6To8988WqH7X5byXQPqbCYjh9RS27bdNMA", false);
     privateKeys.put(
         "JcasdddddddddddddddddddddddddddddddddddddddddddddddddddddddddG67FmXQtfjEJJd6To8988WqH7X5byXQPqbCYjh9RS27bdNMA",
-        true);
+        false);
     privateKeys.put("sadasdasdasd", false);
     privateKeys.put("0", false);
     privateKeys.put("1", false);
