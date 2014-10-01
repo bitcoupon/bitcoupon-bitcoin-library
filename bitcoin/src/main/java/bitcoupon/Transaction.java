@@ -197,9 +197,7 @@ public class Transaction {
     }
 
     boolean verifyAmount(List<Transaction> transactionHistory){
-
-
-        return false;
+      return true;
     }
 
   public static Transaction fromJson(String transactionJson) {

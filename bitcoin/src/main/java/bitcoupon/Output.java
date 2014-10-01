@@ -53,6 +53,14 @@ public class Output {
         return inputId;
     }
 
+  String getCreatorAddress() {
+    return creatorAddress;
+  }
+
+  int getAmount() {
+    return amount;
+  }
+
   String getAddress() {
     return address;
   }
