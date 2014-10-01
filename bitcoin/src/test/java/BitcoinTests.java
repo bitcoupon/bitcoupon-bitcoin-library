@@ -44,7 +44,9 @@ public class BitcoinTests {
     privateKeys.put("5JcG67FmXQtfjEJJd6To8988WqH7X5byXQPqbCYjh9RS27bdNMA", true);
     privateKeys.put("9JcG67FmXQtfjEJJd6To8988WqH7X5byXQPqbCYjh9RS27bdNMA", true);
     privateKeys.put("JcG67FmXQtfjEJJd6To8988WqH7X5byXQPqbCYjh9RS27bdNMA", true);
-    privateKeys.put("JcasdddddddddddddddddddddddddddddddddddddddddddddddddddddddddG67FmXQtfjEJJd6To8988WqH7X5byXQPqbCYjh9RS27bdNMA", true);
+    privateKeys.put(
+        "JcasdddddddddddddddddddddddddddddddddddddddddddddddddddddddddG67FmXQtfjEJJd6To8988WqH7X5byXQPqbCYjh9RS27bdNMA",
+        true);
     privateKeys.put("sadasdasdasd", false);
     privateKeys.put("0", false);
     privateKeys.put("1", false);
@@ -60,6 +62,7 @@ public class BitcoinTests {
         valid = false;
       }
       org.junit.Assert.assertEquals(valid, value);
+      System.out.println("" + valid + value);
     }
   }
 }
