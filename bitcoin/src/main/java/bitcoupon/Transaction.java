@@ -38,6 +38,14 @@ public class Transaction {
     this.outputs = outputs;
   }
 
+    List<Input> getInputs(){
+        return inputs;
+    }
+
+    List<Output> getOutputs(){
+        return outputs;
+    }
+
   byte[] getBytes() {
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
