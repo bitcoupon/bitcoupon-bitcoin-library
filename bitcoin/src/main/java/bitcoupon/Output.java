@@ -48,4 +48,8 @@ public class Output {
     return outputId;
   }
 
+    long getInputId(){
+        return inputId;
+    }
+
 }

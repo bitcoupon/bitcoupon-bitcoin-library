@@ -30,6 +30,10 @@ public class Input {
     return outputId;
   }
 
+    long getInputId(){
+        return inputId;
+    }
+
   void setSignature(String signature) {
     this.signature = signature;
   }

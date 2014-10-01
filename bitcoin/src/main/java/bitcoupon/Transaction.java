@@ -171,12 +171,18 @@ public class Transaction {
     }
   }
 
-    boolean verifyInput(Transaction transaction, List<Transaction> transactionHistory){
-        List<Input> transInput = transaction.getInputs();
+    boolean verifyInput(List<Output> transactionHistory){
         while (transactionHistory.listIterator().hasNext()){
             Transaction temp = transactionHistory.listIterator().next();
-            List<Output> tempOutput = temp.getOutputs();
-            if (transaction.inputs)
+            for(int i = 0; i < inputs.size(); i++) {
+                for( int k =0; k < temp.outputs.size(); k++) {
+                    if (this.inputs.get(i).getInputId() == temp.outputs.get(k).getOutputId()) {
+                        if (temp.outputs.get(k).getInputId() == 0) {
+                            return true;
+                        }
+                    }
+                }
+            }
         }
 
         return false;
