@@ -44,7 +44,7 @@ public class Bitcoin {
       System.arraycopy(data, 1, decodedPrivateKey, 0, 32);
       return new BigInteger(1, decodedPrivateKey);
     }
-    return null;
+    throw new IllegalArgumentException();
   }
 
   static byte[] generatePublicKey(BigInteger privateKey) {
@@ -104,6 +104,9 @@ public class Bitcoin {
   }
 
   static byte[] decodeBase58(String string) {
+    if (string == null) {
+      throw new IllegalArgumentException();
+    }
     BigInteger value = BigInteger.valueOf(0);
     BigInteger base = BigInteger.valueOf(58);
     for (int i = 0; i < string.length(); i++) {
@@ -129,7 +132,7 @@ public class Bitcoin {
     byte[] checksum = hash256(data);
     for (int i = 0; i < 4; i++) {
       if (checksum[i] != bytes[data.length + i]) {
-        return null;
+        throw new IllegalArgumentException();
       }
     }
     return data;
