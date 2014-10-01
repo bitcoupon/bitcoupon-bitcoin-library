@@ -37,6 +37,10 @@ public class Creation {
     }
   }
 
+  String getCreatorAddress() {
+    return creatorAddress;
+  }
+
   void setSignature(String signature) {
     this.signature = signature;
   }

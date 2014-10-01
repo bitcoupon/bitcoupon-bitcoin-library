@@ -7,6 +7,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.spongycastle.asn1.ASN1InputStream;
 import org.spongycastle.asn1.ASN1Integer;
 import org.spongycastle.asn1.DERSequenceGenerator;
+import org.spongycastle.asn1.DLSequence;
 import org.spongycastle.asn1.sec.SECNamedCurves;
 import org.spongycastle.asn1.x9.X9ECParameters;
 import org.spongycastle.crypto.params.ECDomainParameters;
@@ -98,7 +99,7 @@ public class Transaction {
       derGen.close();
       byte[] ecdsaSignature = baos.toByteArray();
       byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
-      String signature = Hex.encodeHexString(ecdsaSignature) + " " + Hex.encodeHexString(publicKey);
+      String signature = Bitcoin.encodeBase58(ecdsaSignature) + " " + Bitcoin.encodeBase58(publicKey);
       for (int i = 0; i < creations.size(); i++) {
         creations.get(i).setSignature(signature);
       }
@@ -115,17 +116,56 @@ public class Transaction {
   boolean verifySignatures(List<Transaction> transactionHistory) {
     byte[] hashedTransaction = Bitcoin.hash256(getBytes());
     for (int i = 0; i < creations.size(); i++) {
-      try {
-        String signature = creations.get(i).getSignature();
-        byte[] ecdsaSignature = Hex.decodeHex(signature.split(" ")[0].toCharArray());
-        byte[] publicKey = Hex.decodeHex(signature.split(" ")[1].toCharArray());
+      String creatorAddress = creations.get(i).getCreatorAddress();
+      String signature = creations.get(i).getSignature();
+      byte[] ecdsaSignature = Bitcoin.decodeBase58(signature.split(" ")[0]);
+      byte[] publicKey = Bitcoin.decodeBase58(signature.split(" ")[1]);
+      if (Bitcoin.publicKeyToAddress(publicKey).equals(creatorAddress)) {
         ECPublicKeyParameters publicKeyParams = new ECPublicKeyParameters(EC_PARAMS.getCurve().decodePoint(publicKey), EC_PARAMS);
         ECDSASigner signer = new ECDSASigner();
         signer.init(false, publicKeyParams);
-        ASN1InputStream derSigStream = new ASN1InputStream(ecdsaSignature);
+        try {
+          ASN1InputStream derSigStream = new ASN1InputStream(ecdsaSignature);
+          DLSequence seq = (DLSequence) derSigStream.readObject();
+          BigInteger r = ((ASN1Integer) seq.getObjectAt(0)).getPositiveValue();
+          BigInteger s = ((ASN1Integer) seq.getObjectAt(1)).getPositiveValue();
+          derSigStream.close();
+          if (!signer.verifySignature(hashedTransaction, r, s)) {
+            return false;
+          }
+        } catch (IOException e) {
+          e.printStackTrace();
+          return false;
+        }
+      } else {
+        return false;
+      }
+    }
+    for (int i = 0; i < inputs.size(); i++) {
+      long outputId = inputs.get(i).getOutputId();
 
-      } catch (DecoderException e) {
-        e.printStackTrace();
+      String creatorAddress = creations.get(i).getCreatorAddress();
+      String signature = creations.get(i).getSignature();
+      byte[] ecdsaSignature = Bitcoin.decodeBase58(signature.split(" ")[0]);
+      byte[] publicKey = Bitcoin.decodeBase58(signature.split(" ")[1]);
+      if (Bitcoin.publicKeyToAddress(publicKey).equals(creatorAddress)) {
+        ECPublicKeyParameters publicKeyParams = new ECPublicKeyParameters(EC_PARAMS.getCurve().decodePoint(publicKey), EC_PARAMS);
+        ECDSASigner signer = new ECDSASigner();
+        signer.init(false, publicKeyParams);
+        try {
+          ASN1InputStream derSigStream = new ASN1InputStream(ecdsaSignature);
+          DLSequence seq = (DLSequence) derSigStream.readObject();
+          BigInteger r = ((ASN1Integer) seq.getObjectAt(0)).getPositiveValue();
+          BigInteger s = ((ASN1Integer) seq.getObjectAt(1)).getPositiveValue();
+          derSigStream.close();
+          if (!signer.verifySignature(hashedTransaction, r, s)) {
+            return false;
+          }
+        } catch (IOException e) {
+          e.printStackTrace();
+          return false;
+        }
+      } else {
         return false;
       }
     }
