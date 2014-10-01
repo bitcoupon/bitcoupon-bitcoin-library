@@ -127,6 +127,9 @@ public class Bitcoin {
       bytes = new byte[bValue.length + zeros];
       System.arraycopy(bValue, 0, bytes, zeros, bValue.length);
     }
+    if (bytes.length < 4) {
+      throw new IllegalArgumentException();
+    }
     byte[] data = new byte[bytes.length - 4];
     System.arraycopy(bytes, 0, data, 0, data.length);
     byte[] checksum = hash256(data);
