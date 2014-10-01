@@ -1,7 +1,9 @@
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import bitcoupon.BitCoupon;
 import bitcoupon.Transaction;
@@ -31,5 +33,30 @@ public class BitcoinTests {
     String jsonTransactionList = TransactionList.toJson(transactionList);
     System.out.println(jsonTransactionList);
     List<Transaction> listFromJson = TransactionList.fromJson(jsonTransactionList).getList();
+  }
+
+  @Test
+  public void test_TransactionCreation() {
+    Map<String, Boolean> privateKeys = new HashMap<String, Boolean>();
+    privateKeys.put("5Kf9gd8faKhhq9jZTsNhq2MtViHA1dWdhRg9k4ovszTKz5DCeBT", true);
+    privateKeys.put("5K4gQUNnxuJe1gtbCp4qrGysRXVdGE9jZW1vJZ1jdFzV6W93QDP", true);
+    privateKeys.put("5JcK7bvAFjCwTcERJsbRetGkwmqA8BuydVFRffrQj3LjuqWsTy5", true);
+    privateKeys.put("5JcG67FmXQtfjEJJd6To8988WqH7X5byXQPqbCYjh9RS27bdNMA", true);
+    privateKeys.put("sadasdasdasd", false);
+    privateKeys.put("0", false);
+    privateKeys.put("1", false);
+    privateKeys.put(null, false);
+    privateKeys.put(String.valueOf(new Integer(1).hashCode()), false);
+    for (String key : privateKeys.keySet()) {
+      Boolean value = privateKeys.get(key);
+      boolean valid = false;
+      try {
+        Transaction validTransaction = BitCoupon.generateCreationTransaction(key);
+        valid = true;
+      } catch (IllegalArgumentException e) {
+        valid = false;
+      }
+      org.junit.Assert.assertEquals(valid, value);
+    }
   }
 }
