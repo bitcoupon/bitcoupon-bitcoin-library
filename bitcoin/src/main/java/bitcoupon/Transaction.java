@@ -50,9 +50,6 @@ public class Transaction {
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-    byte[] bTransactionId = Bitcoin.longToByteArray(transactionId);
-    baos.write(bTransactionId, 0, bTransactionId.length);
-
     byte[] bCreationsSize = Bitcoin.intToByteArray(creations.size());
     baos.write(bCreationsSize, 0, bCreationsSize.length);
     for (int i = 0; i < creations.size(); i++) {
