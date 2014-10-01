@@ -24,8 +24,12 @@ public class Input {
     return baos.toByteArray();
   }
 
-  void setScriptSig(String signature) {
+  void setSignature(String signature) {
     this.signature = signature;
+  }
+
+  String getSignature() {
+    return signature;
   }
 
 }

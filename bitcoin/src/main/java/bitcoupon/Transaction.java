@@ -2,13 +2,16 @@ package bitcoupon;
 
 import com.google.gson.Gson;
 
+import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.DERSequenceGenerator;
 import org.bouncycastle.asn1.sec.SECNamedCurves;
 import org.bouncycastle.asn1.x9.X9ECParameters;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
+import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.signers.ECDSASigner;
 
 import java.io.ByteArrayOutputStream;
@@ -93,19 +96,38 @@ public class Transaction {
       derGen.addObject(new ASN1Integer(rawSignature[0]));
       derGen.addObject(new ASN1Integer(rawSignature[1]));
       derGen.close();
-      byte[] signature = baos.toByteArray();
+      byte[] ecdsaSignature = baos.toByteArray();
       byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
-      String scriptSig = Hex.encodeHexString(signature) + " " + Hex.encodeHexString(publicKey);
+      String signature = Hex.encodeHexString(ecdsaSignature) + " " + Hex.encodeHexString(publicKey);
       for (int i = 0; i < creations.size(); i++) {
-        creations.get(i).setScriptSig(scriptSig);
+        creations.get(i).setSignature(signature);
       }
       for (int i = 0; i < inputs.size(); i++) {
-        inputs.get(i).setScriptSig(scriptSig);
+        inputs.get(i).setSignature(signature);
       }
       return true;
     } catch (IOException e) {
       e.printStackTrace();
       return false;
+    }
+  }
+
+  boolean verifySignatures(List<Transaction> transactionHistory) {
+    byte[] hashedTransaction = Bitcoin.hash256(getBytes());
+    for (int i = 0; i < creations.size(); i++) {
+      try {
+        String signature = creations.get(i).getSignature();
+        byte[] ecdsaSignature = Hex.decodeHex(signature.split(" ")[0].toCharArray());
+        byte[] publicKey = Hex.decodeHex(signature.split(" ")[1].toCharArray());
+        ECPublicKeyParameters publicKeyParams = new ECPublicKeyParameters(EC_PARAMS.getCurve().decodePoint(publicKey), EC_PARAMS);
+        ECDSASigner signer = new ECDSASigner();
+        signer.init(false, publicKeyParams);
+        ASN1InputStream derSigStream = new ASN1InputStream(ecdsaSignature);
+
+      } catch (DecoderException e) {
+        e.printStackTrace();
+        return false;
+      }
     }
   }
 
