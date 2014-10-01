@@ -11,7 +11,8 @@ public class BitCoupon {
     return null;
   }
 
-  public static List<String> getCreatorAddresses(List<Transaction> transactionHistory) {
+  public static List<String> getCreatorAddresses(String strPrivateKey, List<Transaction> transactionHistory) {
+
     return null;
   }
 
@@ -37,11 +38,11 @@ public class BitCoupon {
   }
 
 
-  public static boolean verifyTransaction(Transaction transaction, List<Output> transactionHistory) {
+  public static boolean verifyTransaction(Transaction transaction, List<Transaction> transactionHistory) {
     if (transaction.verifyInput(transactionHistory) && transaction.verifySignatures(transactionHistory) && transaction.verifyAmount(transactionHistory)){
         return true;
     }
     return false;
-
   }
+
 }

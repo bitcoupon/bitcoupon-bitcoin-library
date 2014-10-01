@@ -112,7 +112,7 @@ public class Transaction {
     }
   }
 
-  boolean verifySignatures(List<Output> transactionHistory) {
+  boolean verifySignatures(List<Transaction> transactionHistory) {
     byte[] hashedTransaction = Bitcoin.hash256(getBytes());
     for (int i = 0; i < creations.size(); i++) {
       String creatorAddress = creations.get(i).getCreatorAddress();
@@ -142,7 +142,10 @@ public class Transaction {
     }
     HashMap<Long, Output> outputMap = new HashMap<Long, Output>();
     for (int i = 0; i < transactionHistory.size(); i++) {
-      outputMap.put(transactionHistory.get(i).getOutputId(), transactionHistory.get(i));
+      List<Output> outputHistory = transactionHistory.get(i).getOutputs();
+      for (int j = 0; j < outputHistory.size(); j++) {
+        outputMap.put(outputHistory.get(j).getOutputId(), outputHistory.get(j));
+      }
     }
     for (int i = 0; i < inputs.size(); i++) {
       long outputId = inputs.get(i).getOutputId();
@@ -175,24 +178,25 @@ public class Transaction {
     return true;
   }
 
-    boolean verifyInput(List<Output> transactionHistory){
-        while (transactionHistory.listIterator().hasNext()){
-            Output temp = transactionHistory.listIterator().next();
-            for(int i = 0; i < inputs.size(); i++) {
-                for( int k =0; k < transactionHistory.size(); k++) {
-                    if (this.inputs.get(i).getInputId() == temp.getOutputId()) {
-                        if (temp.getInputId() == 0) {
-                            return true;
-                        }
-                    }
-                }
-            }
+    boolean verifyInput(List<Transaction> transactionHistory){
+      HashMap<Long, Output> outputMap = new HashMap<Long, Output>();
+      for (int i = 0; i < transactionHistory.size(); i++) {
+        List<Output> outputHistory = transactionHistory.get(i).getOutputs();
+        for (int j = 0; j < outputHistory.size(); j++) {
+          outputMap.put(outputHistory.get(j).getOutputId(), outputHistory.get(j));
         }
-
-        return false;
+      }
+      for (int i = 0; i < inputs.size(); i++) {
+        long outputId = inputs.get(i).getOutputId();
+        Output output = outputMap.get(outputId);
+        if (output.getInputId() != 0) {
+          return false;
+        }
+      }
+      return true;
     }
 
-    boolean verifyAmount(List<Output> transactionHistory){
+    boolean verifyAmount(List<Transaction> transactionHistory){
 
 
         return false;
