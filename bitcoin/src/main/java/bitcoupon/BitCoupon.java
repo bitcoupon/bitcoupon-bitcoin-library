@@ -6,6 +6,9 @@ import java.util.List;
 
 public class BitCoupon {
 
+
+  private static final boolean DEBUG = true;
+
   public static Transaction generateSendTransaction(String strPrivateKey, String creatorAddress,
                                                     String receiverAddress, List<Transaction> transactionHistory) {
 
@@ -42,6 +45,11 @@ public class BitCoupon {
   }
 
   public static List<String> getCreatorAddresses(String strPrivateKey, List<Transaction> transactionHistory) {
+    if (DEBUG) {
+      List<String> debugList = new ArrayList<String>();
+      debugList.add("1Epd2EJNW7H6ecufQnRzR54maU42AJMNmk");
+      debugList.add("1PWUsWjxxex9mgVBD5wWcDc8VYxZabVjSB");
+    }
 
     return null;
   }
@@ -69,6 +77,10 @@ public class BitCoupon {
 
 
   public static boolean verifyTransaction(Transaction transaction, List<Transaction> transactionHistory) {
+
+    if (DEBUG) {
+      return true;
+    }
     if (transaction.verifyInput(transactionHistory) && transaction.verifySignatures(transactionHistory) && transaction
         .verifyAmount(transactionHistory)) {
       return true;
