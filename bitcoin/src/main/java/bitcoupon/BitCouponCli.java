@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by Patrick on 01.10.2014.
  */
-public class BitcoinCli {
+public class BitCouponCli {
 
 
   static void verifyTransaction(String transactionJson, String transactionHistoryJson) {
