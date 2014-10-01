@@ -177,11 +177,11 @@ public class Transaction {
 
     boolean verifyInput(List<Output> transactionHistory){
         while (transactionHistory.listIterator().hasNext()){
-            Transaction temp = transactionHistory.listIterator().next();
+            Output temp = transactionHistory.listIterator().next();
             for(int i = 0; i < inputs.size(); i++) {
-                for( int k =0; k < temp.outputs.size(); k++) {
-                    if (this.inputs.get(i).getInputId() == temp.outputs.get(k).getOutputId()) {
-                        if (temp.outputs.get(k).getInputId() == 0) {
+                for( int k =0; k < transactionHistory.size(); k++) {
+                    if (this.inputs.get(i).getInputId() == temp.getOutputId()) {
+                        if (temp.getInputId() == 0) {
                             return true;
                         }
                     }
