@@ -48,4 +48,8 @@ public class Output {
     return outputId;
   }
 
+  String getAddress() {
+    return address;
+  }
+
 }

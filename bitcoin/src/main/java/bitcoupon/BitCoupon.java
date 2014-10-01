@@ -1,7 +1,5 @@
 package bitcoupon;
 
-import org.apache.commons.codec.binary.Hex;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,12 +23,11 @@ public class BitCoupon {
 
     BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
     byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
-    byte[] hashedPublicKey = Bitcoin.hash160(publicKey);
-    String strHashedPublicKey = Hex.encodeHexString(hashedPublicKey);
+    String address = Bitcoin.publicKeyToAddress(publicKey);
 
-    Creation creation = new Creation(strHashedPublicKey,  1);
+    Creation creation = new Creation(address,  1);
     creations.add(creation);
-    Output output = new Output(strHashedPublicKey, 1, strHashedPublicKey);
+    Output output = new Output(address, 1, address);
     outputs.add(output);
 
     Transaction transaction = new Transaction(creations, inputs, outputs);
