@@ -11,9 +11,9 @@ public class Main {
   private static final String VERIFY_TRANSACTION = "verifyTransaction";
 
   public static void main(String[] args) {
-//    evaluateMethod(args);
+    evaluateMethod(args);
 
-    testTransaction();
+//    testTransaction();
   }
 
   private static void testTransaction() {
@@ -41,34 +41,14 @@ public class Main {
     String methodName = args[0];
 
     if (methodName.equalsIgnoreCase(GENERATE_CREATION_TRANSACTION)) {
-      generateCreationTransaction(args[1]);
+      BitcoinCli.generateCreationTransaction(args[1]);
     } else if (methodName.equalsIgnoreCase(GENERATE_SEND_TRANSACTION)) {
-      generateSendTransaction(args[1], args[2], args[3], args[4]);
+      BitcoinCli.generateSendTransaction(args[1], args[2], args[3], args[4]);
     } else if (methodName.equalsIgnoreCase(GET_CREATOR_PUBLIC_KEYS)) {
-      getCreatorPublicKeys(args[1]);
+      BitcoinCli.getCreatorPublicKeys(args[1]);
     } else if (methodName.equalsIgnoreCase(VERIFY_TRANSACTION)) {
-      verifyTransaction(args[1], args[2]);
+      BitcoinCli.verifyTransaction(args[1], args[2]);
     }
   }
 
-  private static void verifyTransaction(String transactionJson, String transactionHistoryJson) {
-    Transaction transaction = Transaction.fromJson(transactionJson);
-    List<Transaction> transactionHistory = TransactionList.fromJson(transactionHistoryJson).getList();
-    BitCoupon.verifyTransaction(transaction, transactionHistory);
-  }
-
-  private static void getCreatorPublicKeys(String transactionHistoryJson) {
-    List<Transaction> transactionHistory = TransactionList.fromJson(transactionHistoryJson).getList();
-    BitCoupon.getCreatorAddresses(transactionHistory);
-  }
-
-  private static void generateSendTransaction(String privateKey, String creatorPublicKey, String transactionHistoryJson,
-                                              String receiverAddress) {
-    List<Transaction> transactionHistory = TransactionList.fromJson(transactionHistoryJson).getList();
-    BitCoupon.generateSendTransaction(privateKey, creatorPublicKey, receiverAddress, transactionHistory);
-  }
-
-  private static void generateCreationTransaction(String privateKey) {
-    BitCoupon.generateCreationTransaction(privateKey);
-  }
 }
