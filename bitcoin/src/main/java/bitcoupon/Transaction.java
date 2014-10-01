@@ -17,6 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class Transaction {
@@ -41,13 +42,13 @@ public class Transaction {
     this.outputs = outputs;
   }
 
-    List<Input> getInputs(){
-        return inputs;
-    }
+  List<Input> getInputs() {
+    return inputs;
+  }
 
-    List<Output> getOutputs(){
-        return outputs;
-    }
+  List<Output> getOutputs() {
+    return outputs;
+  }
 
   byte[] getBytes() {
 
@@ -120,7 +121,9 @@ public class Transaction {
       byte[] ecdsaSignature = Bitcoin.decodeBase58(signature.split(" ")[0]);
       byte[] publicKey = Bitcoin.decodeBase58(signature.split(" ")[1]);
       if (Bitcoin.publicKeyToAddress(publicKey).equals(creatorAddress)) {
-        ECPublicKeyParameters publicKeyParams = new ECPublicKeyParameters(EC_PARAMS.getCurve().decodePoint(publicKey), EC_PARAMS);
+        ECPublicKeyParameters
+            publicKeyParams =
+            new ECPublicKeyParameters(EC_PARAMS.getCurve().decodePoint(publicKey), EC_PARAMS);
         ECDSASigner signer = new ECDSASigner();
         signer.init(false, publicKeyParams);
         try {
@@ -155,7 +158,9 @@ public class Transaction {
       byte[] ecdsaSignature = Bitcoin.decodeBase58(signature.split(" ")[0]);
       byte[] publicKey = Bitcoin.decodeBase58(signature.split(" ")[1]);
       if (Bitcoin.publicKeyToAddress(publicKey).equals(address)) {
-        ECPublicKeyParameters publicKeyParams = new ECPublicKeyParameters(EC_PARAMS.getCurve().decodePoint(publicKey), EC_PARAMS);
+        ECPublicKeyParameters
+            publicKeyParams =
+            new ECPublicKeyParameters(EC_PARAMS.getCurve().decodePoint(publicKey), EC_PARAMS);
         ECDSASigner signer = new ECDSASigner();
         signer.init(false, publicKeyParams);
         try {
@@ -178,27 +183,87 @@ public class Transaction {
     return true;
   }
 
-    boolean verifyInput(List<Transaction> transactionHistory){
-      HashMap<Long, Output> outputMap = new HashMap<Long, Output>();
-      for (int i = 0; i < transactionHistory.size(); i++) {
-        List<Output> outputHistory = transactionHistory.get(i).getOutputs();
-        for (int j = 0; j < outputHistory.size(); j++) {
-          outputMap.put(outputHistory.get(j).getOutputId(), outputHistory.get(j));
-        }
+  boolean verifyInput(List<Transaction> transactionHistory) {
+    HashMap<Long, Output> outputMap = new HashMap<Long, Output>();
+    for (int i = 0; i < transactionHistory.size(); i++) {
+      List<Output> outputHistory = transactionHistory.get(i).getOutputs();
+      for (int j = 0; j < outputHistory.size(); j++) {
+        outputMap.put(outputHistory.get(j).getOutputId(), outputHistory.get(j));
       }
-      for (int i = 0; i < inputs.size(); i++) {
-        long outputId = inputs.get(i).getOutputId();
-        Output output = outputMap.get(outputId);
-        if (output.getInputId() != 0) {
-          return false;
-        }
+    }
+    for (int i = 0; i < inputs.size(); i++) {
+      long outputId = inputs.get(i).getOutputId();
+      Output output = outputMap.get(outputId);
+      if (output.getInputId() != 0) {
+        return false;
       }
-      return true;
+    }
+    return true;
+  }
+
+  // This methods checks that this transaction is not using more coupons than is available
+  // Transaction history is used to check the number of coupons available bia references to previous transactions
+  boolean verifyAmount(List<Transaction> transactionHistory) {
+
+    // Map for counting coupons available in this transaction
+    HashMap<String, Integer> availableCoupons = new HashMap<String, Integer>();
+
+    // Count the number of coupons created in this transaction
+    for (int i = 0; i < creations.size(); i++) {
+      Creation creation = creations.get(i);
+      if (availableCoupons.containsKey(creation.getCreatorAddress())) {
+        Integer amount = availableCoupons.get(creation.getCreatorAddress());
+        availableCoupons.put(creation.getCreatorAddress(), amount + creation.getAmount());
+      } else {
+        availableCoupons.put(creation.getCreatorAddress(), creation.getAmount());
+      }
     }
 
-    boolean verifyAmount(List<Transaction> transactionHistory){
-      return true;
+    // Put all outputs in the transaction history in a hash map for fast access
+    HashMap<Long, Output> outputMap = new HashMap<Long, Output>();
+    for (int i = 0; i < transactionHistory.size(); i++) {
+      List<Output> outputHistory = transactionHistory.get(i).getOutputs();
+      for (int j = 0; j < outputHistory.size(); j++) {
+        outputMap.put(outputHistory.get(j).getOutputId(), outputHistory.get(j));
+      }
     }
+
+    // Count the number of existing coupons referred to by this transaction
+    for (int i = 0; i < inputs.size(); i++) {
+      Input input = inputs.get(i);
+      long outputId = input.getOutputId();
+      Output referredOutput = outputMap.get(outputId);
+      if (availableCoupons.containsKey(referredOutput.getCreatorAddress())) {
+        Integer amount = availableCoupons.get(referredOutput.getCreatorAddress());
+        availableCoupons.put(referredOutput.getCreatorAddress(), amount + referredOutput.getAmount());
+      } else {
+        availableCoupons.put(referredOutput.getCreatorAddress(), referredOutput.getAmount());
+      }
+    }
+
+    // Map for counting coupons spent by this transaction
+    HashMap<String, Integer> spentCoupons = new HashMap<String, Integer>();
+
+    // 
+    for (int i = 0; i < outputs.size(); i++) {
+      Output output = outputs.get(i);
+      if (spentCoupons.containsKey(output.getCreatorAddress())) {
+        Integer amount = spentCoupons.get(output.getCreatorAddress());
+        spentCoupons.put(output.getCreatorAddress(), amount + output.getAmount());
+      } else {
+        spentCoupons.put(output.getCreatorAddress(), output.getAmount());
+      }
+    }
+    Iterator<String> itrSpentCoupons = spentCoupons.keySet().iterator();
+    while (itrSpentCoupons.hasNext()) {
+      String creatorAddress = itrSpentCoupons.next();
+      if (!availableCoupons.containsKey(creatorAddress) || availableCoupons.get(creatorAddress) < spentCoupons
+          .get(creatorAddress)) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   public static Transaction fromJson(String transactionJson) {
     return new Gson().fromJson(transactionJson, Transaction.class);

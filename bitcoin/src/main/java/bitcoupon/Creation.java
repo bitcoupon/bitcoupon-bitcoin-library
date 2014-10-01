@@ -41,6 +41,10 @@ public class Creation {
     return creatorAddress;
   }
 
+  int getAmount() {
+    return amount;
+  }
+
   void setSignature(String signature) {
     this.signature = signature;
   }
