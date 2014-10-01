@@ -21,21 +21,13 @@ public class Creation {
     try {
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-      byte[] bCreationId = Bitcoin.longToByteArray(creationId);
-      baos.write(bCreationId, 0, bCreationId.length);
-
-      byte[] bScriptPubKey = creatorAddress.getBytes("UTF-8");
-      byte[] bScriptPubKeyLength = Bitcoin.intToByteArray(bScriptPubKey.length);
-      baos.write(bScriptPubKeyLength, 0, bScriptPubKeyLength.length);
-      baos.write(bScriptPubKey, 0, bScriptPubKey.length);
+      byte[] bCreatorAddress = creatorAddress.getBytes("UTF-8");
+      byte[] bCreatorAddressLength = Bitcoin.intToByteArray(bCreatorAddress.length);
+      baos.write(bCreatorAddressLength, 0, bCreatorAddressLength.length);
+      baos.write(bCreatorAddress, 0, bCreatorAddress.length);
 
       byte[] bAmount = Bitcoin.intToByteArray(amount);
       baos.write(bAmount, 0, bAmount.length);
-
-      byte[] bScriptSig = signature.getBytes("UTF-8");
-      byte[] bScriptSigLength = Bitcoin.intToByteArray(bScriptSig.length);
-      baos.write(bScriptSigLength, 0, bScriptSigLength.length);
-      baos.write(bScriptSig, 0, bScriptSig.length);
 
       return baos.toByteArray();
 
@@ -45,8 +37,8 @@ public class Creation {
     }
   }
 
-  void setScriptSig(String scriptSig) {
-    this.signature = scriptSig;
+  void setScriptSig(String signature) {
+    this.signature = signature;
   }
 
 }

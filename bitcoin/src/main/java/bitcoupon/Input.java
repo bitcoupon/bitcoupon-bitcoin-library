@@ -16,30 +16,16 @@ public class Input {
   }
 
   byte[] getBytes() {
-    try {
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-      byte[] bInputId = Bitcoin.longToByteArray(inputId);
-      baos.write(bInputId, 0, bInputId.length);
+    byte[] bOutputId = Bitcoin.longToByteArray(outputId);
+    baos.write(bOutputId, 0, bOutputId.length);
 
-      byte[] bOutputId = Bitcoin.longToByteArray(outputId);
-      baos.write(bOutputId, 0, bOutputId.length);
-
-      byte[] bScriptSig = signature.getBytes("UTF-8");
-      byte[] bScriptSigLength = Bitcoin.intToByteArray(bScriptSig.length);
-      baos.write(bScriptSigLength, 0, bScriptSigLength.length);
-      baos.write(bScriptSig, 0, bScriptSig.length);
-
-      return baos.toByteArray();
-
-    } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
-      return null;
-    }
+    return baos.toByteArray();
   }
 
-  void setScriptSig(String scriptSig) {
-    this.signature = scriptSig;
+  void setScriptSig(String signature) {
+    this.signature = signature;
   }
 
 }

@@ -23,24 +23,18 @@ public class Output {
     try {
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-      byte[] bOutputId = Bitcoin.longToByteArray(outputId);
-      baos.write(bOutputId, 0, bOutputId.length);
-
-      byte[] bCouponType = creatorAddress.getBytes("UTF-8");
-      byte[] bCouponTypeLength = Bitcoin.intToByteArray(bCouponType.length);
-      baos.write(bCouponTypeLength, 0, bCouponTypeLength.length);
-      baos.write(bCouponType, 0, bCouponType.length);
+      byte[] bCreatorAddress = creatorAddress.getBytes("UTF-8");
+      byte[] bCreatorAddressLength = Bitcoin.intToByteArray(bCreatorAddress.length);
+      baos.write(bCreatorAddressLength, 0, bCreatorAddressLength.length);
+      baos.write(bCreatorAddress, 0, bCreatorAddress.length);
 
       byte[] bAmount = Bitcoin.intToByteArray(amount);
       baos.write(bAmount, 0, bAmount.length);
 
-      byte[] bScriptPubKey = address.getBytes("UTF-8");
-      byte[] bScriptPubKeyLength = Bitcoin.intToByteArray(bScriptPubKey.length);
-      baos.write(bScriptPubKeyLength, 0, bScriptPubKeyLength.length);
-      baos.write(bScriptPubKey, 0, bScriptPubKey.length);
-
-      byte[] bInputId = Bitcoin.longToByteArray(inputId);
-      baos.write(bInputId, 0, bInputId.length);
+      byte[] bAddress = address.getBytes("UTF-8");
+      byte[] bAddressLength = Bitcoin.intToByteArray(bAddress.length);
+      baos.write(bAddressLength, 0, bAddressLength.length);
+      baos.write(bAddress, 0, bAddress.length);
 
       return baos.toByteArray();
 
