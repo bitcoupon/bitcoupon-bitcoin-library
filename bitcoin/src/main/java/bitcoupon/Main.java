@@ -59,7 +59,7 @@ public class Main {
 
   private static void getCreatorPublicKeys(String transactionHistoryJson) {
     List<Transaction> transactionHistory = TransactionList.fromJson(transactionHistoryJson).getList();
-    BitCoupon.getCreatorPublicKeys(transactionHistory);
+    BitCoupon.getCreatorAddresses(transactionHistory);
   }
 
   private static void generateSendTransaction(String privateKey, String creatorPublicKey, String transactionHistoryJson,
