@@ -131,7 +131,8 @@ public class Transaction {
 
       // Check that the public key in the signature matches the address of the creator of the coupons
       if (Bitcoin.publicKeyToAddress(publicKey).equals(creatorAddress)) {
-        ECPublicKeyParameters publicKeyParams =
+        ECPublicKeyParameters
+            publicKeyParams =
             new ECPublicKeyParameters(EC_PARAMS.getCurve().decodePoint(publicKey), EC_PARAMS);
         ECDSASigner signer = new ECDSASigner();
         signer.init(false, publicKeyParams);

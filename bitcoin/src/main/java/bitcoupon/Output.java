@@ -49,9 +49,9 @@ public class Output {
   }
 
 
-    long getInputId(){
-        return inputId;
-    }
+  long getInputId() {
+    return inputId;
+  }
 
   String getCreatorAddress() {
     return creatorAddress;
