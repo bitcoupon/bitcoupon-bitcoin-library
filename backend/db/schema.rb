@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140930113305) do
+ActiveRecord::Schema.define(version: 20141002130014) do
 
   create_table "coupons", force: true do |t|
     t.string   "title"
@@ -40,7 +40,7 @@ ActiveRecord::Schema.define(version: 20140930113305) do
 
   create_table "outputs", force: true do |t|
     t.integer  "transaction_id"
-    t.string   "coupon_type"
+    t.string   "creator_address"
     t.integer  "amount"
     t.string   "address"
     t.integer  "input_id"
