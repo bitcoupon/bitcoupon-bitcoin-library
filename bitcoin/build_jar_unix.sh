@@ -1,1 +1,1 @@
-gradlew jar
+./gradlew jar
