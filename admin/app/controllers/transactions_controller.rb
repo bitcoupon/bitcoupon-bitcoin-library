@@ -29,7 +29,7 @@ class TransactionsController < ApplicationController
     "inputId"=>0}]}
 %#
 
-    transaction = Transaction.create
+    transaction = Transaction.new
     creation = Creation.new
     input = Input.new
     output = Output.new
@@ -42,12 +42,12 @@ class TransactionsController < ApplicationController
       creation.creator_address = creation_json["creatorAddress"]
       creation.amount = creation_json["amount"].to_i
       creation.signature = creation_json["signature"]
-      creation.save
+      #creation.save
     end
 
-    unless inputs_json.blank?
+    unless input_json.blank?
       # TODO senere
-      input.save
+      #input.save
     end
 
     unless output_json.blank?
@@ -59,7 +59,7 @@ class TransactionsController < ApplicationController
       output.amount = output_json["amount"].to_i
       output.address = output_json["address"]
       # TODO Add input når relevant
-      output.save
+      #output.save
     end
 
     #render json: "#{@output}\n\n\n#{@json}"

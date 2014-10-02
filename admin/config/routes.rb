@@ -8,5 +8,7 @@ Rails.application.routes.draw do
     delete "coupon/:id", to: "coupons#destroy"
   end
 
+  get "generate_creation_transaction", to: "transactions#generate_creation"
+
   root "users#index"
 end
