@@ -3,6 +3,7 @@ apply plugin:'application'
 
 version = '1.0'
 libsDirName = '../'
+mainClassName = "bitcoupon.Main"
 
 repositories {
     mavenCentral()
