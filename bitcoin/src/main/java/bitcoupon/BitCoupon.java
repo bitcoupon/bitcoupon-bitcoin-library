@@ -45,8 +45,7 @@ public class BitCoupon {
   public static List<String> getCreatorAddresses(String strPrivateKey, List<Transaction> transactionHistory) {
     if (DEBUG) {
       List<String> debugList = new ArrayList<>();
-      debugList.add("1Epd2EJNW7H6ecufQnRzR54maU42AJMNmk");
-      debugList.add("1PWUsWjxxex9mgVBD5wWcDc8VYxZabVjSB");
+      debugList.add("138u97o2Sv5qUmucSasmeNf5CAb3B1CmD6");
     }
 
     return null;
