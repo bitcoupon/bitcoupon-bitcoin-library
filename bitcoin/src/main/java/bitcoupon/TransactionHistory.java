@@ -101,7 +101,7 @@ public class TransactionHistory implements Iterable<Transaction> {
     return new Gson().toJson(new TransactionHistory(transactionList), TransactionHistory.class);
   }
 
-  private static TransactionHistory fromJson(BufferedReader reader) {
+  public static TransactionHistory fromJson(BufferedReader reader) {
     return new Gson().fromJson(reader, TransactionHistory.class);
   }
 
