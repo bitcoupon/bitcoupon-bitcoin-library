@@ -6,6 +6,7 @@ module Backend
     skip_before_filter :verify_authenticity_token, :only => [:verify]
 
     def verify
+      #binding.pry
       result = verify_transaction params[:transaction], transaction_history
 
       if save_transaction params[:transaction]
@@ -50,7 +51,7 @@ module Backend
     def verify_transaction transaction_json, transaction_history_json
       set_stuff
       method = "verifyTransaction"
-      arg_one = Shellwords.escape transaction_json.gsub("\n", "")
+      arg_one = Shellwords.escape transaction_json.chomp
       arg_two = Shellwords.escape transaction_history_json
       output = %x{ #{@command} #{method} #{arg_one} #{arg_two} }
 

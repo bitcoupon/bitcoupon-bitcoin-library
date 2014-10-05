@@ -92,7 +92,6 @@ class TransactionsController < ApplicationController
 
     output = %x{ #{command} #{method} #{private_key} #{creator_public_key} #{transaction_history} #{receiver_address} }
 
-    binding.pry
     if output.blank?
       render text: "Something went wrong" and return
     end

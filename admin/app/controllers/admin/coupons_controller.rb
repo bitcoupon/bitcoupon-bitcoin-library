@@ -33,9 +33,9 @@ module Admin
       output = %x{ #{command} #{method} #{private_key} #{transaction_history} }
 
       #binding.pry
-      if output.blank?
-        render text: "Something went wrong" and return
-      end
+      #if output.blank?
+      #  render text: "Something went wrong" and return
+      #end
       @transactions = output.split("\n")
     end
 
