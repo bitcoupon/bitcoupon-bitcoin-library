@@ -7,8 +7,8 @@ import com.crashlytics.android.Crashlytics;
 import java.util.List;
 
 import bitcoupon.BitCoupon;
-import bitcoupon.Transaction;
-import bitcoupon.TransactionHistory;
+import bitcoupon.transaction.Transaction;
+import bitcoupon.transaction.TransactionHistory;
 import no.ntnu.bitcoupon.R;
 import no.ntnu.bitcoupon.callbacks.CouponCallback;
 import no.ntnu.bitcoupon.fragments.CouponFragment;

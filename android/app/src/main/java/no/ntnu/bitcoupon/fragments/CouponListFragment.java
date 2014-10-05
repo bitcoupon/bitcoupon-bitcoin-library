@@ -19,8 +19,8 @@ import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 import java.util.List;
 
 import bitcoupon.BitCoupon;
-import bitcoupon.Transaction;
-import bitcoupon.TransactionHistory;
+import bitcoupon.transaction.Transaction;
+import bitcoupon.transaction.TransactionHistory;
 import no.ntnu.bitcoupon.R;
 import no.ntnu.bitcoupon.adapters.CouponListAdapter;
 import no.ntnu.bitcoupon.callbacks.CouponCallback;

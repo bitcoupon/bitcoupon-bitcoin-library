@@ -22,8 +22,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import bitcoupon.Transaction;
-import bitcoupon.TransactionHistory;
+import bitcoupon.transaction.Transaction;
+import bitcoupon.transaction.TransactionHistory;
 import no.ntnu.bitcoupon.callbacks.CouponCallback;
 import no.ntnu.bitcoupon.models.Coupon;
 import no.ntnu.bitcoupon.models.CouponList;
