@@ -1,4 +1,5 @@
 require_dependency 'bitcoupon/api/backend_request'
+require 'shellwords'
 
 module Admin
   class CouponsController < ApplicationController
@@ -14,9 +15,28 @@ module Admin
       result = Net::HTTP.start(uri.hostname, uri.port) {|http|
         http.request(request)
       }
-
       token = result.header["token"]
-      @transactions = JSON.parse(result.body)
+
+      transactions = JSON.parse(result.body)
+
+      #Name: getCreatorPublicKeys - Argumentss: String privateKey, String transactionHistoryJson
+
+      private_key = "5JAy2V6vCJLQnD8rdvB2pF8S6bFZuhEzQ43D95k6wjdVQ4ipMYu"
+      transaction_history_json = transactions.to_s
+
+      #binding.pry
+      transaction_history = Shellwords.escape transaction_history_json
+
+      command = "java -jar ../bitcoin/bitcoin-1.0.jar"
+      method = "getCreatorPublicKeys"
+
+      output = %x{ #{command} #{method} #{private_key} #{transaction_history} }
+
+      #binding.pry
+      if output.blank?
+        render text: "Something went wrong" and return
+      end
+      @transactions = output.split("\n")
     end
 
     def show

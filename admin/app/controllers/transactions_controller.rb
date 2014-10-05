@@ -75,10 +75,12 @@ class TransactionsController < ApplicationController
   end
 
   def generate_send
-    params
+    #params
+
+    #binding.pry
 
     private_key = "5JAy2V6vCJLQnD8rdvB2pF8S6bFZuhEzQ43D95k6wjdVQ4ipMYu"
-    creator_public_key = "138u97o2Sv5qUmucSasmeNf5CAb3B1CmD6"
+    creator_public_key = params["public_key"] # "138u97o2Sv5qUmucSasmeNf5CAb3B1CmD6"
 
     #binding.pry
     transaction_history = Shellwords.escape get_transaction_history.to_s
@@ -89,6 +91,8 @@ class TransactionsController < ApplicationController
     method = "generateSendTransaction"
 
     output = %x{ #{command} #{method} #{private_key} #{creator_public_key} #{transaction_history} #{receiver_address} }
+
+    binding.pry
     if output.blank?
       render text: "Something went wrong" and return
     end
