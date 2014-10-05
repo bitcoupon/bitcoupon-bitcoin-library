@@ -78,27 +78,46 @@ module Backend
         t_hash = {transactionId: t.id}
 
         c = t.creations.first
-        c_hash = {
-          creationId: c.id,
-          creatorAddress: c.creator_address,
-          amount: c.amount,
-          signature: c.signature,
-        }
+        if c.blank?
+          t_hash["creations"] = []
+        else
+          c_hash = {
+            creationId: c.id,
+            creatorAddress: c.creator_address,
+            amount: c.amount,
+            signature: c.signature,
+          }
 
-        t_hash["creations"] = [c_hash]
+          t_hash["creations"] = [c_hash]
+        end
 
-        t_hash["inputs"] = []
+        i = t.inputs.first
+        if i.blank?
+          t_hash["inputs"] = []
+        else
+          i_hash = {
+            inputId: i.id,
+            outputId: i.output_id.to_i,
+            signature: i.signature,
+          }
+
+          t_hash["inputs"] = [i_hash]
+        end
 
         o = t.outputs.first
-        o_hash = {
-          outputId: o.id,
-          creatorAddress: o.creator_address,
-          amount: o.amount,
-          address: o.address,
-          inputId: "0",
-        }
+        if o.blank?
+          t_hash["outputs"] = []
+        else
+          o_hash = {
+            outputId: o.id,
+            creatorAddress: o.creator_address,
+            amount: o.amount,
+            address: o.address,
+            inputId: o.input_id,
+          }
 
-        t_hash["outputs"] = [o_hash]
+          t_hash["outputs"] = [o_hash]
+        end
 
         transaction_hash[:transactionList] << t_hash
       end
@@ -107,8 +126,8 @@ module Backend
     end
 
     def save_transaction transaction_json
-      parsed_transaction = JSON.parse(transaction_json)
 
+      parsed_transaction = JSON.parse(transaction_json)
 
       creation_json = parsed_transaction["creations"]
       input_json = parsed_transaction["inputs"]
@@ -131,7 +150,15 @@ module Backend
       end
 
       unless input_json.blank?
-        # TODO senere
+        input_json = input_json.first
+
+        input.output_id = input_json["outputId"].to_i
+        input.signature = input_json["signature"]
+        input.save
+
+        o = Output.find(input.output_id)
+        o.input_id = input.id
+        o.save
         #input.save
       end
 
@@ -143,13 +170,14 @@ module Backend
         output.creator_address = output_json["creatorAddress"]
         output.amount = output_json["amount"].to_i
         output.address = output_json["address"]
+        output.input_id = 0
         # TODO Add input når relevant
         output.save
       end
 
-      transaction.creations << creation
-      #transaction.input << input
-      transaction.outputs << output
+      transaction.creations << creation if creation.id
+      transaction.inputs << input if input.id
+      transaction.outputs << output if output.id
       @transaction = transaction
       @transaction.save
     end

@@ -58,6 +58,7 @@
       <tr>
         <th>id</th>
         <th>creation creatorAddress</th>
+        <th>owner</th>
         <th colspan="3"></th>
       </tr>
     </thead>
@@ -66,8 +67,9 @@
       <% @transactions["transactionList"].each do |transaction| %>
         <tr>
           <td><%= transaction["transactionId"] %></td>
-          <td><%= transaction["creations"][0]["creatorAddress"] %></td>
-          <td><input type="text" name="fname"> <%= link_to 'Issue', transaction, class: "btn btn-primary" %><td>
+          <td><%= transaction["creations"][0]["creatorAddress"] if !transaction["creations"].empty? %></td>
+          <td><%= "Gifted" if !transaction["inputs"].empty? && transaction["inputs"][0]["outputId"] %></td>
+          <td><%= render 'issue_form' %><td>
           <td><%= link_to 'Show', '#', class: "btn btn-warning" %></td>
           <td><%= link_to 'Destroy', '#', class: "btn btn-danger", method: :delete, data: { confirm: 'Are you sure?' } %></td>
         </tr>

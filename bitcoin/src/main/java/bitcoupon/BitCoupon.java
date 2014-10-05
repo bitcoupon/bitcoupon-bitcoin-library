@@ -12,23 +12,29 @@ public class BitCoupon {
 
   public static Transaction generateSendTransaction(String strPrivateKey, String creatorAddress, String receiverAddress,
                                                     TransactionHistory transactionHistory) {
+
+    // Lists for creations, inputs and outputs in the transaction
     List<Creation> creations = new ArrayList<Creation>();
     List<Input> inputs = new ArrayList<Input>();
     List<Output> outputs = new ArrayList<Output>();
 
+    // Get sender address from private key
     BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
     byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
     String senderAddress = Bitcoin.publicKeyToAddress(publicKey);
 
+    // Variable for counting number of coupons in referred transaction outputs
     int couponsInInputs = 0;
 
+    // Find previous transaction outputs to refer to
     Iterator<Transaction> transactionIterator = transactionHistory.iterator();
     while (transactionIterator.hasNext() && couponsInInputs < 1) {
       Transaction transaction = transactionIterator.next();
       Iterator<Output> outputIterator = transaction.getOutputs().iterator();
       while (outputIterator.hasNext() && couponsInInputs < 1) {
         Output output = outputIterator.next();
-        if (output.getCreatorAddress().equals(creatorAddress) && output.getAddress().equals(senderAddress) && output.getInputId() == 0) {
+        if (output.getCreatorAddress().equals(creatorAddress) && output.getAddress().equals(senderAddress)
+            && output.getInputId() == 0) {
           Input input = new Input(output.getOutputId());
           inputs.add(input);
           couponsInInputs += output.getAmount();
@@ -36,19 +42,26 @@ public class BitCoupon {
       }
     }
 
-    if (inputs.size() == 0) {
+    // Check if enough coupons are available
+    if (couponsInInputs >= 1) {
       throw new IllegalArgumentException();
     }
 
+    // Set that 1 coupon should be sent to receiver address
     Output output = new Output(creatorAddress, 1, receiverAddress);
     outputs.add(output);
 
-    Output changeOutput = new Output(creatorAddress, couponsInInputs - 1, senderAddress);
-    outputs.add(changeOutput);
+    // Send remaining coupons in referred transaction outputs back to the user as change
+    if (couponsInInputs > 1) {
+      Output changeOutput = new Output(creatorAddress, couponsInInputs - 1, senderAddress);
+      outputs.add(changeOutput);
+    }
 
+    // Create transaction, sign it and return it
     Transaction transaction = new Transaction(creations, inputs, outputs);
     transaction.signTransaction(privateKey);
     return transaction;
+
   }
 
   public static List<String> getCreatorAddresses(String strPrivateKey, TransactionHistory transactionHistory) {
@@ -87,19 +100,25 @@ public class BitCoupon {
 
   public static Transaction generateCreationTransaction(String strPrivateKey) {
 
+    // Lists for creations, inputs and outputs in the transaction
     List<Creation> creations = new ArrayList<>();
     List<Input> inputs = new ArrayList<>();
     List<Output> outputs = new ArrayList<>();
 
+    // Get address from private key
     BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
     byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
     String address = Bitcoin.publicKeyToAddress(publicKey);
 
+    // Create 1 coupon
     Creation creation = new Creation(address, 1);
     creations.add(creation);
+
+    // Send the coupon to the creator
     Output output = new Output(address, 1, address);
     outputs.add(output);
 
+    // Create transaction, sign it and return it
     Transaction transaction = new Transaction(creations, inputs, outputs);
     transaction.signTransaction(privateKey);
     return transaction;
@@ -114,4 +133,5 @@ public class BitCoupon {
     boolean amountIsValid = transaction.verifyAmount(transactionHistory);
     return (inputIsValid && signatureIsValid && amountIsValid);
   }
+
 }

@@ -1,3 +1,5 @@
+require 'shellwords'
+
 class TransactionsController < ApplicationController
   before_filter :set_stuff
 
@@ -72,6 +74,33 @@ class TransactionsController < ApplicationController
     #render json: "#{@output}\n\n\n#{@json}"
   end
 
+  def generate_send
+    params
+
+    private_key = "5JAy2V6vCJLQnD8rdvB2pF8S6bFZuhEzQ43D95k6wjdVQ4ipMYu"
+    creator_public_key = "138u97o2Sv5qUmucSasmeNf5CAb3B1CmD6"
+
+    #binding.pry
+    transaction_history = Shellwords.escape get_transaction_history.to_s
+
+    receiver_address = params["receiver_address"] # 1Kau4L6BM1h6QzLYubq1qWrQSjWdZFQgMb
+
+    command = "java -jar ../bitcoin/bitcoin-1.0.jar"
+    method = "generateSendTransaction"
+
+    output = %x{ #{command} #{method} #{private_key} #{creator_public_key} #{transaction_history} #{receiver_address} }
+    if output.blank?
+      render text: "Something went wrong" and return
+    end
+
+    id = verify_transaction output
+
+    # Name: generateSendTransaction - Argumentss: String privateKey, String creatorPublicKey
+    #                             , String transactionHistoryJson, String receiverAddress
+    #binding.pry
+    redirect_to root_path
+  end
+
   private
 
   def set_stuff
@@ -80,6 +109,20 @@ class TransactionsController < ApplicationController
 
     @method_name = 'generateCreationTransaction'
     @private_key = '5JAy2V6vCJLQnD8rdvB2pF8S6bFZuhEzQ43D95k6wjdVQ4ipMYu'
+  end
+
+  def get_transaction_history
+    api = "http://localhost:3002/backend"
+    path = "/transaction_history"
+    uri = URI.parse(api + path)
+    request = Net::HTTP::Get.new(uri.path)
+
+    result = Net::HTTP.start(uri.hostname, uri.port) {|http|
+      http.request(request)
+    }
+
+    token = result.header["token"]
+    @transactions = JSON.parse(result.body)
   end
 
   def verify_transaction output
