@@ -10,7 +10,7 @@ import java.util.List;
 public class TransactionList {
 
 
-  private List<Transaction> transactionList;
+  private final List<Transaction> transactionList;
 
   public TransactionList(List<Transaction> transactionList) {
     this.transactionList = transactionList;

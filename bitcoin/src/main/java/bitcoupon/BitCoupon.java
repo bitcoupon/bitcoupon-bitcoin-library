@@ -11,9 +11,9 @@ public class BitCoupon {
 
   public static Transaction generateSendTransaction(String strPrivateKey, String creatorAddress, String receiverAddress,
                                                     List<Transaction> transactionHistory) {
-    List<Creation> creations = new ArrayList<Creation>();
-    List<Input> inputs = new ArrayList<Input>();
-    List<Output> outputs = new ArrayList<Output>();
+    List<Creation> creations = new ArrayList<>();
+    List<Input> inputs = new ArrayList<>();
+    List<Output> outputs = new ArrayList<>();
 
     BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
     byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
@@ -44,7 +44,7 @@ public class BitCoupon {
 
   public static List<String> getCreatorAddresses(String strPrivateKey, List<Transaction> transactionHistory) {
     if (DEBUG) {
-      List<String> debugList = new ArrayList<String>();
+      List<String> debugList = new ArrayList<>();
       debugList.add("1Epd2EJNW7H6ecufQnRzR54maU42AJMNmk");
       debugList.add("1PWUsWjxxex9mgVBD5wWcDc8VYxZabVjSB");
     }
@@ -54,9 +54,9 @@ public class BitCoupon {
 
   public static Transaction generateCreationTransaction(String strPrivateKey) {
 
-    List<Creation> creations = new ArrayList<Creation>();
-    List<Input> inputs = new ArrayList<Input>();
-    List<Output> outputs = new ArrayList<Output>();
+    List<Creation> creations = new ArrayList<>();
+    List<Input> inputs = new ArrayList<>();
+    List<Output> outputs = new ArrayList<>();
 
     BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
     byte[] publicKey = Bitcoin.generatePublicKey(privateKey);

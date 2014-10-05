@@ -4,8 +4,8 @@ import java.io.ByteArrayOutputStream;
 
 public class Input {
 
-  private long inputId;
-  private long outputId;
+  private final long inputId;
+  private final long outputId;
   private String signature;
 
   Input(long outputId) {

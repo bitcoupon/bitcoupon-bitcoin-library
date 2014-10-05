@@ -5,9 +5,9 @@ import java.io.UnsupportedEncodingException;
 
 public class Creation {
 
-  private long creationId;
-  private String creatorAddress;
-  private int amount;
+  private final long creationId;
+  private final String creatorAddress;
+  private final int amount;
   private String signature;
 
   Creation(String creatorAddress, int amount) {

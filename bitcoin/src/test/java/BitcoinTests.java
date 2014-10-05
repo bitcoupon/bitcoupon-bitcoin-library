@@ -25,7 +25,7 @@ public class BitcoinTests {
     Transaction trans3 = BitCoupon.generateCreationTransaction("5JcK7bvAFjCwTcERJsbRetGkwmqA8BuydVFRffrQj3LjuqWsTy5");
     Transaction trans4 = BitCoupon.generateCreationTransaction("5JcG67FmXQtfjEJJd6To8988WqH7X5byXQPqbCYjh9RS27bdNMA");
 
-    List<Transaction> transactionList = new ArrayList<Transaction>();
+    List<Transaction> transactionList = new ArrayList<>();
     transactionList.add(trans2);
     transactionList.add(trans3);
     transactionList.add(trans4);
@@ -37,7 +37,7 @@ public class BitcoinTests {
 
   @Test
   public void test_TransactionCreation() {
-    Map<String, Boolean> privateKeys = new HashMap<String, Boolean>();
+    Map<String, Boolean> privateKeys = new HashMap<>();
     privateKeys.put("5Kf9gd8faKhhq9jZTsNhq2MtViHA1dWdhRg9k4ovszTKz5DCeBT", true);
     privateKeys.put("5K4gQUNnxuJe1gtbCp4qrGysRXVdGE9jZW1vJZ1jdFzV6W93QDP", true);
     privateKeys.put("5JcK7bvAFjCwTcERJsbRetGkwmqA8BuydVFRffrQj3LjuqWsTy5", true);

@@ -30,10 +30,10 @@ public class Transaction {
         new ECDomainParameters(params.getCurve(), params.getG(), params.getN(), params.getH(), params.getSeed());
   }
 
-  private long transactionId;
-  private List<Creation> creations;
-  private List<Input> inputs;
-  private List<Output> outputs;
+  private final long transactionId;
+  private final List<Creation> creations;
+  private final List<Input> inputs;
+  private final List<Output> outputs;
 
   Transaction(List<Creation> creations, List<Input> inputs, List<Output> outputs) {
     this.transactionId = 0;
@@ -157,7 +157,7 @@ public class Transaction {
     }
 
     // Put all outputs in the transaction history in a hash map for fast access
-    HashMap<Long, Output> outputMap = new HashMap<Long, Output>();
+    HashMap<Long, Output> outputMap = new HashMap<>();
     for (int i = 0; i < transactionHistory.size(); i++) {
       List<Output> outputHistory = transactionHistory.get(i).getOutputs();
       for (int j = 0; j < outputHistory.size(); j++) {
@@ -208,7 +208,7 @@ public class Transaction {
   boolean verifyInput(List<Transaction> transactionHistory) {
 
     // Put all outputs in the transaction history in a hash map for fast access
-    HashMap<Long, Output> outputMap = new HashMap<Long, Output>();
+    HashMap<Long, Output> outputMap = new HashMap<>();
     for (int i = 0; i < transactionHistory.size(); i++) {
       List<Output> outputHistory = transactionHistory.get(i).getOutputs();
       for (int j = 0; j < outputHistory.size(); j++) {
@@ -233,7 +233,7 @@ public class Transaction {
   boolean verifyAmount(List<Transaction> transactionHistory) {
 
     // Map for counting coupons available in this transaction
-    HashMap<String, Integer> availableCoupons = new HashMap<String, Integer>();
+    HashMap<String, Integer> availableCoupons = new HashMap<>();
 
     // Count the number of coupons created in this transaction
     for (int i = 0; i < creations.size(); i++) {
@@ -247,7 +247,7 @@ public class Transaction {
     }
 
     // Put all outputs in the transaction history in a hash map for fast access
-    HashMap<Long, Output> outputMap = new HashMap<Long, Output>();
+    HashMap<Long, Output> outputMap = new HashMap<>();
     for (int i = 0; i < transactionHistory.size(); i++) {
       List<Output> outputHistory = transactionHistory.get(i).getOutputs();
       for (int j = 0; j < outputHistory.size(); j++) {
@@ -269,7 +269,7 @@ public class Transaction {
     }
 
     // Map for counting coupons spent by this transaction
-    HashMap<String, Integer> spentCoupons = new HashMap<String, Integer>();
+    HashMap<String, Integer> spentCoupons = new HashMap<>();
 
     // Count the number of coupons spent by this transaction
     for (int i = 0; i < outputs.size(); i++) {

@@ -32,7 +32,7 @@ public class Bitcoin {
         new ECDomainParameters(params.getCurve(), params.getG(), params.getN(), params.getH(), params.getSeed());
   }
 
-  static BigInteger decodePrivateKey(String encodedPrivateKey) {
+  public static BigInteger decodePrivateKey(String encodedPrivateKey) {
     byte[] data = decodeBase58(encodedPrivateKey);
     if (data != null && data.length == 33 && (data[0] & 0xff) == 0x80) {
       byte[] decodedPrivateKey = new byte[32];
@@ -42,18 +42,18 @@ public class Bitcoin {
     throw new IllegalArgumentException();
   }
 
-  static byte[] generatePublicKey(BigInteger privateKey) {
+  public static byte[] generatePublicKey(BigInteger privateKey) {
     return EC_PARAMS.getG().multiply(privateKey).getEncoded();
   }
 
-  static String publicKeyToAddress(byte[] publicKey) {
+  public static String publicKeyToAddress(byte[] publicKey) {
     byte[] hashedPublicKey = hash160(publicKey);
     byte[] data = new byte[hashedPublicKey.length + 1];
     System.arraycopy(hashedPublicKey, 0, data, 1, hashedPublicKey.length);
     return encodeBase58(data);
   }
 
-  static byte[] hash256(byte[] bytes) {
+  public static byte[] hash256(byte[] bytes) {
     SHA256Digest firstDigest = new SHA256Digest();
     firstDigest.update(bytes, 0, bytes.length);
     byte[] firstHash = new byte[32];
@@ -65,7 +65,7 @@ public class Bitcoin {
     return secondHash;
   }
 
-  static byte[] hash160(byte[] bytes) {
+  public static byte[] hash160(byte[] bytes) {
     SHA256Digest firstDigest = new SHA256Digest();
     firstDigest.update(bytes, 0, bytes.length);
     byte[] firstHash = new byte[32];
@@ -77,7 +77,7 @@ public class Bitcoin {
     return secondHash;
   }
 
-  static String encodeBase58(byte[] data) {
+  public static String encodeBase58(byte[] data) {
     byte[] checksum = hash256(data);
     byte[] bytes = new byte[data.length + 4];
     System.arraycopy(data, 0, bytes, 0, data.length);
@@ -98,7 +98,7 @@ public class Bitcoin {
     return string;
   }
 
-  static byte[] decodeBase58(String string) {
+  public static byte[] decodeBase58(String string) {
     if (string == null) {
       throw new IllegalArgumentException();
     }
@@ -136,7 +136,7 @@ public class Bitcoin {
     return data;
   }
 
-  static byte[] intToByteArray(int i) {
+  public static byte[] intToByteArray(int i) {
     return new byte[]{(byte) ((i >> 24) & 0xff), //
                       (byte) ((i >> 16) & 0xff), //
                       (byte) ((i >> 8) & 0xff), //
@@ -144,7 +144,7 @@ public class Bitcoin {
     };
   }
 
-  static byte[] longToByteArray(long l) {
+  public static byte[] longToByteArray(long l) {
     return new byte[]{(byte) ((l >> 56) & 0xff), //
                       (byte) ((l >> 48) & 0xff), //
                       (byte) ((l >> 40) & 0xff), //

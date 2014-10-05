@@ -5,11 +5,11 @@ import java.io.UnsupportedEncodingException;
 
 public class Output {
 
-  private long outputId;
-  private String creatorAddress;
-  private int amount;
-  private String address;
-  private long inputId;
+  private final long outputId;
+  private final String creatorAddress;
+  private final int amount;
+  private final String address;
+  private final long inputId;
 
   Output(String creatorAddress, int amount, String address) {
     this.outputId = 0;
