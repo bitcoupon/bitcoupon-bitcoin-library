@@ -17,12 +17,13 @@ class ApiTest < ActionDispatch::IntegrationTest
     end
 
     body = JSON.parse(result.body)
-    result = body["coupons"]
+    result = body["pubkey"]
+
+    assert result.eql?(@pubkey)
 
     #assert body["pubkey"].eql?(@pubkey)
     #result = "{\"coupons\":#{result.to_json}}"
-
-    assert result.first["title"].length > 0
-    assert result.first["id"].class.eql?(Fixnum)
+    #assert result.first["title"].length > 0
+    #assert result.first["id"].class.eql?(Fixnum)
   end
 end
