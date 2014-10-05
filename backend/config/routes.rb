@@ -6,6 +6,9 @@ Rails.application.routes.draw do
     get "coupon/:id", to: "coupons#show"
     delete "coupon/:id", to: "coupons#destroy"
 
+    post "verify_transaction", to: "transactions#verify"
+    get "transaction_history", to: "transactions#history"
+    get "creator_public_key", to: "transactions#creator_public_key"
   end
 
   root "backend/coupons#index"

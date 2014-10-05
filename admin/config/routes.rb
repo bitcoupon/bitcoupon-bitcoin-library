@@ -10,5 +10,5 @@ Rails.application.routes.draw do
 
   get "generate_creation_transaction", to: "transactions#generate_creation"
 
-  root "users#index"
+  root "admin/coupons#index"
 end
