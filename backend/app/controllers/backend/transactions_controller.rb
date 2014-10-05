@@ -6,9 +6,22 @@ module Backend
     skip_before_filter :verify_authenticity_token, :only => [:verify]
 
     def verify
-      result = verify_transaction params[:transaction], transaction_history
+      #{"creations"=>nil, "inputs"=>[{"signature"=>"5fRnXJUWBE3TtiWjDNjD2se3QXrX9D9yxKoxSbagUWwcjMFWAWa39iHPKZD2t3dfbaGSk4yt1JqVAcd37t55QPXpC3bNb4dU8toEFPUE 3Q4aB3XMvzGpj27JNk31cWaTVMp82YokPdXYZeYu3YdxzJU4aisesNHUuT2waDCpjUPwko7ruEQQ75zcRHHyEQ8PhcVFWm", "outputId"=>7, "inputId"=>0}], "outputs"=>[{"address"=>"1Kau4L6BM1h6QzLYubq1qWrQSjWdZFQgMb", "creatorAddress"=>"138u97o2Sv5qUmucSasmeNf5CAb3B1CmD6", "outputId"=>0, "inputId"=>0, "amount"=>1}], "transactionId"=>0, "transaction"=>{}}
+      transaction = if params["transaction"].blank?
+        hash = {}
+        hash ["transaction"] = {
+          "creations" => params["creations"],
+          "inputs" => params["inputs"],
+          "outputs" => params["outputs"],
+        }
+        hash
+      else
+        params[:transaction]
+      end
 
-      if save_transaction params[:transaction]
+      result = verify_transaction transaction, transaction_history
+
+      if save_transaction transaction
         response.headers["id"] = @transaction.id.to_s
         render json: @transaction
       else
