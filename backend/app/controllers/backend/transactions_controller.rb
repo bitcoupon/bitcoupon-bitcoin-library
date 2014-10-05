@@ -10,6 +10,7 @@ module Backend
       transaction = params[:transaction]
 
       unless transaction.class.eql?(String)
+        transaction["creations"]=[] if transaction["creations"].nil? # WOW, such ugly # TODO Patrick should never send nil
         transaction = transaction.to_json.to_s
       end
 
