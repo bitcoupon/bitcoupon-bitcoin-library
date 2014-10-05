@@ -12,31 +12,39 @@ public class BitCoupon {
 
   public static Transaction generateSendTransaction(String strPrivateKey, String creatorAddress, String receiverAddress,
                                                     TransactionHistory transactionHistory) {
-    List<Creation> creations = new ArrayList<>();
-    List<Input> inputs = new ArrayList<>();
-    List<Output> outputs = new ArrayList<>();
+    List<Creation> creations = new ArrayList<Creation>();
+    List<Input> inputs = new ArrayList<Input>();
+    List<Output> outputs = new ArrayList<Output>();
 
     BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
     byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
-    String address = Bitcoin.publicKeyToAddress(publicKey);
+    String senderAddress = Bitcoin.publicKeyToAddress(publicKey);
 
-    for (int i = 0; i < transactionHistory.size() && inputs.size() == 0; i++) {
-      List<Output> outputHistory = transactionHistory.get(i).getOutputs();
-      for (int j = 0; j < outputHistory.size() && inputs.size() == 0; j++) {
-        Output output = outputHistory.get(i);
-        if (output.getAddress().equals(address) && output.getInputId() == 0 && output.getCreatorAddress()
-            .equals(creatorAddress) && output.getAmount() == 1) {
+    int couponsInInputs = 0;
+
+    Iterator<Transaction> transactionIterator = transactionHistory.iterator();
+    while (transactionIterator.hasNext() && couponsInInputs < 1) {
+      Transaction transaction = transactionIterator.next();
+      Iterator<Output> outputIterator = transaction.getOutputs().iterator();
+      while (outputIterator.hasNext() && couponsInInputs < 1) {
+        Output output = outputIterator.next();
+        if (output.getCreatorAddress().equals(creatorAddress) && output.getAddress().equals(senderAddress) && output.getInputId() == 0) {
           Input input = new Input(output.getOutputId());
           inputs.add(input);
+          couponsInInputs += output.getAmount();
         }
       }
     }
+
     if (inputs.size() == 0) {
       throw new IllegalArgumentException();
     }
 
     Output output = new Output(creatorAddress, 1, receiverAddress);
     outputs.add(output);
+
+    Output changeOutput = new Output(creatorAddress, couponsInInputs - 1, senderAddress);
+    outputs.add(changeOutput);
 
     Transaction transaction = new Transaction(creations, inputs, outputs);
     transaction.signTransaction(privateKey);
@@ -62,7 +70,7 @@ public class BitCoupon {
         Output output = outputIterator.next();
 
         // Check if output is addressed to this user
-        if (output.getAddress().equals(address)) {
+        if (output.getAddress().equals(address) && output.getInputId() == 0) {
 
           // Add the coupons in the output to the list of creator addresses
           for (int i = 0; i < output.getAmount(); i++) {
