@@ -53,7 +53,7 @@ module Backend
     def verify_transaction transaction_json, transaction_history_json
       set_stuff
       method = "verifyTransaction"
-      arg_one = Shellwords.escape transaction_json
+      arg_one = Shellwords.escape transaction_json.chomp
       arg_two = Shellwords.escape transaction_history_json
       output = %x{ #{@command} #{method} #{arg_one} #{arg_two} }
 
