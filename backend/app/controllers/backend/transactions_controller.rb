@@ -22,7 +22,7 @@ module Backend
 
     def creator_public_key
       command = "java -jar ../bitcoin/bitcoin-1.0.jar"
-      method = "getCreatorPublicKeys"
+      method = "getCreatorAddresses"
       arg_one = "5JAy2V6vCJLQnD8rdvB2pF8S6bFZuhEzQ43D95k6wjdVQ4ipMYu"
       arg_two = Shellwords.escape transaction_history
       #output = %x{ #{command} #{method} #{arg_one} #{arg_two} }

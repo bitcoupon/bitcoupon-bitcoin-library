@@ -19,7 +19,7 @@ module Admin
 
       transactions = JSON.parse(result.body)
 
-      #Name: getCreatorPublicKeys - Argumentss: String privateKey, String transactionHistoryJson
+      #Name: getCreatorAddresses - Argumentss: String privateKey, String transactionHistoryJson
 
       private_key = "5JAy2V6vCJLQnD8rdvB2pF8S6bFZuhEzQ43D95k6wjdVQ4ipMYu"
       transaction_history_json = transactions.to_s
@@ -28,7 +28,7 @@ module Admin
       transaction_history = Shellwords.escape transaction_history_json
 
       command = "java -jar ../bitcoin/bitcoin-1.0.jar"
-      method = "getCreatorPublicKeys"
+      method = "getCreatorAddresses"
 
       output = %x{ #{command} #{method} #{private_key} #{transaction_history} }
 
