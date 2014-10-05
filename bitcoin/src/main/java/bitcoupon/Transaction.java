@@ -332,4 +332,7 @@ public class Transaction {
     return new Gson().toJson(transaction, Transaction.class);
   }
 
+  public long getId() {
+    return transactionId;
+  }
 }
