@@ -12,16 +12,21 @@ public class BitCoupon {
 
   public static Transaction generateSendTransaction(String strPrivateKey, String creatorAddress, String receiverAddress,
                                                     TransactionHistory transactionHistory) {
+
+    // Lists for creations, inputs and outputs in the transaction
     List<Creation> creations = new ArrayList<Creation>();
     List<Input> inputs = new ArrayList<Input>();
     List<Output> outputs = new ArrayList<Output>();
 
+    // Get sender address from private key
     BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
     byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
     String senderAddress = Bitcoin.publicKeyToAddress(publicKey);
 
+    // Variable for counting number of coupons in referred transaction outputs
     int couponsInInputs = 0;
 
+    // Find previous transaction outputs to refer to
     Iterator<Transaction> transactionIterator = transactionHistory.iterator();
     while (transactionIterator.hasNext() && couponsInInputs < 1) {
       Transaction transaction = transactionIterator.next();
@@ -36,19 +41,26 @@ public class BitCoupon {
       }
     }
 
-    if (inputs.size() == 0) {
+    // Check if enough coupons are available
+    if (couponsInInputs >= 1) {
       throw new IllegalArgumentException();
     }
 
+    // Set that 1 coupon should be sent to receiver address
     Output output = new Output(creatorAddress, 1, receiverAddress);
     outputs.add(output);
 
-    Output changeOutput = new Output(creatorAddress, couponsInInputs - 1, senderAddress);
-    outputs.add(changeOutput);
+    // Send remaining coupons in referred transaction outputs back to the user as change
+    if (couponsInInputs > 1) {
+      Output changeOutput = new Output(creatorAddress, couponsInInputs - 1, senderAddress);
+      outputs.add(changeOutput);
+    }
 
+    // Create transaction, sign it and return it
     Transaction transaction = new Transaction(creations, inputs, outputs);
     transaction.signTransaction(privateKey);
     return transaction;
+
   }
 
   public static List<String> getCreatorAddresses(String strPrivateKey, TransactionHistory transactionHistory) {
