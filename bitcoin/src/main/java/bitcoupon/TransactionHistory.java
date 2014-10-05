@@ -9,12 +9,12 @@ import java.util.List;
 /**
  * Created by Patrick on 30.09.2014.
  */
-public class TransactionList implements Iterable<Transaction> {
+public class TransactionHistory implements Iterable<Transaction> {
 
 
   private final List<Transaction> transactionList;
 
-  public TransactionList(List<Transaction> transactionList) {
+  public TransactionHistory(List<Transaction> transactionList) {
     this.transactionList = transactionList;
   }
 
@@ -98,15 +98,15 @@ public class TransactionList implements Iterable<Transaction> {
 //    ]
 //  }
   public static String toJson(List<Transaction> transactionList) {
-    return new Gson().toJson(new TransactionList(transactionList), TransactionList.class);
+    return new Gson().toJson(new TransactionHistory(transactionList), TransactionHistory.class);
   }
 
-  private static TransactionList fromJson(BufferedReader reader) {
-    return new Gson().fromJson(reader, TransactionList.class);
+  private static TransactionHistory fromJson(BufferedReader reader) {
+    return new Gson().fromJson(reader, TransactionHistory.class);
   }
 
-  public static TransactionList fromJson(String json) {
-    return new Gson().fromJson(json, TransactionList.class);
+  public static TransactionHistory fromJson(String json) {
+    return new Gson().fromJson(json, TransactionHistory.class);
   }
 
   @Override
