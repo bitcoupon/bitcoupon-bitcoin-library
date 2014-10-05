@@ -2,6 +2,7 @@ package bitcoupon;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class BitCoupon {
@@ -43,12 +44,37 @@ public class BitCoupon {
   }
 
   public static List<String> getCreatorAddresses(String strPrivateKey, TransactionHistory transactionHistory) {
-    if (DEBUG) {
-      List<String> debugList = new ArrayList<>();
-      debugList.add("138u97o2Sv5qUmucSasmeNf5CAb3B1CmD6");
+
+    // Get address from private key
+    BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
+    byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
+    String address = Bitcoin.publicKeyToAddress(publicKey);
+
+    // Create list for creator addresses
+    ArrayList<String> creatorAddresses = new ArrayList<String>();
+
+    // For every output in every transaction
+    Iterator<Transaction> transactionIterator = transactionHistory.iterator();
+    while (transactionIterator.hasNext()) {
+      Transaction transaction = transactionIterator.next();
+      Iterator<Output> outputIterator = transaction.getOutputs().iterator();
+      while (outputIterator.hasNext()) {
+        Output output = outputIterator.next();
+
+        // Check if output is addressed to this user
+        if (output.getAddress().equals(address)) {
+
+          // Add the coupons in the output to the list of creator addresses
+          for (int i = 0; i < output.getAmount(); i++) {
+            creatorAddresses.add(output.getCreatorAddress());
+          }
+        }
+      }
     }
 
-    return null;
+    // Return creator addresses for the coupons this user owns
+    return creatorAddresses;
+
   }
 
   public static Transaction generateCreationTransaction(String strPrivateKey) {
