@@ -59,7 +59,15 @@ public class MainActivity extends BaseActivity implements CouponListFragmentList
         for (String couponAddress : creatorAddresses) {
           if (couponAddress.equalsIgnoreCase(coupon.getCouponAddress())) {
             creatorAddress = couponAddress;
+            break;
           }
+        }
+
+        // if no coupon with that address was found, display an error and return
+        if (creatorAddress == null) {
+          displayToast("Invalid coupon!");
+          getFragmentManager().popBackStack();
+          return;
         }
 
         // Generate the send transaction object

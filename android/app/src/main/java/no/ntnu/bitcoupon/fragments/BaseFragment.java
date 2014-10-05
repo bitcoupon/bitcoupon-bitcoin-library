@@ -42,7 +42,7 @@ public abstract class BaseFragment extends Fragment {
     getBaseActivity().displayInputDialog(title, desc, listener);
   }
 
-  public String getInputText(){
-return     getBaseActivity().getInputText();
+  public String getInputText() {
+    return getBaseActivity().getInputText();
   }
 }

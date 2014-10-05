@@ -24,7 +24,7 @@ public class Coupon {
   private long created;
   private long modified;
 
-  public Coupon(String couponAddress) {
+  public Coupon(int couponNumber, String couponAddress) {
     this.couponAddress = couponAddress;
     this.created = System.currentTimeMillis();
   }
@@ -59,7 +59,7 @@ public class Coupon {
 
 
   public static Coupon createDummy() {
-    Coupon dummy = new Coupon("1Kau4L6BM1h6QzLYubq1qWrQSjWdZFQgMb");
+    Coupon dummy = new Coupon(999, "1Kau4L6BM1h6QzLYubq1qWrQSjWdZFQgMb");
     dummy.id = String.valueOf((int) (Math.random() * 1000));
     dummy.description = "This is the dummy coupons' description!";
     dummy.title = "Dummy coupon";

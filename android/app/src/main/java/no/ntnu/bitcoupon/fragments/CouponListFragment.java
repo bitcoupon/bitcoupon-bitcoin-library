@@ -152,8 +152,9 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
       public void onComplete(int statusCode, TransactionHistory transactionHistory) {
         List<String> addresses = BitCoupon.getCreatorAddresses(Network.PRIVATE_KEY, transactionHistory);
         couponAdapter.clear();
+        int index = 1;
         for (String couponAddress : addresses) {
-          couponAdapter.add(new Coupon(couponAddress));
+          couponAdapter.add(new Coupon(index++, couponAddress));
         }
         couponAdapter.notifyDataSetChanged();
 

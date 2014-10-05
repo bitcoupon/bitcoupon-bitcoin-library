@@ -33,7 +33,7 @@ import no.ntnu.bitcoupon.models.CouponList;
  */
 public class Network {
 
-  public static final String PRIVATE_KEY = "5K2RmiXi23ZgLK3QLTkzV2BP5VitbAyLMjYLVqJ2xYy5exSJJh2";
+  public static final String PRIVATE_KEY = "5JAy2V6vCJLQnD8rdvB2pF8S6bFZuhEzQ43D95k6wjdVQ4ipMYu";
   public static final String CREATOR_ADDRESS = "1Kau4L6BM1h6QzLYubq1qWrQSjWdZFQgMb";
   public static final String API_ROOT = "http://bitcoupon.no-ip.org:3002/backend/";
   public static final String API_COUPONS = "coupons/";
@@ -241,7 +241,8 @@ public class Network {
           post.addHeader(getRequestTokenHeader());
 
           post.addHeader("Content-type", "application/json");
-          post.setEntity(new StringEntity(Transaction.toJson(transaction), "UTF-8"));
+          String transactionJson = Transaction.toJson(transaction);
+          post.setEntity(new StringEntity(transactionJson, "UTF-8"));
           HttpClient httpClient = new DefaultHttpClient();
           response = httpClient.execute(post);
 
