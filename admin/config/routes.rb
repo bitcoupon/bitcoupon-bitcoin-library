@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   end
 
   get "generate_creation_transaction", to: "transactions#generate_creation"
+  post "generate_send_transaction", to: "transactions#generate_send"
 
   root "admin/coupons#index"
 end
