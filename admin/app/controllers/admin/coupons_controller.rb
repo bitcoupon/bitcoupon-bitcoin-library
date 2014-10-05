@@ -5,6 +5,18 @@ module Admin
     def index
       request = Admin::Bitcoupon::Api::BackendRequest.new "/coupons"
       @result = request.start
+      
+      api = "http://localhost:3002/backend"
+      path = "/transaction_history"
+      uri = URI.parse(api + path)
+      request = Net::HTTP::Get.new(uri.path)
+
+      result = Net::HTTP.start(uri.hostname, uri.port) {|http|
+        http.request(request)
+      }
+
+      token = result.header["token"]
+      @transactions = JSON.parse(result.body)
     end
 
     def show
