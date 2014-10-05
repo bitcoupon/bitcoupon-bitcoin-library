@@ -7,16 +7,7 @@ module Backend
 
     def verify
       #{"creations"=>nil, "inputs"=>[{"signature"=>"5fRnXJUWBE3TtiWjDNjD2se3QXrX9D9yxKoxSbagUWwcjMFWAWa39iHPKZD2t3dfbaGSk4yt1JqVAcd37t55QPXpC3bNb4dU8toEFPUE 3Q4aB3XMvzGpj27JNk31cWaTVMp82YokPdXYZeYu3YdxzJU4aisesNHUuT2waDCpjUPwko7ruEQQ75zcRHHyEQ8PhcVFWm", "outputId"=>7, "inputId"=>0}], "outputs"=>[{"address"=>"1Kau4L6BM1h6QzLYubq1qWrQSjWdZFQgMb", "creatorAddress"=>"138u97o2Sv5qUmucSasmeNf5CAb3B1CmD6", "outputId"=>0, "inputId"=>0, "amount"=>1}], "transactionId"=>0, "transaction"=>{}}
-      transaction = if params["transaction"].blank?
-        hash = {}
-        hash ["transaction"] = {
-          "creations" => params["creations"],
-          "inputs" => params["inputs"],
-          "outputs" => params["outputs"],
-        }
-        hash
-      else
-        params[:transaction]
+      transaction = params[:transaction]
       end
 
       result = verify_transaction transaction, transaction_history
@@ -63,7 +54,7 @@ module Backend
     def verify_transaction transaction_json, transaction_history_json
       set_stuff
       method = "verifyTransaction"
-      arg_one = Shellwords.escape transaction_json.chomp
+      arg_one = Shellwords.escape transaction_json
       arg_two = Shellwords.escape transaction_history_json
       output = %x{ #{@command} #{method} #{arg_one} #{arg_two} }
 
