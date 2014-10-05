@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import bitcoupon.BitCoupon;
-import bitcoupon.Transaction;
-import bitcoupon.TransactionHistory;
+import bitcoupon.transaction.Transaction;
+import bitcoupon.transaction.TransactionHistory;
 
 /**
  * Created by Patrick on 01.10.2014.

@@ -17,6 +17,7 @@ public class Coupon {
 
   public static final String COUPON_JSON = "coupon_id";
   private static final String TAG = Coupon.class.getSimpleName();
+  private final int couponNumber;
   private final String couponAddress;
   private String title;
   private String description;
@@ -25,6 +26,7 @@ public class Coupon {
   private long modified;
 
   public Coupon(int couponNumber, String couponAddress) {
+    this.couponNumber = couponNumber;
     this.couponAddress = couponAddress;
     this.created = System.currentTimeMillis();
   }
@@ -34,7 +36,7 @@ public class Coupon {
   }
 
   public String getDescription() {
-    return description;
+    return couponAddress;
   }
 
   public DateTime getCreated() {
@@ -50,7 +52,7 @@ public class Coupon {
   }
 
   public String getTitle() {
-    return title;
+    return String.valueOf(couponNumber);
   }
 
   public String getId() {

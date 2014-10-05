@@ -1,4 +1,4 @@
-package bitcoupon;
+package bitcoupon.transaction;
 
 import com.google.gson.Gson;
 
@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import bitcoupon.Bitcoin;
+
 public class Transaction {
 
   private static final ECDomainParameters EC_PARAMS;
@@ -36,7 +38,7 @@ public class Transaction {
   private final List<Input> inputs;
   private final List<Output> outputs;
 
-  Transaction(List<Creation> creations, List<Input> inputs, List<Output> outputs) {
+  public Transaction(List<Creation> creations, List<Input> inputs, List<Output> outputs) {
     this.transactionId = 0;
     this.creations = creations;
     this.inputs = inputs;
@@ -47,7 +49,7 @@ public class Transaction {
     return inputs;
   }
 
-  List<Output> getOutputs() {
+  public List<Output> getOutputs() {
     return outputs;
   }
 
@@ -86,7 +88,7 @@ public class Transaction {
 
   }
 
-  boolean signTransaction(BigInteger privateKey) {
+  public boolean signTransaction(BigInteger privateKey) {
     ECPrivateKeyParameters privateKeyParams = new ECPrivateKeyParameters(privateKey, EC_PARAMS);
     ECDSASigner signer = new ECDSASigner();
     signer.init(true, privateKeyParams);
@@ -116,7 +118,7 @@ public class Transaction {
 
   // This method checks that all signatures in this transactions are correct
   // The transaction history is used to check which signatures are needed to use outputs from previous transactions
-  boolean verifySignatures(TransactionHistory transactionHistory) {
+  public boolean verifySignatures(TransactionHistory transactionHistory) {
 
     // Get a hash of this transaction
     // This is the data that has been signed when the transaction was created
@@ -206,7 +208,7 @@ public class Transaction {
   }
 
   // This method checks that all outputs of previous transactions that are referred to in this transaction is unspent
-  boolean verifyInput(TransactionHistory transactionHistory) {
+  public boolean verifyInput(TransactionHistory transactionHistory) {
 
     // Put all outputs in the transaction history in a hash map for fast access
     HashMap<Long, Output> outputMap = new HashMap<>();
@@ -231,7 +233,7 @@ public class Transaction {
 
   // This method checks that this transaction is not using more coupons than is available
   // Transaction history is used to check the number of coupons available via references to previous transactions
-  boolean verifyAmount(TransactionHistory transactionHistory) {
+  public boolean verifyAmount(TransactionHistory transactionHistory) {
 
     // Map for counting coupons available in this transaction
     HashMap<String, Integer> availableCoupons = new HashMap<>();

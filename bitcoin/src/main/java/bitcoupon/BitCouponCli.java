@@ -2,6 +2,9 @@ package bitcoupon;
 
 import java.util.List;
 
+import bitcoupon.transaction.Transaction;
+import bitcoupon.transaction.TransactionHistory;
+
 /**
  * Created by Patrick on 01.10.2014.
  */

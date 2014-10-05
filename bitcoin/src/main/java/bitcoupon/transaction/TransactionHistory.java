@@ -1,4 +1,4 @@
-package bitcoupon;
+package bitcoupon.transaction;
 
 import com.google.gson.Gson;
 

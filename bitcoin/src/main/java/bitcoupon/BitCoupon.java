@@ -5,6 +5,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import bitcoupon.transaction.Creation;
+import bitcoupon.transaction.Input;
+import bitcoupon.transaction.Output;
+import bitcoupon.transaction.Transaction;
+import bitcoupon.transaction.TransactionHistory;
+
 public class BitCoupon {
 
 
@@ -43,7 +49,7 @@ public class BitCoupon {
     }
 
     // Check if enough coupons are available
-    if (couponsInInputs >= 1) {
+    if (couponsInInputs <= 0) {
       throw new IllegalArgumentException();
     }
 

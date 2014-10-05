@@ -1,22 +1,22 @@
-package bitcoupon;
+package bitcoupon.transaction;
 
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 
-public class Output {
+import bitcoupon.Bitcoin;
 
-  private final long outputId;
+public class Creation {
+
+  private final long creationId;
   private final String creatorAddress;
   private final int amount;
-  private final String address;
-  private final long inputId;
+  private String signature;
 
-  Output(String creatorAddress, int amount, String address) {
-    this.outputId = 0;
+  public Creation(String creatorAddress, int amount) {
+    this.creationId = 0;
     this.creatorAddress = creatorAddress;
     this.amount = amount;
-    this.address = address;
-    this.inputId = 0;
+    this.signature = "";
   }
 
   byte[] getBytes() {
@@ -31,26 +31,12 @@ public class Output {
       byte[] bAmount = Bitcoin.intToByteArray(amount);
       baos.write(bAmount, 0, bAmount.length);
 
-      byte[] bAddress = address.getBytes("UTF-8");
-      byte[] bAddressLength = Bitcoin.intToByteArray(bAddress.length);
-      baos.write(bAddressLength, 0, bAddressLength.length);
-      baos.write(bAddress, 0, bAddress.length);
-
       return baos.toByteArray();
 
     } catch (UnsupportedEncodingException e) {
       e.printStackTrace();
       return null;
     }
-  }
-
-  long getOutputId() {
-    return outputId;
-  }
-
-
-  long getInputId() {
-    return inputId;
   }
 
   String getCreatorAddress() {
@@ -61,9 +47,12 @@ public class Output {
     return amount;
   }
 
-  String getAddress() {
-    return address;
+  void setSignature(String signature) {
+    this.signature = signature;
   }
 
+  String getSignature() {
+    return signature;
+  }
 
 }

@@ -1,6 +1,8 @@
-package bitcoupon;
+package bitcoupon.transaction;
 
 import java.io.ByteArrayOutputStream;
+
+import bitcoupon.Bitcoin;
 
 public class Input {
 
@@ -8,7 +10,7 @@ public class Input {
   private final long outputId;
   private String signature;
 
-  Input(long outputId) {
+  public Input(long outputId) {
     this.inputId = 0;
     this.outputId = outputId;
     this.signature = "";
