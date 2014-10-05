@@ -49,6 +49,7 @@ public class MainActivity extends BaseActivity implements CouponListFragmentList
 
   @Override
   public void spendCoupon(final Coupon coupon) {
+    setLoading(true);
     Network.fetchTransactionHistory(new CouponCallback<TransactionHistory>() {
       @Override
       public void onComplete(int statusCode, TransactionHistory transactionHistory) {
@@ -82,6 +83,7 @@ public class MainActivity extends BaseActivity implements CouponListFragmentList
             displayToast("Transaction: " + response.toString() + " spent!");
             getFragmentManager().popBackStack();
             couponListFragment.removeCoupon(response);
+            couponListFragment.fetchAll();
           }
 
           @Override
@@ -91,12 +93,14 @@ public class MainActivity extends BaseActivity implements CouponListFragmentList
           }
 
         }, transaction);
+        setLoading(false);
 
       }
 
       @Override
       public void onFail(int statusCode) {
         displayToast("Failed to spend coupon with id " + coupon.getId());
+        setLoading(false);
       }
     });
   }

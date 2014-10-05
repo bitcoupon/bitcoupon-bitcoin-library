@@ -1,7 +1,6 @@
 package no.ntnu.bitcoupon.fragments;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,6 +60,7 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
     }
 
     couponAdapter = new CouponListAdapter(getActivity());
+    fetchAll();
   }
 
   @Override
@@ -68,72 +68,15 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
     View view = inflater.inflate(R.layout.fragment_coupon_list, container, false);
     initializeRefreshOnDrag(view);
 
-    View generateButton = view.findViewById(R.id.b_generate);
     View fetchAllButton = view.findViewById(R.id.b_fetch_all);
-    View fetchSingleButton = view.findViewById(R.id.b_fetch_single);
-    View.OnClickListener generateButtonListener = new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        Coupon coupon = Coupon.createDummy();
-        coupon.postInBackground(new CouponCallback<Coupon>() {
-          @Override
-          public void onComplete(int statusCode, Coupon response) {
-            couponAdapter.add(Coupon.createDummy());
-            couponAdapter.notifyDataSetChanged();
-            displayToast("Generated dummy coupon!");
-          }
 
-          @Override
-          public void onFail(int statusCode) {
-            displayToast("Dummy coupon creation failed!");
-          }
-        });
-
-      }
-    };
-    View.OnClickListener fetchSingleButtonListener = new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        setLoading(true);
-        displayInputDialog("Fetch by ID", "Enter the ID you want to fetch", new DialogInterface.OnClickListener() {
-          @Override
-          public void onClick(DialogInterface dialog, int which) {
-            if (which == DialogInterface.BUTTON_POSITIVE) {
-              final String id = getInputText();
-              Network.fetchCouponById(id, new CouponCallback<Coupon>() {
-                @Override
-                public void onComplete(int statusCode, Coupon response) {
-                  couponAdapter.add(response);
-                  couponAdapter.notifyDataSetChanged();
-                  Log.v(TAG, "fetch complete: " + statusCode);
-                  setLoading(false);
-                  displayToast("Received coupon with id: " + response.getId());
-                }
-
-                @Override
-                public void onFail(int statusCode) {
-                  Log.v(TAG, "fetch failed: " + statusCode);
-                  setLoading(false);
-                  displayToast("Error fetching coupon with id " + id + ". Status: " + statusCode);
-                }
-              });
-            }
-          }
-        });
-
-      }
-    };
     View.OnClickListener fetchAllButtonListener = new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        setLoading(true);
         fetchAll();
-
       }
     };
     // set the button listeners
-    generateButton.setOnClickListener(generateButtonListener);
-    fetchSingleButton.setOnClickListener(fetchSingleButtonListener);
     fetchAllButton.setOnClickListener(fetchAllButtonListener);
     // Set the adapter
     couponList = (ListView) view.findViewById(R.id.coupon_list);
@@ -146,7 +89,8 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
     return view;
   }
 
-  private void fetchAll() {
+  public void fetchAll() {
+    setLoading(true);
     Network.fetchTransactionHistory(new CouponCallback<TransactionHistory>() {
       @Override
       public void onComplete(int statusCode, TransactionHistory transactionHistory) {

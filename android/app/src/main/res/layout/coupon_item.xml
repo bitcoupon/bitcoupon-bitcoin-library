@@ -10,7 +10,7 @@
             android:orientation="vertical"
             android:id="@+id/iv_coupon_background"
             android:scaleType="centerCrop"
-            android:background="@color/red"
+            android:background="@color/bitcoupon"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingTop="10dp"
@@ -62,12 +62,14 @@
                 android:paddingRight="16dp"
                 android:text="Updated"
                 android:id="@+id/tv_coupon_modified"
+                android:visibility="gone"
                 />
 
         <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:visibility="gone"
                 >
 
             <TextView

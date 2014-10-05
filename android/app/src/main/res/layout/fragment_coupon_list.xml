@@ -9,7 +9,9 @@
     <uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout
             android:id="@+id/ptr_layout"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/button_list"
+            android:layout_alignParentTop="true"
             >
 
         <ListView
@@ -36,16 +38,10 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_alignParentBottom="true"
+            android:id="@+id/button_list"
             >
 
-        <Button
-                android:layout_width="0dp"
-                android:layout_weight=".3"
-                android:layout_height="wrap_content"
-                android:text="Generate"
-                android:id="@+id/b_generate"
-                style="@style/Roboto_Button"
-                />
+
 
         <View
                 android:layout_width=".5dp"
@@ -68,13 +64,5 @@
                 android:layout_height="fill_parent"
                 />
 
-        <Button
-                android:layout_width="0dp"
-                android:layout_weight=".3"
-                android:layout_height="wrap_content"
-                android:text="Fetch Single"
-                android:id="@+id/b_fetch_single"
-                style="@style/Roboto_Button"
-                />
     </LinearLayout>
 </RelativeLayout>

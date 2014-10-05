@@ -1,7 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'application'
 
-version = '1.0'
+version = '2.0'
 libsDirName = '../'
 mainClassName = "bitcoupon.Main"
 sourceCompatibility = 1.7

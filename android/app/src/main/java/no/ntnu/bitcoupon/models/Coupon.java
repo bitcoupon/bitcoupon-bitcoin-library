@@ -5,11 +5,6 @@ import com.google.gson.Gson;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.joda.time.DateTime;
 
-import java.io.BufferedReader;
-
-import no.ntnu.bitcoupon.callbacks.CouponCallback;
-import no.ntnu.bitcoupon.network.Network;
-
 /**
  * Created by Patrick on 22.09.2014.
  */
@@ -68,20 +63,6 @@ public class Coupon {
     return dummy;
   }
 
-  public void postInBackground(final CouponCallback<Coupon> callback) {
-    Network.postCoupon(callback, Coupon.this);
-
-  }
-
-  public void spendInBackground(final CouponCallback<Coupon> callback) {
-    Network.spendCoupon(callback, Coupon.this, id);
-  }
-
-  public static Coupon fromJson(BufferedReader reader) {
-    return new Gson().fromJson(reader, Coupon.class);
-  }
-
-
   public static Coupon fromJson(String json) {
     return new Gson().fromJson(json, Coupon.class);
   }
@@ -97,7 +78,6 @@ public class Coupon {
            + " Created: " + getCreated() //
         ;
   }
-
 
   // Due to the object being serializable, override equals and hashcode to make sure an object remains the same before and after the serialization
   @Override
