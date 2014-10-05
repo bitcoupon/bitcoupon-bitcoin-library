@@ -3,7 +3,7 @@ class Transaction
   include ActiveModel::Conversion
   extend ActiveModel::Naming
   
-  attr_accessor :id
+  attr_accessor :id, :creation, :input, :output
 
   #has_many :creations
   #has_many :inputs
