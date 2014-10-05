@@ -10,7 +10,7 @@ public class BitCoupon {
   private static final boolean DEBUG = true;
 
   public static Transaction generateSendTransaction(String strPrivateKey, String creatorAddress, String receiverAddress,
-                                                    TransactionList transactionHistory) {
+                                                    TransactionHistory transactionHistory) {
     List<Creation> creations = new ArrayList<>();
     List<Input> inputs = new ArrayList<>();
     List<Output> outputs = new ArrayList<>();
@@ -42,7 +42,7 @@ public class BitCoupon {
     return transaction;
   }
 
-  public static List<String> getCreatorAddresses(String strPrivateKey, TransactionList transactionHistory) {
+  public static List<String> getCreatorAddresses(String strPrivateKey, TransactionHistory transactionHistory) {
     if (DEBUG) {
       List<String> debugList = new ArrayList<>();
       debugList.add("138u97o2Sv5qUmucSasmeNf5CAb3B1CmD6");
@@ -74,7 +74,7 @@ public class BitCoupon {
 
   // This function verifies that a transaction is consistent with previous transactions
   // and that all signatures are correct
-  public static boolean verifyTransaction(Transaction transaction, TransactionList transactionHistory) {
+  public static boolean verifyTransaction(Transaction transaction, TransactionHistory transactionHistory) {
     boolean inputIsValid = transaction.verifyInput(transactionHistory);
     boolean signatureIsValid = transaction.verifySignatures(transactionHistory);
     boolean amountIsValid = transaction.verifyAmount(transactionHistory);

@@ -9,13 +9,13 @@ public class BitCouponCli {
 
   public static void verifyTransaction(String transactionJson, String transactionHistoryJson) {
     Transaction transaction = Transaction.fromJson(transactionJson);
-    TransactionList transactionHistory = TransactionList.fromJson(transactionHistoryJson);
+    TransactionHistory transactionHistory = TransactionHistory.fromJson(transactionHistoryJson);
     boolean out = BitCoupon.verifyTransaction(transaction, transactionHistory);
     System.out.println("" + out);
   }
 
   public static void getCreatorPublicKeys(String privateKey, String transactionHistoryJson) {
-    TransactionList transactionHistory = TransactionList.fromJson(transactionHistoryJson);
+    TransactionHistory transactionHistory = TransactionHistory.fromJson(transactionHistoryJson);
     List<String> out = BitCoupon.getCreatorAddresses(privateKey, transactionHistory);
     for (String s : out) {
       System.out.println(s);
@@ -24,7 +24,7 @@ public class BitCouponCli {
 
   public static void generateSendTransaction(String privateKey, String creatorPublicKey, String transactionHistoryJson,
                                              String receiverAddress) {
-    TransactionList transactionHistory = TransactionList.fromJson(transactionHistoryJson);
+    TransactionHistory transactionHistory = TransactionHistory.fromJson(transactionHistoryJson);
     Transaction
         out =
         BitCoupon.generateSendTransaction(privateKey, creatorPublicKey, receiverAddress, transactionHistory);

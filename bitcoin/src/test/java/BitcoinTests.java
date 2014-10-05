@@ -7,7 +7,7 @@ import java.util.Map;
 
 import bitcoupon.BitCoupon;
 import bitcoupon.Transaction;
-import bitcoupon.TransactionList;
+import bitcoupon.TransactionHistory;
 
 /**
  * Created by Patrick on 01.10.2014.
@@ -30,9 +30,9 @@ public class BitcoinTests {
     transactionList.add(trans3);
     transactionList.add(trans4);
 
-    String jsonTransactionList = TransactionList.toJson(transactionList);
+    String jsonTransactionList = TransactionHistory.toJson(transactionList);
     System.out.println(jsonTransactionList);
-    TransactionList listFromJson = TransactionList.fromJson(jsonTransactionList);
+    TransactionHistory listFromJson = TransactionHistory.fromJson(jsonTransactionList);
   }
 
   @Test
