@@ -6,7 +6,6 @@ module Backend
     skip_before_filter :verify_authenticity_token, :only => [:verify]
 
     def verify
-      #binding.pry
       result = verify_transaction params[:transaction], transaction_history
 
       if save_transaction params[:transaction]
