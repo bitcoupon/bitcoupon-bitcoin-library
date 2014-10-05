@@ -4,7 +4,7 @@ public class Main {
 
   private static final String GENERATE_CREATION_TRANSACTION = "generateCreationTransaction";
   private static final String GENERATE_SEND_TRANSACTION = "generateSendTransaction";
-  private static final String GET_CREATOR_PUBLIC_KEYS = "getCreatorPublicKeys";
+  private static final String GET_CREATOR_ADDRESSES = "getCreatorAddresses";
   private static final String VERIFY_TRANSACTION = "verifyTransaction";
 
   public static void main(String[] args) {
@@ -18,9 +18,9 @@ public class Main {
       System.out.println("Available methods:");
       System.out.println("Name: " + GENERATE_CREATION_TRANSACTION + " - Argumentss: String privateKey");
       System.out.println("Name: " + GENERATE_SEND_TRANSACTION
-                         + " - Argumentss: String privateKey, String creatorPublicKey, String transactionHistoryJson, String receiverAddress");
+                         + " - Argumentss: String privateKey, String creatorAddress, String transactionHistoryJson, String receiverAddress");
       System.out.println(
-          "Name: " + GET_CREATOR_PUBLIC_KEYS + " - Argumentss: String privateKey, String transactionHistoryJson");
+          "Name: " + GET_CREATOR_ADDRESSES + " - Argumentss: String privateKey, String transactionHistoryJson");
       System.out.println(
           "Name: " + VERIFY_TRANSACTION + " - Argumentss: String transactionJson, String transactionHistoryJson");
     } else {
@@ -33,8 +33,8 @@ public class Main {
         BitCouponCli.generateCreationTransaction(args[1]);
       } else if (methodName.equalsIgnoreCase(GENERATE_SEND_TRANSACTION)) {
         BitCouponCli.generateSendTransaction(args[1], args[2], args[3], args[4]);
-      } else if (methodName.equalsIgnoreCase(GET_CREATOR_PUBLIC_KEYS)) {
-        BitCouponCli.getCreatorPublicKeys(args[1], args[2]);
+      } else if (methodName.equalsIgnoreCase(GET_CREATOR_ADDRESSES)) {
+        BitCouponCli.getCreatorAddresses(args[1], args[2]);
       } else if (methodName.equalsIgnoreCase(VERIFY_TRANSACTION)) {
         BitCouponCli.verifyTransaction(args[1], args[2]);
       }
@@ -61,7 +61,7 @@ public class Main {
       length = 2;
     } else if (methodName.equalsIgnoreCase(GENERATE_SEND_TRANSACTION)) {
       length = 5;
-    } else if (methodName.equalsIgnoreCase(GET_CREATOR_PUBLIC_KEYS)) {
+    } else if (methodName.equalsIgnoreCase(GET_CREATOR_ADDRESSES)) {
       length = 3;
     } else if (methodName.equalsIgnoreCase(VERIFY_TRANSACTION)) {
       length = 3;

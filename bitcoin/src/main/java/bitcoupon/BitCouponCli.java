@@ -17,7 +17,7 @@ public class BitCouponCli {
     System.out.println("" + out);
   }
 
-  public static void getCreatorPublicKeys(String privateKey, String transactionHistoryJson) {
+  public static void getCreatorAddresses(String privateKey, String transactionHistoryJson) {
     TransactionHistory transactionHistory = TransactionHistory.fromJson(transactionHistoryJson);
     List<String> out = BitCoupon.getCreatorAddresses(privateKey, transactionHistory);
     for (String s : out) {
