@@ -18,11 +18,15 @@ import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 import java.util.List;
 
+import bitcoupon.BitCoupon;
+import bitcoupon.Transaction;
+import bitcoupon.TransactionHistory;
 import no.ntnu.bitcoupon.R;
 import no.ntnu.bitcoupon.adapters.CouponListAdapter;
 import no.ntnu.bitcoupon.callbacks.CouponCallback;
 import no.ntnu.bitcoupon.listeners.CouponListFragmentListener;
 import no.ntnu.bitcoupon.models.Coupon;
+import no.ntnu.bitcoupon.network.Network;
 
 /**
  * The CouponListFragment holds and maintains a list of coupons.
@@ -73,7 +77,7 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
         Coupon coupon = Coupon.createDummy();
         coupon.postInBackground(new CouponCallback<Coupon>() {
           @Override
-          public void onComplete(int statusCode, Coupon coupon) {
+          public void onComplete(int statusCode, Coupon response) {
             couponAdapter.add(Coupon.createDummy());
             couponAdapter.notifyDataSetChanged();
             displayToast("Generated dummy coupon!");
@@ -96,14 +100,14 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
           public void onClick(DialogInterface dialog, int which) {
             if (which == DialogInterface.BUTTON_POSITIVE) {
               final String id = getInputText();
-              Coupon.fetchCouponById(id, new CouponCallback<Coupon>() {
+              Network.fetchCouponById(id, new CouponCallback<Coupon>() {
                 @Override
-                public void onComplete(int statusCode, Coupon coupon) {
-                  couponAdapter.add(coupon);
+                public void onComplete(int statusCode, Coupon response) {
+                  couponAdapter.add(response);
                   couponAdapter.notifyDataSetChanged();
                   Log.v(TAG, "fetch complete: " + statusCode);
                   setLoading(false);
-                  displayToast("Received coupon with id: " + coupon.getId());
+                  displayToast("Received coupon with id: " + response.getId());
                 }
 
                 @Override
@@ -142,18 +146,30 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
     return view;
   }
 
+
   private void fetchAll() {
-    Coupon.fetchAllCoupons(new CouponCallback<List<Coupon>>() {
+    Network.fetchTransactionHistory(new CouponCallback<TransactionHistory>() {
       @Override
-      public void onComplete(int statusCode, List<Coupon> coupons) {
+      public void onComplete(int statusCode, TransactionHistory transactionHistory) {
+        List<String> addresses = BitCoupon.getCreatorAddresses(Network.PRIVATE_KEY, transactionHistory);
+      }
+
+      @Override
+      public void onFail(int statusCode) {
+
+      }
+    });
+    Network.fetchAllCoupons(new CouponCallback<List<Coupon>>() {
+      @Override
+      public void onComplete(int statusCode, List<Coupon> response) {
         couponAdapter.clear();
-        for (Coupon coupon : coupons) {
+        for (Coupon coupon : response) {
           couponAdapter.add(coupon);
           Log.v(TAG, "fetch complete: " + statusCode);
         }
         couponAdapter.notifyDataSetChanged();
         setLoading(false);
-        displayToast("Received " + coupons.size() + " coupons from the server!");
+        displayToast("Received " + response.size() + " coupons from the server!");
         mPullToRefreshLayout.setRefreshComplete();
       }
 
@@ -215,5 +231,9 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
   public void removeCoupon(Coupon coupon) {
     couponAdapter.remove(coupon);
     couponAdapter.notifyDataSetChanged();
+  }
+
+  public void removeCoupon(Transaction response) {
+
   }
 }

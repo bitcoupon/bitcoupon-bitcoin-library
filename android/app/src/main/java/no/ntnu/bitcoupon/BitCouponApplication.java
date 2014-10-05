@@ -11,5 +11,4 @@ import android.app.Application;
  */
 public class BitCouponApplication extends Application {
 
-
 }

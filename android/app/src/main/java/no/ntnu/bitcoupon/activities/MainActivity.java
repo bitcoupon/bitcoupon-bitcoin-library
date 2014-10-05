@@ -4,6 +4,11 @@ import android.os.Bundle;
 
 import com.crashlytics.android.Crashlytics;
 
+import java.util.List;
+
+import bitcoupon.BitCoupon;
+import bitcoupon.Transaction;
+import bitcoupon.TransactionHistory;
 import no.ntnu.bitcoupon.R;
 import no.ntnu.bitcoupon.callbacks.CouponCallback;
 import no.ntnu.bitcoupon.fragments.CouponFragment;
@@ -11,6 +16,7 @@ import no.ntnu.bitcoupon.fragments.CouponListFragment;
 import no.ntnu.bitcoupon.listeners.CouponFragmentListener;
 import no.ntnu.bitcoupon.listeners.CouponListFragmentListener;
 import no.ntnu.bitcoupon.models.Coupon;
+import no.ntnu.bitcoupon.network.Network;
 
 
 /**
@@ -43,18 +49,40 @@ public class MainActivity extends BaseActivity implements CouponListFragmentList
 
   @Override
   public void spendCoupon(final Coupon coupon) {
-    coupon.spendInBackground(new CouponCallback<Coupon>() {
+    Network.fetchTransactionHistory(new CouponCallback<TransactionHistory>() {
       @Override
-      public void onComplete(int statusCode, Coupon coupon) {
-        displayToast("Coupon with id " + coupon.getId() + " spent!");
-        getFragmentManager().popBackStack();
-        couponListFragment.removeCoupon(coupon);
+      public void onComplete(int statusCode, TransactionHistory transactionHistory) {
+        // Fetch the creator addesses. This is the "id" for the coupon, more or less
+        List<String> creatorAddress = BitCoupon.getCreatorAddresses(Network.PRIVATE_KEY,  //
+                                                                    transactionHistory);
+
+        // Generate the send transaction object
+        Transaction transaction = BitCoupon.generateSendTransaction(Network.PRIVATE_KEY,  //
+                                                                    creatorAddress.get(0), //
+                                                                    Network.PUBLIC_KEY,  //
+                                                                    transactionHistory);
+
+        Network.spendCoupon(new CouponCallback<Transaction>() {
+          @Override
+          public void onComplete(int statusCode, Transaction response) {
+            displayToast("Transaction: " + response.toString() + " spent!");
+            getFragmentManager().popBackStack();
+            couponListFragment.removeCoupon(response);
+          }
+
+          @Override
+          public void onFail(int statusCode) {
+            displayToast("Failed to spend coupon with id " + coupon.getId());
+            getFragmentManager().popBackStack();
+          }
+
+        }, transaction);
+
       }
 
       @Override
       public void onFail(int statusCode) {
         displayToast("Failed to spend coupon with id " + coupon.getId());
-        getFragmentManager().popBackStack();
       }
     });
   }

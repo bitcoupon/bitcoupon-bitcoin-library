@@ -5,7 +5,7 @@ package no.ntnu.bitcoupon.callbacks;
  */
 public interface CouponCallback<T> {
 
-  void onComplete(int statusCode, T coupon);
+  void onComplete(int statusCode, T response);
 
   void onFail(int statusCode);
 
