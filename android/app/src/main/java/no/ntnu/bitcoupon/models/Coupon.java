@@ -17,14 +17,20 @@ public class Coupon {
 
   public static final String COUPON_JSON = "coupon_id";
   private static final String TAG = Coupon.class.getSimpleName();
+  private final String couponAddress;
   private String title;
   private String description;
   private String id;
   private long created;
   private long modified;
 
-  public Coupon() {
+  public Coupon(String couponAddress) {
+    this.couponAddress = couponAddress;
     this.created = System.currentTimeMillis();
+  }
+
+  public String getCouponAddress() {
+    return couponAddress;
   }
 
   public String getDescription() {
@@ -53,7 +59,7 @@ public class Coupon {
 
 
   public static Coupon createDummy() {
-    Coupon dummy = new Coupon();
+    Coupon dummy = new Coupon("1Kau4L6BM1h6QzLYubq1qWrQSjWdZFQgMb");
     dummy.id = String.valueOf((int) (Math.random() * 1000));
     dummy.description = "This is the dummy coupons' description!";
     dummy.title = "Dummy coupon";

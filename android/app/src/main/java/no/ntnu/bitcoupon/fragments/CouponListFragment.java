@@ -146,30 +146,19 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
     return view;
   }
 
-
   private void fetchAll() {
     Network.fetchTransactionHistory(new CouponCallback<TransactionHistory>() {
       @Override
       public void onComplete(int statusCode, TransactionHistory transactionHistory) {
         List<String> addresses = BitCoupon.getCreatorAddresses(Network.PRIVATE_KEY, transactionHistory);
-      }
-
-      @Override
-      public void onFail(int statusCode) {
-
-      }
-    });
-    Network.fetchAllCoupons(new CouponCallback<List<Coupon>>() {
-      @Override
-      public void onComplete(int statusCode, List<Coupon> response) {
         couponAdapter.clear();
-        for (Coupon coupon : response) {
-          couponAdapter.add(coupon);
-          Log.v(TAG, "fetch complete: " + statusCode);
+        for (String couponAddress : addresses) {
+          couponAdapter.add(new Coupon(couponAddress));
         }
         couponAdapter.notifyDataSetChanged();
+
         setLoading(false);
-        displayToast("Received " + response.size() + " coupons from the server!");
+        displayToast("Received " + addresses.size() + " coupons from the server!");
         mPullToRefreshLayout.setRefreshComplete();
       }
 
@@ -181,6 +170,7 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
         mPullToRefreshLayout.setRefreshComplete();
       }
     });
+
   }
 
   private void initializeRefreshOnDrag(View rootView) {

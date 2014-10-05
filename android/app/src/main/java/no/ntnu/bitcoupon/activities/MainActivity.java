@@ -53,13 +53,19 @@ public class MainActivity extends BaseActivity implements CouponListFragmentList
       @Override
       public void onComplete(int statusCode, TransactionHistory transactionHistory) {
         // Fetch the creator addesses. This is the "id" for the coupon, more or less
-        List<String> creatorAddress = BitCoupon.getCreatorAddresses(Network.PRIVATE_KEY,  //
-                                                                    transactionHistory);
+        List<String> creatorAddresses = BitCoupon.getCreatorAddresses(Network.PRIVATE_KEY,  //
+                                                                      transactionHistory);
+        String creatorAddress = null;
+        for (String couponAddress : creatorAddresses) {
+          if (couponAddress.equalsIgnoreCase(coupon.getCouponAddress())) {
+            creatorAddress = couponAddress;
+          }
+        }
 
         // Generate the send transaction object
         Transaction transaction = BitCoupon.generateSendTransaction(Network.PRIVATE_KEY,  //
-                                                                    creatorAddress.get(0), //
-                                                                    Network.PUBLIC_KEY,  //
+                                                                    creatorAddress, //
+                                                                    Network.CREATOR_ADDRESS,  //
                                                                     transactionHistory);
 
         Network.spendCoupon(new CouponCallback<Transaction>() {
