@@ -13,6 +13,7 @@ import org.spongycastle.crypto.params.ECPrivateKeyParameters;
 import org.spongycastle.crypto.params.ECPublicKeyParameters;
 import org.spongycastle.crypto.signers.ECDSASigner;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -115,7 +116,7 @@ public class Transaction {
 
   // This method checks that all signatures in this transactions are correct
   // The transaction history is used to check which signatures are needed to use outputs from previous transactions
-  boolean verifySignatures(List<Transaction> transactionHistory) {
+  boolean verifySignatures(TransactionList transactionHistory) {
 
     // Get a hash of this transaction
     // This is the data that has been signed when the transaction was created
@@ -205,7 +206,7 @@ public class Transaction {
   }
 
   // This method checks that all outputs of previous transactions that are referred to in this transaction is unspent
-  boolean verifyInput(List<Transaction> transactionHistory) {
+  boolean verifyInput(TransactionList transactionHistory) {
 
     // Put all outputs in the transaction history in a hash map for fast access
     HashMap<Long, Output> outputMap = new HashMap<>();
@@ -230,7 +231,7 @@ public class Transaction {
 
   // This method checks that this transaction is not using more coupons than is available
   // Transaction history is used to check the number of coupons available via references to previous transactions
-  boolean verifyAmount(List<Transaction> transactionHistory) {
+  boolean verifyAmount(TransactionList transactionHistory) {
 
     // Map for counting coupons available in this transaction
     HashMap<String, Integer> availableCoupons = new HashMap<>();
@@ -296,6 +297,9 @@ public class Transaction {
 
   public static Transaction fromJson(String transactionJson) {
     return new Gson().fromJson(transactionJson, Transaction.class);
+  }
+  private static Transaction fromJson(BufferedReader reader) {
+    return new Gson().fromJson(reader, Transaction.class);
   }
 
 //  The transaction looks like this in json:

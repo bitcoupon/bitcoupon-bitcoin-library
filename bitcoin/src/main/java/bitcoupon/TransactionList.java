@@ -2,12 +2,14 @@ package bitcoupon;
 
 import com.google.gson.Gson;
 
+import java.io.BufferedReader;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by Patrick on 30.09.2014.
  */
-public class TransactionList {
+public class TransactionList implements Iterable<Transaction> {
 
 
   private final List<Transaction> transactionList;
@@ -16,11 +18,8 @@ public class TransactionList {
     this.transactionList = transactionList;
   }
 
-  public static TransactionList fromJson(String json) {
-    return new Gson().fromJson(json, TransactionList.class);
-  }
 
-  public List<Transaction> getList() {
+  private List<Transaction> getList() {
     return transactionList;
   }
 
@@ -102,4 +101,24 @@ public class TransactionList {
     return new Gson().toJson(new TransactionList(transactionList), TransactionList.class);
   }
 
+  private static TransactionList fromJson(BufferedReader reader) {
+    return new Gson().fromJson(reader, TransactionList.class);
+  }
+
+  public static TransactionList fromJson(String json) {
+    return new Gson().fromJson(json, TransactionList.class);
+  }
+
+  @Override
+  public Iterator<Transaction> iterator() {
+    return getList().iterator();
+  }
+
+  public int size() {
+    return transactionList.size();
+  }
+
+  public Transaction get(int i) {
+    return transactionList.get(i);
+  }
 }

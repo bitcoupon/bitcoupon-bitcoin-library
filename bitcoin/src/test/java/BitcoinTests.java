@@ -32,7 +32,7 @@ public class BitcoinTests {
 
     String jsonTransactionList = TransactionList.toJson(transactionList);
     System.out.println(jsonTransactionList);
-    List<Transaction> listFromJson = TransactionList.fromJson(jsonTransactionList).getList();
+    TransactionList listFromJson = TransactionList.fromJson(jsonTransactionList);
   }
 
   @Test
