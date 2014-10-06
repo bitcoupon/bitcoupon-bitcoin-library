@@ -48,24 +48,14 @@ public class MainActivity extends BaseActivity implements CouponListFragmentList
   }
 
   @Override
-  public void spendCoupon(final Coupon coupon) {
+  public void onSpendCoupon(final Coupon coupon) {
     setLoading(true);
     Network.fetchTransactionHistory(new CouponCallback<TransactionHistory>() {
       @Override
-      public void onComplete(int statusCode, TransactionHistory transactionHistory) {
-        // Fetch the creator addesses. This is the "id" for the coupon, more or less
-        List<String> creatorAddresses = BitCoupon.getCreatorAddresses(Network.PRIVATE_KEY,  //
-                                                                      transactionHistory);
-        String creatorAddress = null;
-        for (String couponAddress : creatorAddresses) {
-          if (couponAddress.equalsIgnoreCase(coupon.getCouponAddress())) {
-            creatorAddress = couponAddress;
-            break;
-          }
-        }
-
-        // if no coupon with that address was found, display an error and return
-        if (creatorAddress == null) {
+      public void onSuccess(int statusCode, TransactionHistory transactionHistory) {
+        // check that the coupon is valid
+        if (!isCouponValid(transactionHistory, coupon)) {
+          // if no coupon with that address was found, display an error and return
           displayToast("Invalid coupon!");
           getFragmentManager().popBackStack();
           return;
@@ -73,13 +63,13 @@ public class MainActivity extends BaseActivity implements CouponListFragmentList
 
         // Generate the send transaction object
         Transaction transaction = BitCoupon.generateSendTransaction(Network.PRIVATE_KEY,  //
-                                                                    creatorAddress, //
+                                                                    coupon.getCouponAddress(), //
                                                                     Network.CREATOR_ADDRESS,  //
                                                                     transactionHistory);
 
         Network.spendCoupon(new CouponCallback<Transaction>() {
           @Override
-          public void onComplete(int statusCode, Transaction response) {
+          public void onSuccess(int statusCode, Transaction response) {
             displayToast("Transaction: " + response.toString() + " spent!");
             getFragmentManager().popBackStack();
             couponListFragment.removeCoupon(response);
@@ -103,5 +93,20 @@ public class MainActivity extends BaseActivity implements CouponListFragmentList
         setLoading(false);
       }
     });
+  }
+
+  /**
+   * Check whether this coupon is valid; ie. it exist in the transaction history received from the server If the coupon
+   * is invalid, this probably means the coupon was spent elsewhere, or that it was invalidated by the beckend
+   */
+  private boolean isCouponValid(TransactionHistory transactionHistory, Coupon coupon) {
+    List<String> creatorAddresses = BitCoupon.getCreatorAddresses(Network.PRIVATE_KEY,  //
+                                                                  transactionHistory);
+    for (String couponAddress : creatorAddresses) {
+      if (couponAddress.equalsIgnoreCase(coupon.getCouponAddress())) {
+        return true;
+      }
+    }
+    return false;
   }
 }

@@ -93,7 +93,7 @@ public class CouponListFragment extends BaseFragment implements AbsListView.OnIt
     setLoading(true);
     Network.fetchTransactionHistory(new CouponCallback<TransactionHistory>() {
       @Override
-      public void onComplete(int statusCode, TransactionHistory transactionHistory) {
+      public void onSuccess(int statusCode, TransactionHistory transactionHistory) {
         List<String> addresses = BitCoupon.getCreatorAddresses(Network.PRIVATE_KEY, transactionHistory);
         couponAdapter.clear();
         int index = 1;

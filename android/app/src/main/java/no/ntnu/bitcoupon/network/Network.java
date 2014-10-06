@@ -65,7 +65,7 @@ public class Network {
       @Override
       protected void onPostExecute(TransactionHistory transactionHistory) {
         if (transactionHistory != null) {
-          callback.onComplete(0, transactionHistory);
+          callback.onSuccess(0, transactionHistory);
         } else {
           callback.onFail(-1);
         }
@@ -115,7 +115,7 @@ public class Network {
       @Override
       protected void onPostExecute(Transaction transaction) {
         if (transaction != null) {
-          callback.onComplete(HttpStatus.SC_OK, transaction);
+          callback.onSuccess(HttpStatus.SC_OK, transaction);
         } else {
           callback.onFail(HttpStatus.SC_NO_CONTENT);
         }

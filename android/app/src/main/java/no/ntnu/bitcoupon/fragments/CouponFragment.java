@@ -66,7 +66,7 @@ public class CouponFragment extends BaseFragment {
                                 switch (which) {
                                   case DialogInterface.BUTTON_POSITIVE:
                                     Coupon coupon = Coupon.fromJson(getArguments().getString(Coupon.COUPON_JSON));
-                                    mListener.spendCoupon(coupon);
+                                    mListener.onSpendCoupon(coupon);
                                     break;
                                 }
                               }

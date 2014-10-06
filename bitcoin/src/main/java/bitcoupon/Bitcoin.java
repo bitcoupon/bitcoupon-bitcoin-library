@@ -32,6 +32,11 @@ public class Bitcoin {
         new ECDomainParameters(params.getCurve(), params.getG(), params.getN(), params.getH(), params.getSeed());
   }
 
+  /**
+   * this method blablablaj
+   * @param encodedPrivateKey adasd
+   * @return asdasd
+   */
   public static BigInteger decodePrivateKey(String encodedPrivateKey) {
     byte[] data = decodeBase58(encodedPrivateKey);
     if (data != null && data.length == 33 && (data[0] & 0xff) == 0x80) {

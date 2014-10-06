@@ -7,6 +7,6 @@ import no.ntnu.bitcoupon.models.Coupon;
  */
 public interface CouponFragmentListener {
 
-  public void spendCoupon(Coupon coupon);
+  public void onSpendCoupon(Coupon coupon);
 
 }

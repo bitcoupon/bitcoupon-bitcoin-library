@@ -78,6 +78,12 @@ public abstract class BaseActivity extends Activity {
         .show();
   }
 
+  /**
+   * Helper method to display an input dialog
+   * @param title
+   * @param desc
+   * @param listener
+   */
   public void displayInputDialog(final String title, final String desc,
                                  final DialogInterface.OnClickListener listener) {
     if (input != null) {
@@ -106,6 +112,11 @@ public abstract class BaseActivity extends Activity {
     });
   }
 
+  /**
+   * Helper method to display the software keyboard
+   *
+   * @param edit - the EditText field that should trigger the keyboard popup
+   */
   public void showKeyboard(EditText edit) {
     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
     imm.showSoftInput(edit, InputMethodManager.SHOW_IMPLICIT);
@@ -117,6 +128,11 @@ public abstract class BaseActivity extends Activity {
 
   }
 
+  /**
+   * Helper method to dismiss the software keyboard
+   *
+   * @param edit - the EditText field that should trigger the keyboard popup
+   */
   public void hideKeyboard(EditText edit) {
     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
     imm.hideSoftInputFromWindow(edit.getWindowToken(), 0);
