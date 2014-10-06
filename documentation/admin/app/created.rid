@@ -1,8 +1,0 @@
-Tue, 23 Sep 2014 17:18:00 +0200
-README.rdoc	Mon, 22 Sep 2014 11:33:59 +0200
-app/controllers/admin/coupons_controller.rb	Tue, 23 Sep 2014 17:09:53 +0200
-app/controllers/application_controller.rb	Tue, 23 Sep 2014 15:34:36 +0200
-app/controllers/users_controller.rb	Mon, 22 Sep 2014 11:33:59 +0200
-app/helpers/application_helper.rb	Mon, 22 Sep 2014 11:33:59 +0200
-app/helpers/users_helper.rb	Mon, 22 Sep 2014 11:33:59 +0200
-app/models/user.rb	Mon, 22 Sep 2014 11:33:59 +0200

@@ -1,6 +1,0 @@
-Tue, 23 Sep 2014 17:18:12 +0200
-README.rdoc	Thu, 11 Sep 2014 17:54:40 +0200
-app/controllers/application_controller.rb	Thu, 11 Sep 2014 17:54:40 +0200
-app/controllers/backend/coupons_controller.rb	Tue, 23 Sep 2014 17:09:53 +0200
-app/helpers/application_helper.rb	Thu, 11 Sep 2014 17:54:40 +0200
-app/models/coupon.rb	Tue, 23 Sep 2014 13:38:39 +0200
