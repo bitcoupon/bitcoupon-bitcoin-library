@@ -1,5 +1,0 @@
-<%= form_tag("/generate_send_transaction") do %>
-  <%= text_field_tag 'public_key', creator_address, hidden: true %>
-  <%= text_field_tag "receiver_address" %>
-  <%= submit_tag 'Issue', class: "btn btn-primary" %>
-<% end %>

@@ -1,6 +1,0 @@
-<h1><%= @coupon["title"] %></h1>
-<% @coupon.each do |key, val| %>
-  <% next if key.eql?("title") %>
-  <h4><%= key %></h4>
-  <p><%= val %></p>
-<% end %>
