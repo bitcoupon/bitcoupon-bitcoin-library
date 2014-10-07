@@ -142,22 +142,22 @@ public class Bitcoin {
   }
 
   public static byte[] intToByteArray(int i) {
-    return new byte[]{(byte) ((i >> 24) & 0xff), //
-                      (byte) ((i >> 16) & 0xff), //
-                      (byte) ((i >> 8) & 0xff), //
-                      (byte) ((i >> 0) & 0xff) //
+    return new byte[]{(byte) (i >> 24 & 0xff), //
+                      (byte) (i >> 16 & 0xff), //
+                      (byte) (i >> 8 & 0xff), //
+                      (byte) (i >> 0 & 0xff) //
     };
   }
 
   public static byte[] longToByteArray(long l) {
-    return new byte[]{(byte) ((l >> 56) & 0xff), //
-                      (byte) ((l >> 48) & 0xff), //
-                      (byte) ((l >> 40) & 0xff), //
-                      (byte) ((l >> 32) & 0xff), //
-                      (byte) ((l >> 24) & 0xff), //
-                      (byte) ((l >> 16) & 0xff), //
-                      (byte) ((l >> 8) & 0xff), //
-                      (byte) ((l >> 0) & 0xff) //
+    return new byte[]{(byte) (l >> 56 & 0xff), //
+                      (byte) (l >> 48 & 0xff), //
+                      (byte) (l >> 40 & 0xff), //
+                      (byte) (l >> 32 & 0xff), //
+                      (byte) (l >> 24 & 0xff), //
+                      (byte) (l >> 16 & 0xff), //
+                      (byte) (l >> 8 & 0xff), //
+                      (byte) (l >> 0 & 0xff) //
     };
   }
 

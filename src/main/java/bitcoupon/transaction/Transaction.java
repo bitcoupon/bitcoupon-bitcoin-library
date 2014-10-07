@@ -18,7 +18,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import bitcoupon.Bitcoin;
@@ -59,8 +58,8 @@ public class Transaction {
 
     byte[] bCreationsSize = Bitcoin.intToByteArray(creations.size());
     baos.write(bCreationsSize, 0, bCreationsSize.length);
-    for (int i = 0; i < creations.size(); i++) {
-      byte[] bCreation = creations.get(i).getBytes();
+    for (Creation creation : creations) {
+      byte[] bCreation = creation.getBytes();
       byte[] bCreationLength = Bitcoin.intToByteArray(bCreation.length);
       baos.write(bCreationLength, 0, bCreationLength.length);
       baos.write(bCreation, 0, bCreation.length);
@@ -68,8 +67,8 @@ public class Transaction {
 
     byte[] bInputsSize = Bitcoin.intToByteArray(inputs.size());
     baos.write(bInputsSize, 0, bInputsSize.length);
-    for (int i = 0; i < inputs.size(); i++) {
-      byte[] bInput = inputs.get(i).getBytes();
+    for (Input input : inputs) {
+      byte[] bInput = input.getBytes();
       byte[] bInputLength = Bitcoin.intToByteArray(bInput.length);
       baos.write(bInputLength, 0, bInputLength.length);
       baos.write(bInput, 0, bInput.length);
@@ -77,8 +76,8 @@ public class Transaction {
 
     byte[] bOutputsSize = Bitcoin.intToByteArray(outputs.size());
     baos.write(bOutputsSize, 0, bOutputsSize.length);
-    for (int i = 0; i < outputs.size(); i++) {
-      byte[] bOutput = outputs.get(i).getBytes();
+    for (Output output : outputs) {
+      byte[] bOutput = output.getBytes();
       byte[] bOutputLength = Bitcoin.intToByteArray(bOutput.length);
       baos.write(bOutputLength, 0, bOutputLength.length);
       baos.write(bOutput, 0, bOutput.length);
@@ -103,11 +102,11 @@ public class Transaction {
       byte[] ecdsaSignature = baos.toByteArray();
       byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
       String signature = Bitcoin.encodeBase58(ecdsaSignature) + " " + Bitcoin.encodeBase58(publicKey);
-      for (int i = 0; i < creations.size(); i++) {
-        creations.get(i).setSignature(signature);
+      for (Creation creation : creations) {
+        creation.setSignature(signature);
       }
-      for (int i = 0; i < inputs.size(); i++) {
-        inputs.get(i).setSignature(signature);
+      for (Input input : inputs) {
+        input.setSignature(signature);
       }
       return true;
     } catch (IOException e) {
@@ -125,8 +124,7 @@ public class Transaction {
     byte[] hashedTransaction = Bitcoin.hash256(getBytes());
 
     // Check that the signatures og the creations are correct
-    for (int i = 0; i < creations.size(); i++) {
-      Creation creation = creations.get(i);
+    for (Creation creation : creations) {
       String creatorAddress = creation.getCreatorAddress();
       String signature = creation.getSignature();
       byte[] ecdsaSignature = Bitcoin.decodeBase58(signature.split(" ")[0]);
@@ -163,14 +161,13 @@ public class Transaction {
     HashMap<Long, Output> outputMap = new HashMap<>();
     for (int i = 0; i < transactionHistory.size(); i++) {
       List<Output> outputHistory = transactionHistory.get(i).getOutputs();
-      for (int j = 0; j < outputHistory.size(); j++) {
-        outputMap.put(outputHistory.get(j).getOutputId(), outputHistory.get(j));
+      for (Output anOutputHistory : outputHistory) {
+        outputMap.put(anOutputHistory.getOutputId(), anOutputHistory);
       }
     }
 
     // Check that the signatures og the inputs are correct
-    for (int i = 0; i < inputs.size(); i++) {
-      Input input = inputs.get(i);
+    for (Input input : inputs) {
       long outputId = input.getOutputId();
       Output referredOutput = outputMap.get(outputId);
       String address = referredOutput.getAddress();
@@ -214,14 +211,13 @@ public class Transaction {
     HashMap<Long, Output> outputMap = new HashMap<>();
     for (int i = 0; i < transactionHistory.size(); i++) {
       List<Output> outputHistory = transactionHistory.get(i).getOutputs();
-      for (int j = 0; j < outputHistory.size(); j++) {
-        outputMap.put(outputHistory.get(j).getOutputId(), outputHistory.get(j));
+      for (Output anOutputHistory : outputHistory) {
+        outputMap.put(anOutputHistory.getOutputId(), anOutputHistory);
       }
     }
 
     // Check that no referred output is already spent
-    for (int i = 0; i < inputs.size(); i++) {
-      Input input = inputs.get(i);
+    for (Input input : inputs) {
       long outputId = input.getOutputId();
       Output referredOutput = outputMap.get(outputId);
       if (referredOutput.getInputId() != 0) {
@@ -239,8 +235,7 @@ public class Transaction {
     HashMap<String, Integer> availableCoupons = new HashMap<>();
 
     // Count the number of coupons created in this transaction
-    for (int i = 0; i < creations.size(); i++) {
-      Creation creation = creations.get(i);
+    for (Creation creation : creations) {
       if (availableCoupons.containsKey(creation.getCreatorAddress())) {
         Integer amount = availableCoupons.get(creation.getCreatorAddress());
         availableCoupons.put(creation.getCreatorAddress(), amount + creation.getAmount());
@@ -253,14 +248,13 @@ public class Transaction {
     HashMap<Long, Output> outputMap = new HashMap<>();
     for (int i = 0; i < transactionHistory.size(); i++) {
       List<Output> outputHistory = transactionHistory.get(i).getOutputs();
-      for (int j = 0; j < outputHistory.size(); j++) {
-        outputMap.put(outputHistory.get(j).getOutputId(), outputHistory.get(j));
+      for (Output anOutputHistory : outputHistory) {
+        outputMap.put(anOutputHistory.getOutputId(), anOutputHistory);
       }
     }
 
     // Count the number of existing coupons referred to by this transaction
-    for (int i = 0; i < inputs.size(); i++) {
-      Input input = inputs.get(i);
+    for (Input input : inputs) {
       long outputId = input.getOutputId();
       Output referredOutput = outputMap.get(outputId);
       if (availableCoupons.containsKey(referredOutput.getCreatorAddress())) {
@@ -275,8 +269,7 @@ public class Transaction {
     HashMap<String, Integer> spentCoupons = new HashMap<>();
 
     // Count the number of coupons spent by this transaction
-    for (int i = 0; i < outputs.size(); i++) {
-      Output output = outputs.get(i);
+    for (Output output : outputs) {
       if (spentCoupons.containsKey(output.getCreatorAddress())) {
         Integer amount = spentCoupons.get(output.getCreatorAddress());
         spentCoupons.put(output.getCreatorAddress(), amount + output.getAmount());
@@ -286,9 +279,7 @@ public class Transaction {
     }
 
     // Check that spent coupons does not exceed available coupons for any creatorAddress
-    Iterator<String> itrSpentCoupons = spentCoupons.keySet().iterator();
-    while (itrSpentCoupons.hasNext()) {
-      String creatorAddress = itrSpentCoupons.next();
+    for (String creatorAddress : spentCoupons.keySet()) {
       if (!availableCoupons.containsKey(creatorAddress) || availableCoupons.get(creatorAddress) < spentCoupons
           .get(creatorAddress)) {
         return false;

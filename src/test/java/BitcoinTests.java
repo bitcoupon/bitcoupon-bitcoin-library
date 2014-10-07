@@ -1,3 +1,4 @@
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -61,7 +62,7 @@ public class BitcoinTests {
       } catch (IllegalArgumentException e) {
         valid = false;
       }
-      org.junit.Assert.assertEquals(valid, value);
+      Assert.assertEquals(valid, value);
       System.out.println("" + valid + value);
     }
   }

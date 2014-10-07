@@ -20,9 +20,9 @@ public class BitCoupon {
                                                     TransactionHistory transactionHistory) {
 
     // Lists for creations, inputs and outputs in the transaction
-    List<Creation> creations = new ArrayList<Creation>();
-    List<Input> inputs = new ArrayList<Input>();
-    List<Output> outputs = new ArrayList<Output>();
+    List<Creation> creations = new ArrayList<>();
+    List<Input> inputs = new ArrayList<>();
+    List<Output> outputs = new ArrayList<>();
 
     // Get sender address from private key
     BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
@@ -78,16 +78,11 @@ public class BitCoupon {
     String address = Bitcoin.publicKeyToAddress(publicKey);
 
     // Create list for creator addresses
-    ArrayList<String> creatorAddresses = new ArrayList<String>();
+    ArrayList<String> creatorAddresses = new ArrayList<>();
 
     // For every output in every transaction
-    Iterator<Transaction> transactionIterator = transactionHistory.iterator();
-    while (transactionIterator.hasNext()) {
-      Transaction transaction = transactionIterator.next();
-      Iterator<Output> outputIterator = transaction.getOutputs().iterator();
-      while (outputIterator.hasNext()) {
-        Output output = outputIterator.next();
-
+    for (Transaction transaction : transactionHistory) {
+      for (Output output : transaction.getOutputs()) {
         // Check if output is addressed to this user
         if (output.getAddress().equals(address) && output.getInputId() == 0) {
 
@@ -137,7 +132,7 @@ public class BitCoupon {
     boolean inputIsValid = transaction.verifyInput(transactionHistory);
     boolean signatureIsValid = transaction.verifySignatures(transactionHistory);
     boolean amountIsValid = transaction.verifyAmount(transactionHistory);
-    return (inputIsValid && signatureIsValid && amountIsValid);
+    return inputIsValid && signatureIsValid && amountIsValid;
   }
 
 }
