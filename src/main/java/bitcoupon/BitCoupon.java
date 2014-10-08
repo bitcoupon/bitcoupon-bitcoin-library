@@ -16,6 +16,17 @@ public class BitCoupon {
 
   private static final boolean DEBUG = true;
 
+  /**
+   * This function generates a transaction saying a coupon is sent from one user to another. The returned transaction
+   * need to be sent to the server for validation and storage.
+   *
+   * @param strPrivateKey      The private key of the user that is sending the coupon.
+   * @param creatorAddress     The creatorAddress of the coupon that is going to be sent.
+   * @param receiverAddress    The address to which the coupon should be sent.
+   * @param transactionHistory Transaction history saying that the sender owns a coupon that could be sent.
+   * @return A transaction saying that a coupon created by the user with address creatorAddress is sent from the user
+   * with private key strPrivateKey to the user with address receiverAddress.
+   */
   public static Transaction generateSendTransaction(String strPrivateKey, String creatorAddress, String receiverAddress,
                                                     TransactionHistory transactionHistory) {
 
@@ -49,7 +60,7 @@ public class BitCoupon {
     }
 
     // Check if enough coupons are available
-    if (couponsInInputs <= 0) {
+    if (couponsInInputs < 1) {
       throw new IllegalArgumentException();
     }
 
@@ -99,6 +110,11 @@ public class BitCoupon {
 
   }
 
+  /**
+   *
+   * @param strPrivateKey
+   * @return
+   */
   public static Transaction generateCreationTransaction(String strPrivateKey) {
 
     // Lists for creations, inputs and outputs in the transaction
@@ -126,8 +142,14 @@ public class BitCoupon {
 
   }
 
-  // This function verifies that a transaction is consistent with previous transactions
-  // and that all signatures are correct
+  /**
+   * This function verifies that a transaction is consistent with previous transactions and that all signatures are
+   * correct. This function is used by the server to verify every new transaction it receives.
+   *
+   * @param transaction        The transaction that is going to be verified.
+   * @param transactionHistory Previous transactions that the transaction needs to be consistent with.
+   * @return Returns true is the transaction is valid.
+   */
   public static boolean verifyTransaction(Transaction transaction, TransactionHistory transactionHistory) {
     boolean inputIsValid = transaction.verifyInput(transactionHistory);
     boolean signatureIsValid = transaction.verifySignatures(transactionHistory);
