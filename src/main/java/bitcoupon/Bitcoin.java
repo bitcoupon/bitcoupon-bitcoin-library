@@ -8,6 +8,10 @@ import org.spongycastle.crypto.params.ECDomainParameters;
 
 import java.math.BigInteger;
 
+/**
+ * This class contains static functions that is used inside the BitCoupon library. These are functions that handles
+ * basic functionality of the Bitcoin protocol.
+ */
 public class Bitcoin {
 
   private static final char[]
