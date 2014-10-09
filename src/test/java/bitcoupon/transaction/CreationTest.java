@@ -22,6 +22,11 @@ public class CreationTest extends TestCase {
   }
 
   public void testGetSetSignature() throws Exception {
-    
+    Creation creation = new Creation("", 1);
+    assertNotNull(creation.getSignature());
+    assertEquals("", creation.getSignature());
+
+    creation.setSignature("newSignature");
+    assertEquals("newSignature", creation.getSignature());
   }
 }
