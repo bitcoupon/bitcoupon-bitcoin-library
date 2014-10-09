@@ -13,9 +13,20 @@ public class Creation {
   private String signature;
 
   public Creation(String creatorAddress, int amount) {
+
+    // Should this be changed to 'assert creatorAddress != null'?
+    if (creatorAddress == null) {
+      throw new IllegalArgumentException("Creator Address can't be null!");
+    }
+
+    // Should this be changed to 'assert amount < 0'?
+    if (amount < 0) {
+      throw new IllegalArgumentException("Amount can't be negative!");
+    }
+
     this.creationId = 0;
-    this.creatorAddress = creatorAddress;
     this.amount = amount;
+    this.creatorAddress = creatorAddress;
     this.signature = "";
   }
 
