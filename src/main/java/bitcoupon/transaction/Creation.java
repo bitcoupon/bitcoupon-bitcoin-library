@@ -5,13 +5,33 @@ import java.io.UnsupportedEncodingException;
 
 import bitcoupon.Bitcoin;
 
+/**
+ * Creation is the class that handles all methods that has to do with the generateCreationTransaction.
+ */
 public class Creation {
 
+  /**
+   * creationId is the unique ID of the transaction in the database
+   */
   private final long creationId;
+  /**
+   *creatorAddress is the address of the creator
+   */
   private final String creatorAddress;
+  /**
+   * amount is the amount of coupons in the transaction
+   */
   private final int amount;
+  /**
+   * signature is the digital signature of the creator. Virtually unforgeable.
+   */
   private String signature;
 
+  /**
+   * The constructor of the Creation class.
+   * @param creatorAddress: Address of the creator. Can't be null.
+   * @param amount: The amount of coupons in the transaction. Can't be negative
+   */
   public Creation(String creatorAddress, int amount) {
 
     // Should this be changed to 'assert creatorAddress != null'?
