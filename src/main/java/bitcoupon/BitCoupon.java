@@ -157,4 +157,16 @@ public class BitCoupon {
     return inputIsValid && signatureIsValid && amountIsValid;
   }
 
+  /**
+   * This method will return a list of which addresses owns coupons issued by the entity asking.
+   * @param transactionHistory
+   * @return
+   */
+  public static List<String> listCouponsOwners(TransactionHistory transactionHistory){
+    List<String> owners = new ArrayList<>();
+
+
+    return owners;
+  }
+
 }
