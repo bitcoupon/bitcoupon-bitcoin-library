@@ -6,6 +6,7 @@ public class Main {
   private static final String GENERATE_SEND_TRANSACTION = "generateSendTransaction";
   private static final String GET_CREATOR_ADDRESSES = "getCreatorAddresses";
   private static final String VERIFY_TRANSACTION = "verifyTransaction";
+  private static final String GENERATE_PRIVATE_KEY = "generatePrivateKey";
 
 
   /**
@@ -43,6 +44,7 @@ public class Main {
           "Name: " + GET_CREATOR_ADDRESSES + " - Argumentss: String privateKey, String transactionHistoryJson");
       System.out.println(
           "Name: " + VERIFY_TRANSACTION + " - Argumentss: String transactionJson, String transactionHistoryJson");
+      System.out.println("Name: " + GENERATE_PRIVATE_KEY + " - Arguments: none");
     } else {
 
       String methodName = args[0];
@@ -59,16 +61,16 @@ public class Main {
         BitCouponCli.getCreatorAddresses(args[1], args[2]);
       } else if (methodName.equalsIgnoreCase(VERIFY_TRANSACTION)) {
         BitCouponCli.verifyTransaction(args[1], args[2]);
+      } else if (methodName.equalsIgnoreCase(GENERATE_PRIVATE_KEY)) {
+        BitCouponCli.generatePrivateKey();
       }
     }
   }
 
   /**
    * This method takes the name of the method, runs checkLength() to see if the number of arguments corresponds to what
-   * the method needs, and returns true or false depending on whether it's correct or not. If it's incorrect, it will print out an error message.
-   * @param methodName
-   * @param argsLength
-   * @return
+   * the method needs, and returns true or false depending on whether it's correct or not. If it's incorrect, it will
+   * print out an error message.
    */
   private static boolean isValidArgumentsLength(String methodName, int argsLength) {
 
@@ -83,12 +85,9 @@ public class Main {
   }
 
   /**
-   * This method gets the name of a method and an integer representing the numbers of arguments sent as input to that method,
-   * and checks that the number of arguments matches the number of arguments the method demands. It returns true if it matches, and false if it doesn't.
-   * 
-   * @param methodName
-   * @param argsLength
-   * @return
+   * This method gets the name of a method and an integer representing the numbers of arguments sent as input to that
+   * method, and checks that the number of arguments matches the number of arguments the method demands. It returns true
+   * if it matches, and false if it doesn't.
    */
   private static boolean checkLength(String methodName, int argsLength) {
     int length = 0;
@@ -100,6 +99,8 @@ public class Main {
       length = 3;
     } else if (methodName.equalsIgnoreCase(VERIFY_TRANSACTION)) {
       length = 3;
+    } else if (methodName.equalsIgnoreCase(GENERATE_PRIVATE_KEY)) {
+      length = 1;
     }
     return length == argsLength;
   }

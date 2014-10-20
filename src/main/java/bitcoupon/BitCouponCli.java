@@ -38,4 +38,10 @@ public class BitCouponCli {
     Transaction out = BitCoupon.generateCreationTransaction(privateKey);
     System.out.println(Transaction.toJson(out));
   }
+
+  public static void generatePrivateKey() {
+    String privateKey = BitCoupon.generatePrivateKey();
+    System.out.println(privateKey);
+  }
+
 }

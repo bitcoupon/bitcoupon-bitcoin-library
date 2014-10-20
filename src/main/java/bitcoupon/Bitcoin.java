@@ -7,6 +7,7 @@ import org.spongycastle.crypto.digests.SHA256Digest;
 import org.spongycastle.crypto.params.ECDomainParameters;
 
 import java.math.BigInteger;
+import java.security.SecureRandom;
 
 /**
  * This class contains static functions that is used inside the BitCoupon library. These are functions that handles
@@ -34,6 +35,22 @@ public class Bitcoin {
     X9ECParameters params = SECNamedCurves.getByName("secp256k1");
     EC_PARAMS =
         new ECDomainParameters(params.getCurve(), params.getG(), params.getN(), params.getH(), params.getSeed());
+  }
+
+  /**
+   * This function generates a private key that can be used for signing transactions. From a private key a public key
+   * and an address can be generated.
+   *
+   * @return A private key in Base58 representation.
+   */
+  public static String generatePrivateKey() {
+    byte[] secret = new byte[32];
+    SecureRandom secureRandom = new SecureRandom();
+    secureRandom.nextBytes(secret);
+    byte[] data = new byte[33];
+    data[0] = (byte) 0x80;
+    System.arraycopy(secret, 0, data, 1, 32);
+    return encodeBase58(data);
   }
 
   /**

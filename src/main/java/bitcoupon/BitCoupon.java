@@ -159,14 +159,20 @@ public class BitCoupon {
 
   /**
    * This method will return a list of which addresses owns coupons issued by the entity asking.
-   * @param transactionHistory
-   * @return
    */
-  public static List<String> listCouponsOwners(TransactionHistory transactionHistory){
+  public static List<String> listCouponsOwners(TransactionHistory transactionHistory) {
     List<String> owners = new ArrayList<>();
 
-
     return owners;
+  }
+
+  /**
+   * This function generates a private key by calling the generatePrivateKey function in Bitcoin.java.
+   *
+   * @return Private key
+   */
+  public static String generatePrivateKey() {
+    return Bitcoin.generatePrivateKey();
   }
 
 }
