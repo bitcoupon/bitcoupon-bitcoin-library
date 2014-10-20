@@ -3,6 +3,7 @@ package bitcoupon;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,6 +67,31 @@ public class BitcoinTest {
       }
       Assert.assertEquals(valid, value);
       System.out.println("" + valid + value);
+    }
+  }
+
+  @Test
+  public void test_PrivateKeyToAddress() {
+    Map<String, String> correctPrivateKeyAddresses = new HashMap<String, String>();
+    correctPrivateKeyAddresses.put("5JYKkQjmtyeKJV6i28gdCLKTVm74FWpLR61PktA6iEi8shMwJtc", "1KvbQ2umogKHXY8B5QMTk1D2q56iKuJjei");
+    correctPrivateKeyAddresses.put("5JUcaLHjfc37d2M1QdaB1KtTBdhxUawq6cyDtYf19Tr5t182kZs", "1qr45DDj4HprbDr96TnjjmpJwqQMHDgpz");
+    correctPrivateKeyAddresses.put("5JJPndnt6kYCpP8Ypq11Nhhsg7mSWmLDPSKnxC6zXXQxL4gPjiN", "1DNubDX2qWmuxPazKLnLLpkCTm4Av5fYMR");
+    correctPrivateKeyAddresses.put("5JX9kpYnRgYjiaFmuLqeHFrKG6UZUfJAMmHPzRvvvcWhUxjPeuD", "1FGcfhfvoQQU4cYfpxuFRr7S3bmVujt9mW");
+    correctPrivateKeyAddresses.put("5KJCevAHnxtEhz1N11QFWP8apmiCz8g6Ev511pp4JvE9JRtEfk1", "1H8eJGdocfyegUpQYmXjfLteL7ePvQ8raZ");
+    Map<String, String> incorrectPrivateKeyAddresses = new HashMap<String, String>();
+    incorrectPrivateKeyAddresses.put("5JYKkQjmtyeKJV6i28gdCLKTVm74FWpLR61PktA6iEi8shMwJtc", "KvbQ2umogKHXY8B5QMTk1D2q56iKuJjei");
+    incorrectPrivateKeyAddresses.put("5JUcaLHjfc37d2M1QdaB1KtTBdhxUawq6cyDtYf19Tr5t182kZs", "1qr45DDj4HprbDr96TjjmpJwqQMHDgpz");
+    for (String strPrivateKey : correctPrivateKeyAddresses.keySet()) {
+      BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
+      byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
+      String address = Bitcoin.publicKeyToAddress(publicKey);
+      Assert.assertEquals(address, correctPrivateKeyAddresses.get(strPrivateKey));
+    }
+    for (String strPrivateKey : incorrectPrivateKeyAddresses.keySet()) {
+      BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
+      byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
+      String address = Bitcoin.publicKeyToAddress(publicKey);
+      Assert.assertNotEquals(address, incorrectPrivateKeyAddresses.get(strPrivateKey));
     }
   }
 }
