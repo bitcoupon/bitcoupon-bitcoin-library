@@ -10,6 +10,7 @@ import bitcoupon.transaction.Creation;
 import bitcoupon.transaction.Input;
 import bitcoupon.transaction.Output;
 import bitcoupon.transaction.OutputHistory;
+import bitcoupon.transaction.OutputHistoryRequest;
 import bitcoupon.transaction.Transaction;
 
 /**
@@ -92,6 +93,21 @@ public class BitCoupon {
    */
   public static boolean verifyTransaction(Transaction transaction, OutputHistory outputHistory) {
     return transaction.verifyConsistency(outputHistory) && transaction.verifySignatures(outputHistory);
+  }
+
+
+  public static OutputHistoryRequest generateOutputHistoryRequest(String strPrivateKey) {
+    BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
+    byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
+    String address = Bitcoin.publicKeyToAddress(publicKey);
+    OutputHistoryRequest outputHistoryRequest = new OutputHistoryRequest(address);
+    outputHistoryRequest.signOutputHistoryRequest(privateKey);
+    return outputHistoryRequest;
+  }
+
+
+  public static boolean verifyOutputHistoryRequest(OutputHistoryRequest outputHistoryRequest) {
+    return outputHistoryRequest.verifySignature();
   }
 
   /**
