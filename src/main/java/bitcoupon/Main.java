@@ -8,6 +8,8 @@ public class Main {
   private static final String GENERATE_CREATE_TRANSACTION = "generateCreateTransaction";
   private static final String GENERATE_SEND_TRANSACTION = "generateSendTransaction";
   private static final String VERIFY_TRANSACTION = "verifyTransaction";
+  private static final String GENERATE_OUTPUT_HISTORY_REQUEST = "generateOutputHistoryRequest";
+  private static final String VERIFY_OUTPUT_HISTORY_REQUEST = "verifyOutputHistoryRequest";
   private static final String GET_COUPONS = "getCoupons";
   private static final String GET_COUPON_OWNERS = "getCouponOwners";
   private static final String GENERATE_PRIVATE_KEY = "generatePrivateKey";
@@ -43,6 +45,8 @@ public class Main {
       System.out.println("Name: " + GENERATE_CREATE_TRANSACTION + " - Arguments: String strPrivateKey, String payload");
       System.out.println("Name: " + GENERATE_SEND_TRANSACTION + " - Arguments: String strPrivateKey, String couponJson, String receiverAddress, String outputHistoryJson");
       System.out.println("Name: " + VERIFY_TRANSACTION + " - Arguments: String transactionJson, String outputHistoryJson");
+      System.out.println("Name: " + GENERATE_OUTPUT_HISTORY_REQUEST + " - Arguments: String strPrivateKey");
+      System.out.println("Name: " + VERIFY_OUTPUT_HISTORY_REQUEST + " - Arguments: String outputHistoryRequestJson");
       System.out.println("Name: " + GET_COUPONS + " - Arguments: String strPrivateKey, String outputHistoryJson");
       System.out.println("Name: " + GET_COUPON_OWNERS + " - Arguments: String creatorAddress, String payload, String outputHistoryJson");
       System.out.println("Name: " + GENERATE_PRIVATE_KEY + " - Arguments: none");
@@ -60,6 +64,10 @@ public class Main {
         BitCouponCli.generateSendTransaction(args[1], args[2], args[3], args[4]);
       } else if (methodName.equalsIgnoreCase(VERIFY_TRANSACTION)) {
         BitCouponCli.verifyTransaction(args[1], args[2]);
+      } else if (methodName.equalsIgnoreCase(GENERATE_OUTPUT_HISTORY_REQUEST)) {
+        BitCouponCli.generateOutputHistoryRequest(args[1]);
+      } else if (methodName.equalsIgnoreCase(VERIFY_OUTPUT_HISTORY_REQUEST)) {
+        BitCouponCli.verifyOutputHistoryRequest(args[1]);
       } else if (methodName.equalsIgnoreCase(GET_COUPONS)) {
         BitCouponCli.getCoupons(args[1], args[2]);
       } else if (methodName.equalsIgnoreCase(GET_COUPON_OWNERS)) {
@@ -100,6 +108,10 @@ public class Main {
       length = 5;
     } else if (methodName.equalsIgnoreCase(VERIFY_TRANSACTION)) {
       length = 3;
+    } else if (methodName.equalsIgnoreCase(GENERATE_OUTPUT_HISTORY_REQUEST)) {
+      length = 2;
+    } else if (methodName.equalsIgnoreCase(VERIFY_OUTPUT_HISTORY_REQUEST)) {
+      length = 2;
     } else if (methodName.equalsIgnoreCase(GET_COUPONS)) {
       length = 3;
     } else if (methodName.equalsIgnoreCase(GET_COUPON_OWNERS)) {

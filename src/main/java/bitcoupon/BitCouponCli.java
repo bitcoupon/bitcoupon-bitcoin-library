@@ -5,6 +5,7 @@ import java.util.List;
 import bitcoupon.transaction.Coupon;
 import bitcoupon.transaction.CouponList;
 import bitcoupon.transaction.OutputHistory;
+import bitcoupon.transaction.OutputHistoryRequest;
 import bitcoupon.transaction.Transaction;
 
 /**
@@ -30,6 +31,17 @@ public class BitCouponCli {
     OutputHistory outputHistory = OutputHistory.fromJson(outputHistoryJson);
     boolean validTransaction = BitCoupon.verifyTransaction(transaction, outputHistory);
     System.out.println(validTransaction);
+  }
+
+  public static void generateOutputHistoryRequest(String strPrivateKey) {
+    OutputHistoryRequest outputHistoryRequest = BitCoupon.generateOutputHistoryRequest(strPrivateKey);
+    System.out.println(OutputHistoryRequest.toJson(outputHistoryRequest));
+  }
+
+  public static void verifyOutputHistoryRequest(String outputHistoryRequestJson) {
+    OutputHistoryRequest outputHistoryRequest = OutputHistoryRequest.fromJson(outputHistoryRequestJson);
+    boolean validOutputHistoryRequest = BitCoupon.verifyOutputHistoryRequest(outputHistoryRequest);
+    System.out.println(validOutputHistoryRequest);
   }
 
   public static void getCoupons(String strPrivateKey, String outputHistoryJson) {
