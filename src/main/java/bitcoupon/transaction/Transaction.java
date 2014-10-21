@@ -18,7 +18,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import bitcoupon.Bitcoin;
 
@@ -115,159 +119,119 @@ public class Transaction {
     }
   }
 
-  // This method checks that all signatures in this transactions are correct
-  // The transaction history is used to check which signatures are needed to use outputs from previous transactions
   public boolean verifySignatures(OutputHistory outputHistory) {
+    for (Creation creation : creations) {
+      if (!verifyCreationSignature(creation)) {
+        return false;
+      }
+    }
+    for (Input input : inputs) {
+      if (!verifyInputSignature(input, outputHistory)) {
+        return false;
+      }
+    }
+    return true;
+  }
 
-    // Get a hash of this transaction
-    // This is the data that has been signed when the transaction was created
+  private boolean verifyCreationSignature(Creation creation) {
     byte[] hashedTransaction = Bitcoin.hash256(getBytes());
-
-    // Check that the signatures of the creations are correct
-    for (Creation creation : creations) {
-      String creatorAddress = creation.getCreatorAddress();
-      String signature = creation.getSignature();
-      byte[] ecdsaSignature = Bitcoin.decodeBase58(signature.split(" ")[0]);
-      byte[] publicKey = Bitcoin.decodeBase58(signature.split(" ")[1]);
-      if (!Bitcoin.publicKeyToAddress(publicKey).equals(creatorAddress)) {
-        return false;
-      }
-      ECPublicKeyParameters
-          publicKeyParams =
-          new ECPublicKeyParameters(Bitcoin.EC_PARAMS.getCurve().decodePoint(publicKey), Bitcoin.EC_PARAMS);
-      ECDSASigner signer = new ECDSASigner();
-      signer.init(false, publicKeyParams);
-      try {
-        ASN1InputStream derSigStream = new ASN1InputStream(ecdsaSignature);
-        DLSequence seq = (DLSequence) derSigStream.readObject();
-        BigInteger r = ((ASN1Integer) seq.getObjectAt(0)).getPositiveValue();
-        BigInteger s = ((ASN1Integer) seq.getObjectAt(1)).getPositiveValue();
-        derSigStream.close();
-        if (!signer.verifySignature(hashedTransaction, r, s)) {
-          return false;
-        }
-      } catch (IOException e) {
-        e.printStackTrace();
-        return false;
-      }
+    String creatorAddress = creation.getCreatorAddress();
+    String signature = creation.getSignature();
+    byte[] ecdsaSignature = Bitcoin.decodeBase58(signature.split(" ")[0]);
+    byte[] publicKey = Bitcoin.decodeBase58(signature.split(" ")[1]);
+    if (!Bitcoin.publicKeyToAddress(publicKey).equals(creatorAddress)) {
+      return false;
     }
-
-    // Put all outputs in the output history in a hash map for fast access
-    HashMap<Long, Output> outputHistoryMap = new HashMap<>();
-    for (Output output : outputHistory.getOutputList()) {
-      outputHistoryMap.put(output.getOutputId(), output);
-    }
-
-    // Check that the signatures og the inputs are correct
-    for (Input input : inputs) {
-      long referredOutput = input.getReferredOutput();
-      String receiverAddress = outputHistoryMap.get(referredOutput).getReceiverAddress();
-      String signature = input.getSignature();
-      byte[] ecdsaSignature = Bitcoin.decodeBase58(signature.split(" ")[0]);
-      byte[] publicKey = Bitcoin.decodeBase58(signature.split(" ")[1]);
-      if (!Bitcoin.publicKeyToAddress(publicKey).equals(receiverAddress)) {
+    ECPublicKeyParameters
+        publicKeyParams =
+        new ECPublicKeyParameters(Bitcoin.EC_PARAMS.getCurve().decodePoint(publicKey), Bitcoin.EC_PARAMS);
+    ECDSASigner signer = new ECDSASigner();
+    signer.init(false, publicKeyParams);
+    try {
+      ASN1InputStream derSigStream = new ASN1InputStream(ecdsaSignature);
+      DLSequence seq = (DLSequence) derSigStream.readObject();
+      BigInteger r = ((ASN1Integer) seq.getObjectAt(0)).getPositiveValue();
+      BigInteger s = ((ASN1Integer) seq.getObjectAt(1)).getPositiveValue();
+      derSigStream.close();
+      if (!signer.verifySignature(hashedTransaction, r, s)) {
         return false;
       }
-      ECPublicKeyParameters
-          publicKeyParams =
-          new ECPublicKeyParameters(Bitcoin.EC_PARAMS.getCurve().decodePoint(publicKey), Bitcoin.EC_PARAMS);
-      ECDSASigner signer = new ECDSASigner();
-      signer.init(false, publicKeyParams);
-      try {
-        ASN1InputStream derSigStream = new ASN1InputStream(ecdsaSignature);
-        DLSequence seq = (DLSequence) derSigStream.readObject();
-        BigInteger r = ((ASN1Integer) seq.getObjectAt(0)).getPositiveValue();
-        BigInteger s = ((ASN1Integer) seq.getObjectAt(1)).getPositiveValue();
-        derSigStream.close();
-        if (!signer.verifySignature(hashedTransaction, r, s)) {
-          return false;
-        }
-      } catch (IOException e) {
-        e.printStackTrace();
-        return false;
-      }
+    } catch (IOException e) {
+      e.printStackTrace();
+      return false;
     }
-
     return true;
   }
 
-  // This method checks that all outputs of previous transactions that are referred to in this transaction is unspent
-  public boolean verifyInput(OutputHistory outputHistory) {
-
-    // Put all outputs in the output history in a hash map for fast access
+  private boolean verifyInputSignature(Input input, OutputHistory outputHistory) {
+    byte[] hashedTransaction = Bitcoin.hash256(getBytes());
     HashMap<Long, Output> outputHistoryMap = new HashMap<>();
     for (Output output : outputHistory.getOutputList()) {
       outputHistoryMap.put(output.getOutputId(), output);
     }
-
-    // Check that no referred output is already spent
-    for (Input input : inputs) {
-      long referredOutput = input.getReferredOutput();
-      if (outputHistoryMap.get(referredOutput).getReferringInput() != 0) {
+    Output referredOutput = outputHistoryMap.get(input.getReferredOutput());
+    if (referredOutput == null) {
+      return false;
+    }
+    String receiverAddress = referredOutput.getReceiverAddress();
+    String signature = input.getSignature();
+    byte[] ecdsaSignature = Bitcoin.decodeBase58(signature.split(" ")[0]);
+    byte[] publicKey = Bitcoin.decodeBase58(signature.split(" ")[1]);
+    if (!Bitcoin.publicKeyToAddress(publicKey).equals(receiverAddress)) {
+      return false;
+    }
+    ECPublicKeyParameters
+        publicKeyParams =
+        new ECPublicKeyParameters(Bitcoin.EC_PARAMS.getCurve().decodePoint(publicKey), Bitcoin.EC_PARAMS);
+    ECDSASigner signer = new ECDSASigner();
+    signer.init(false, publicKeyParams);
+    try {
+      ASN1InputStream derSigStream = new ASN1InputStream(ecdsaSignature);
+      DLSequence seq = (DLSequence) derSigStream.readObject();
+      BigInteger r = ((ASN1Integer) seq.getObjectAt(0)).getPositiveValue();
+      BigInteger s = ((ASN1Integer) seq.getObjectAt(1)).getPositiveValue();
+      derSigStream.close();
+      if (!signer.verifySignature(hashedTransaction, r, s)) {
         return false;
       }
+    } catch (IOException e) {
+      e.printStackTrace();
+      return false;
     }
-
     return true;
   }
 
-  // This method checks that this transaction is not using more coupons than is available
-  // Transaction history is used to check the number of coupons available via references to previous transactions
-  public boolean verifyAmount(OutputHistory outputHistory) {
-
-    // Map for counting coupons available in this transaction
-    HashMap<Coupon, Integer> availableCoupons = new HashMap<>();
-
-    // Count the number of coupons created in this transaction
+  public boolean verifyConsistency(OutputHistory outputHistory) {
+    List<Coupon> availableCoupons = new LinkedList<Coupon>();
     for (Creation creation : creations) {
-      Coupon coupon = new Coupon(creation.getCreatorAddress(), creation.getPayload());
-      if (availableCoupons.containsKey(coupon)) {
-        int amount = availableCoupons.get(coupon);
-        availableCoupons.put(coupon, amount + creation.getAmount());
-      } else {
-        availableCoupons.put(coupon, creation.getAmount());
+      if (creation.getAmount() <= 0) {
+        return false;
+      }
+      for (int i = 0; i < creation.getAmount(); i++) {
+        availableCoupons.add(new Coupon(creation.getCreatorAddress(), creation.getPayload()));
       }
     }
-
-    // Put all outputs in the output history in a hash map for fast access
-    HashMap<Long, Output> outputHistoryMap = new HashMap<>();
+    Map<Long, Output> outputHistoryMap = new HashMap<Long, Output>();
     for (Output output : outputHistory.getOutputList()) {
       outputHistoryMap.put(output.getOutputId(), output);
     }
-
-    // Count the number of existing coupons referred to by this transaction
     for (Input input : inputs) {
-      long referredOutput = input.getReferredOutput();
-      Coupon
-          coupon =
-          new Coupon(outputHistoryMap.get(referredOutput).getCreatorAddress(),
-                     outputHistoryMap.get(referredOutput).getPayload());
-      if (availableCoupons.containsKey(coupon)) {
-        int amount = availableCoupons.get(coupon);
-        availableCoupons.put(coupon, amount + outputHistoryMap.get(referredOutput).getAmount());
-      } else {
-        availableCoupons.put(coupon, outputHistoryMap.get(referredOutput).getAmount());
+      Output referredOutput = outputHistoryMap.get(input.getReferredOutput());
+      if (referredOutput == null || referredOutput.getReferringInput() != 0) {
+        return false;
+      }
+      for (int i = 0; i < referredOutput.getAmount(); i++) {
+        availableCoupons.add(new Coupon(referredOutput.getCreatorAddress(), referredOutput.getPayload()));
       }
     }
-
-    // Map for counting coupons spent by this transaction
-    HashMap<Coupon, Integer> spentCoupons = new HashMap<>();
-
-    // Count the number of coupons spent by this transaction
     for (Output output : outputs) {
-      Coupon coupon = new Coupon(output.getCreatorAddress(), output.getPayload());
-      if (spentCoupons.containsKey(coupon)) {
-        int amount = spentCoupons.get(coupon);
-        spentCoupons.put(coupon, amount + output.getAmount());
-      } else {
-        spentCoupons.put(coupon, output.getAmount());
-      }
-    }
-
-    // Check that spent coupons does not exceed available coupons for any creatorAddress
-    for (Coupon coupon : spentCoupons.keySet()) {
-      if (!availableCoupons.containsKey(coupon) || availableCoupons.get(coupon) < spentCoupons.get(coupon)) {
+      if (output.getAmount() <= 0) {
         return false;
+      }
+      for (int i = 0; i < output.getAmount(); i++) {
+        if (!availableCoupons.remove(new Coupon(output.getCreatorAddress(), output.getPayload()))) {
+          return false;
+        }
       }
     }
     return true;
@@ -277,40 +241,8 @@ public class Transaction {
     return new Gson().fromJson(transactionJson, Transaction.class);
   }
 
-  public static Transaction fromJson(BufferedReader reader) {
-    return new Gson().fromJson(reader, Transaction.class);
-  }
-
-//  The transaction looks like this in json:
-//  {
-//    "transactionid":0,
-//      "creations":[
-//    {
-//      "creationid":0,
-//        "creatoraddress":"d7b3e15eefbb19945b2671025c846ba18164abce",
-//        "amount":1,
-//        "signature":"3046022100841b07fbeda96b5474e9465fbf1a105b6874b2f15479f74f59afb633e01a825a022100cc9a0ff991e7f0c9882057c96986d0fae326a478a6501d03c69e80dadc4ea7e5 047825706d44fc680a454aa4071b4df24c2087f2e48ab2d31e06fa58511b2872bd313c984a3dde16732cd9b995833ca41ecf1f1c5e1d57607134080b0d8fddcb72"
-//    }
-//    ],
-//    "inputs":[
-//
-//    ],
-//    "outputs":[
-//    {
-//      "outputid":0,
-//        "creatoraddress":"d7b3e15eefbb19945b2671025c846ba18164abce",
-//        "amount":1,
-//        "address":"d7b3e15eefbb19945b2671025c846ba18164abce",
-//        "inputid":0
-//    }
-//    ]
-//  }
-
   public static String toJson(Transaction transaction) {
     return new Gson().toJson(transaction, Transaction.class);
   }
 
-  public long getId() {
-    return transactionId;
-  }
 }

@@ -16,8 +16,8 @@ public class OutputHistory {
     return outputList;
   }
 
-  public static OutputHistory fromJson(String json) {
-    return new Gson().fromJson(json, OutputHistory.class);
+  public static OutputHistory fromJson(String outputHistoryJson) {
+    return new Gson().fromJson(outputHistoryJson, OutputHistory.class);
   }
 
   public static String toJson(OutputHistory outputHistory) {

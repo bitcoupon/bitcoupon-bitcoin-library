@@ -81,8 +81,14 @@ public class BitCoupon {
     return transaction;
   }
 
+  /**
+   * This function checks that a transaction is consistent with an output history and that all signatures are valid.
+   * @param transaction
+   * @param outputHistory
+   * @return
+   */
   public static boolean verifyTransaction(Transaction transaction, OutputHistory outputHistory) {
-    return false;
+    return transaction.verifyConsistency(outputHistory) && transaction.verifySignatures(outputHistory);
   }
 
   /**
@@ -129,26 +135,10 @@ public class BitCoupon {
     return couponOwners;
   }
 
-
-  /**
-   * This function verifies that a transaction is consistent with previous transactions and that all signatures are
-   * correct. This function is used by the server to verify every new transaction it receives.
-   *
-   * @param transaction        The transaction that is going to be verified.
-   * @param transactionHistory Previous transactions that the transaction needs to be consistent with.
-   * @return Returns true is the transaction is valid.
-   */
-  public static boolean verifyTransaction(Transaction transaction, TransactionHistory transactionHistory) {
-    boolean inputIsValid = transaction.verifyInput(transactionHistory);
-    boolean signatureIsValid = transaction.verifySignatures(transactionHistory);
-    boolean amountIsValid = transaction.verifyAmount(transactionHistory);
-    return inputIsValid && signatureIsValid && amountIsValid;
-  }
-
   /**
    * This function generates a private key by calling the generatePrivateKey function in Bitcoin.java.
    *
-   * @return Private key
+   * @return Private key in Base58 representation.
    */
   public static String generatePrivateKey() {
     return Bitcoin.generatePrivateKey();

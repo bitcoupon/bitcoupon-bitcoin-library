@@ -29,7 +29,7 @@ public class Bitcoin {
        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 
-  private static final ECDomainParameters EC_PARAMS;
+  public static final ECDomainParameters EC_PARAMS;
 
   static {
     X9ECParameters params = SECNamedCurves.getByName("secp256k1");
