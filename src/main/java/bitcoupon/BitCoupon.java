@@ -2,20 +2,22 @@ package bitcoupon;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import bitcoupon.transaction.Coupon;
+import bitcoupon.transaction.CouponList;
 import bitcoupon.transaction.Creation;
 import bitcoupon.transaction.Input;
 import bitcoupon.transaction.Output;
 import bitcoupon.transaction.OutputHistory;
 import bitcoupon.transaction.Transaction;
-import bitcoupon.transaction.TransactionHistory;
 
+/**
+ * This class contains static functions that are used by both server and clients to handle coupon transactions.
+ */
 public class BitCoupon {
 
-  private static final boolean DEBUG = true;
+  // private static final boolean DEBUG = true;
 
   /**
    * This function generates a transaction where a coupon is created.
@@ -25,9 +27,9 @@ public class BitCoupon {
    * @return A transaction creating a coupon. This transaction needs to be sent to the server.
    */
   public static Transaction generateCreateTransaction(String strPrivateKey, String payload) {
-    List<Creation> creations = new ArrayList<Creation>();
-    List<Input> inputs = new ArrayList<Input>();
-    List<Output> outputs = new ArrayList<Output>();
+    List<Creation> creations = new ArrayList<>();
+    List<Input> inputs = new ArrayList<>();
+    List<Output> outputs = new ArrayList<>();
     Transaction transaction = new Transaction(creations, inputs, outputs);
     BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
     byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
@@ -50,9 +52,9 @@ public class BitCoupon {
    */
   public static Transaction generateSendTransaction(String strPrivateKey, Coupon coupon, String receiverAddress,
                                                     OutputHistory outputHistory) {
-    List<Creation> creations = new ArrayList<Creation>();
-    List<Input> inputs = new ArrayList<Input>();
-    List<Output> outputs = new ArrayList<Output>();
+    List<Creation> creations = new ArrayList<>();
+    List<Input> inputs = new ArrayList<>();
+    List<Output> outputs = new ArrayList<>();
     Transaction transaction = new Transaction(creations, inputs, outputs);
     BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
     byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
@@ -83,9 +85,10 @@ public class BitCoupon {
 
   /**
    * This function checks that a transaction is consistent with an output history and that all signatures are valid.
-   * @param transaction
-   * @param outputHistory
-   * @return
+   *
+   * @param transaction   The transaction that is going to be checked.
+   * @param outputHistory Output history that transaction should be consistent with.
+   * @return True if the transaction is consistent with the output history and all signatures are valid.
    */
   public static boolean verifyTransaction(Transaction transaction, OutputHistory outputHistory) {
     return transaction.verifyConsistency(outputHistory) && transaction.verifySignatures(outputHistory);
@@ -98,11 +101,11 @@ public class BitCoupon {
    * @param outputHistory Output history for which the user wants to list his/her coupons.
    * @return A list of all coupons that the user owns in the output history.
    */
-  public static List<Coupon> getCoupons(String strPrivateKey, OutputHistory outputHistory) {
+  public static CouponList getCoupons(String strPrivateKey, OutputHistory outputHistory) {
     BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
     byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
     String address = Bitcoin.publicKeyToAddress(publicKey);
-    List<Coupon> coupons = new ArrayList<Coupon>();
+    List<Coupon> coupons = new ArrayList<>();
     for (Output output : outputHistory.getOutputList()) {
       if (output.getReceiverAddress().equals(address) && output.getReferringInput() == 0) {
         for (int i = 0; i < output.getAmount(); i++) {
@@ -110,7 +113,7 @@ public class BitCoupon {
         }
       }
     }
-    return coupons;
+    return new CouponList(coupons);
   }
 
   /**
@@ -122,13 +125,13 @@ public class BitCoupon {
    * @return A list of all owners of coupons (as specified) in the output history.
    */
   public static List<String> getCouponOwners(String creatorAddress, String payload, OutputHistory outputHistory) {
-    List<String> couponOwners = new ArrayList<String>();
+    List<String> couponOwners = new ArrayList<>();
     for (Output output : outputHistory.getOutputList()) {
       if (output.getCreatorAddress().equals(creatorAddress)
           && output.getPayload().equals(payload)
           && output.getReferringInput() == 0) {
         for (int i = 0; i < output.getAmount(); i++) {
-          couponOwners.add(new String(output.getReceiverAddress()));
+          couponOwners.add(output.getReceiverAddress());
         }
       }
     }

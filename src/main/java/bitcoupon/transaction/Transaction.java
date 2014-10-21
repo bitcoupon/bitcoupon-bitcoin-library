@@ -6,23 +6,17 @@ import org.spongycastle.asn1.ASN1InputStream;
 import org.spongycastle.asn1.ASN1Integer;
 import org.spongycastle.asn1.DERSequenceGenerator;
 import org.spongycastle.asn1.DLSequence;
-import org.spongycastle.asn1.sec.SECNamedCurves;
-import org.spongycastle.asn1.x9.X9ECParameters;
-import org.spongycastle.crypto.params.ECDomainParameters;
 import org.spongycastle.crypto.params.ECPrivateKeyParameters;
 import org.spongycastle.crypto.params.ECPublicKeyParameters;
 import org.spongycastle.crypto.signers.ECDSASigner;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import bitcoupon.Bitcoin;
 

@@ -1,5 +1,7 @@
 package bitcoupon.transaction;
 
+import com.google.gson.Gson;
+
 public class Coupon {
 
   private final String creatorAddress;
@@ -31,6 +33,14 @@ public class Coupon {
   @Override
   public int hashCode() {
     return creatorAddress.hashCode() + payload.hashCode();
+  }
+
+  public static Coupon fromJson(String couponJson) {
+    return new Gson().fromJson(couponJson, Coupon.class);
+  }
+
+  public static String toJson(Coupon coupon) {
+    return new Gson().toJson(coupon, Coupon.class);
   }
 
 }

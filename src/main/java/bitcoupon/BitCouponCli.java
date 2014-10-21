@@ -2,41 +2,48 @@ package bitcoupon;
 
 import java.util.List;
 
+import bitcoupon.transaction.Coupon;
+import bitcoupon.transaction.CouponList;
+import bitcoupon.transaction.OutputHistory;
 import bitcoupon.transaction.Transaction;
-import bitcoupon.transaction.TransactionHistory;
 
 /**
- * Created by Patrick on 01.10.2014.
+ * This class provides a Json interface for the class BitCoupon.java.
  */
 public class BitCouponCli {
 
-  public static void verifyTransaction(String transactionJson, String transactionHistoryJson) {
+  public static void generateCreateTransaction(String strPrivateKey, String payload) {
+    Transaction transaction = BitCoupon.generateCreateTransaction(strPrivateKey, payload);
+    System.out.println(Transaction.toJson(transaction));
+  }
+
+  public static void generateSendTransaction(String strPrivateKey, String couponJson, String receiverAddress,
+                                             String outputHistoryJson) {
+    Coupon coupon = Coupon.fromJson(couponJson);
+    OutputHistory outputHistory = OutputHistory.fromJson(outputHistoryJson);
+    Transaction transaction = BitCoupon.generateSendTransaction(strPrivateKey, coupon, receiverAddress, outputHistory);
+    System.out.println(Transaction.toJson(transaction));
+  }
+
+  public static void verifyTransaction(String transactionJson, String outputHistoryJson) {
     Transaction transaction = Transaction.fromJson(transactionJson);
-    TransactionHistory transactionHistory = TransactionHistory.fromJson(transactionHistoryJson);
-    boolean out = BitCoupon.verifyTransaction(transaction, transactionHistory);
-    System.out.println("" + out);
+    OutputHistory outputHistory = OutputHistory.fromJson(outputHistoryJson);
+    boolean validTransaction = BitCoupon.verifyTransaction(transaction, outputHistory);
+    System.out.println(validTransaction);
   }
 
-  public static void getCreatorAddresses(String privateKey, String transactionHistoryJson) {
-    TransactionHistory transactionHistory = TransactionHistory.fromJson(transactionHistoryJson);
-    List<String> out = BitCoupon.getCreatorAddresses(privateKey, transactionHistory);
-    for (String s : out) {
-      System.out.println(s);
+  public static void getCoupons(String strPrivateKey, String outputHistoryJson) {
+    OutputHistory outputHistory = OutputHistory.fromJson(outputHistoryJson);
+    CouponList couponList = BitCoupon.getCoupons(strPrivateKey, outputHistory);
+    System.out.println(CouponList.toJson(couponList));
+  }
+
+  public static void getCouponOwners(String creatorAddress, String payload, String outputHistoryJson) {
+    OutputHistory outputHistory = OutputHistory.fromJson(outputHistoryJson);
+    List<String> couponOwners = BitCoupon.getCouponOwners(creatorAddress, payload, outputHistory);
+    for (String couponOwner : couponOwners) {
+      System.out.println(couponOwner);
     }
-  }
-
-  public static void generateSendTransaction(String privateKey, String creatorPublicKey, String transactionHistoryJson,
-                                             String receiverAddress) {
-    TransactionHistory transactionHistory = TransactionHistory.fromJson(transactionHistoryJson);
-    Transaction
-        out =
-        BitCoupon.generateSendTransaction(privateKey, creatorPublicKey, receiverAddress, transactionHistory);
-    System.out.println(Transaction.toJson(out));
-  }
-
-  public static void generateCreationTransaction(String privateKey) {
-    Transaction out = BitCoupon.generateCreationTransaction(privateKey);
-    System.out.println(Transaction.toJson(out));
   }
 
   public static void generatePrivateKey() {

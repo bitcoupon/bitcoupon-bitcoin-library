@@ -1,13 +1,16 @@
 package bitcoupon;
 
+/**
+ * This class provides a console interface for the class BitCouponCli.java.
+ */
 public class Main {
 
-  private static final String GENERATE_CREATION_TRANSACTION = "generateCreationTransaction";
+  private static final String GENERATE_CREATE_TRANSACTION = "generateCreateTransaction";
   private static final String GENERATE_SEND_TRANSACTION = "generateSendTransaction";
-  private static final String GET_CREATOR_ADDRESSES = "getCreatorAddresses";
   private static final String VERIFY_TRANSACTION = "verifyTransaction";
+  private static final String GET_COUPONS = "getCoupons";
+  private static final String GET_COUPON_OWNERS = "getCouponOwners";
   private static final String GENERATE_PRIVATE_KEY = "generatePrivateKey";
-
 
   /**
    * This method takes a String array. It is passed on to evaluateMethod(args).
@@ -37,13 +40,11 @@ public class Main {
   private static void evaluateMethod(String[] args) {
     if (args.length == 0) {
       System.out.println("Available methods:");
-      System.out.println("Name: " + GENERATE_CREATION_TRANSACTION + " - Argumentss: String privateKey");
-      System.out.println("Name: " + GENERATE_SEND_TRANSACTION
-                         + " - Argumentss: String privateKey, String creatorAddress, String transactionHistoryJson, String receiverAddress");
-      System.out.println(
-          "Name: " + GET_CREATOR_ADDRESSES + " - Argumentss: String privateKey, String transactionHistoryJson");
-      System.out.println(
-          "Name: " + VERIFY_TRANSACTION + " - Argumentss: String transactionJson, String transactionHistoryJson");
+      System.out.println("Name: " + GENERATE_CREATE_TRANSACTION + " - Arguments: String strPrivateKey, String payload");
+      System.out.println("Name: " + GENERATE_SEND_TRANSACTION + " - Arguments: String strPrivateKey, String couponJson, String receiverAddress, String outputHistoryJson");
+      System.out.println("Name: " + VERIFY_TRANSACTION + " - Arguments: String transactionJson, String outputHistoryJson");
+      System.out.println("Name: " + GET_COUPONS + " - Arguments: String strPrivateKey, String outputHistoryJson");
+      System.out.println("Name: " + GET_COUPON_OWNERS + " - Arguments: String creatorAddress, String payload, String outputHistoryJson");
       System.out.println("Name: " + GENERATE_PRIVATE_KEY + " - Arguments: none");
     } else {
 
@@ -53,14 +54,16 @@ public class Main {
         return;
       }
 
-      if (methodName.equalsIgnoreCase(GENERATE_CREATION_TRANSACTION)) {
-        BitCouponCli.generateCreationTransaction(args[1]);
+      if (methodName.equalsIgnoreCase(GENERATE_CREATE_TRANSACTION)) {
+        BitCouponCli.generateCreateTransaction(args[1], args[2]);
       } else if (methodName.equalsIgnoreCase(GENERATE_SEND_TRANSACTION)) {
         BitCouponCli.generateSendTransaction(args[1], args[2], args[3], args[4]);
-      } else if (methodName.equalsIgnoreCase(GET_CREATOR_ADDRESSES)) {
-        BitCouponCli.getCreatorAddresses(args[1], args[2]);
       } else if (methodName.equalsIgnoreCase(VERIFY_TRANSACTION)) {
         BitCouponCli.verifyTransaction(args[1], args[2]);
+      } else if (methodName.equalsIgnoreCase(GET_COUPONS)) {
+        BitCouponCli.getCoupons(args[1], args[2]);
+      } else if (methodName.equalsIgnoreCase(GET_COUPON_OWNERS)) {
+        BitCouponCli.getCouponOwners(args[1], args[2], args[3]);
       } else if (methodName.equalsIgnoreCase(GENERATE_PRIVATE_KEY)) {
         BitCouponCli.generatePrivateKey();
       }
@@ -91,14 +94,16 @@ public class Main {
    */
   private static boolean checkLength(String methodName, int argsLength) {
     int length = 0;
-    if (methodName.equalsIgnoreCase(GENERATE_CREATION_TRANSACTION)) {
-      length = 2;
+    if (methodName.equalsIgnoreCase(GENERATE_CREATE_TRANSACTION)) {
+      length = 3;
     } else if (methodName.equalsIgnoreCase(GENERATE_SEND_TRANSACTION)) {
       length = 5;
-    } else if (methodName.equalsIgnoreCase(GET_CREATOR_ADDRESSES)) {
-      length = 3;
     } else if (methodName.equalsIgnoreCase(VERIFY_TRANSACTION)) {
       length = 3;
+    } else if (methodName.equalsIgnoreCase(GET_COUPONS)) {
+      length = 3;
+    } else if (methodName.equalsIgnoreCase(GET_COUPON_OWNERS)) {
+      length = 4;
     } else if (methodName.equalsIgnoreCase(GENERATE_PRIVATE_KEY)) {
       length = 1;
     }

@@ -218,7 +218,7 @@ public class Bitcoin {
     return new byte[]{(byte) (i >> 24 & 0xff), //
                       (byte) (i >> 16 & 0xff), //
                       (byte) (i >> 8 & 0xff), //
-                      (byte) (i >> 0 & 0xff) //
+                      (byte) (i & 0xff) //
     };
   }
 
@@ -237,7 +237,7 @@ public class Bitcoin {
                       (byte) (l >> 24 & 0xff), //
                       (byte) (l >> 16 & 0xff), //
                       (byte) (l >> 8 & 0xff), //
-                      (byte) (l >> 0 & 0xff) //
+                      (byte) (l & 0xff) //
     };
   }
 
