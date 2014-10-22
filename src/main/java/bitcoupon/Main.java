@@ -49,7 +49,7 @@ public class Main {
       System.out.println("Name: " + GENERATE_OUTPUT_HISTORY_REQUEST + " - Arguments: String strPrivateKey");
       System.out.println("Name: " + VERIFY_OUTPUT_HISTORY_REQUEST + " - Arguments: String outputHistoryRequestJson");
       System.out.println("Name: " + GET_COUPONS + " - Arguments: String strPrivateKey, String outputHistoryJson");
-      System.out.println("Name: " + GET_COUPON_OWNERS + " - Arguments: String creatorAddress, String payload, String outputHistoryJson");
+      System.out.println("Name: " + GET_COUPON_OWNERS + " - Arguments: String creatorAddress, String outputHistoryJson");
       System.out.println("Name: " + GENERATE_PRIVATE_KEY + " - Arguments: none");
       System.out.println("Name: " + GENERATE_ADDRESS + " - Arguments: String strPrivateKey");
     } else {
@@ -73,7 +73,7 @@ public class Main {
       } else if (methodName.equalsIgnoreCase(GET_COUPONS)) {
         BitCouponCli.getCoupons(args[1], args[2]);
       } else if (methodName.equalsIgnoreCase(GET_COUPON_OWNERS)) {
-        BitCouponCli.getCouponOwners(args[1], args[2], args[3]);
+        BitCouponCli.getCouponOwners(args[1], args[2]);
       } else if (methodName.equalsIgnoreCase(GENERATE_PRIVATE_KEY)) {
         BitCouponCli.generatePrivateKey();
       } else if (methodName.equalsIgnoreCase(GENERATE_ADDRESS)) {
@@ -119,7 +119,7 @@ public class Main {
     } else if (methodName.equalsIgnoreCase(GET_COUPONS)) {
       length = 3;
     } else if (methodName.equalsIgnoreCase(GET_COUPON_OWNERS)) {
-      length = 4;
+      length = 3;
     } else if (methodName.equalsIgnoreCase(GENERATE_PRIVATE_KEY)) {
       length = 1;
     } else if (methodName.equalsIgnoreCase(GENERATE_ADDRESS)) {

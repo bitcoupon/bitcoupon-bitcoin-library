@@ -6,6 +6,8 @@ import java.util.List;
 
 import bitcoupon.transaction.Coupon;
 import bitcoupon.transaction.CouponList;
+import bitcoupon.transaction.CouponOwner;
+import bitcoupon.transaction.CouponOwnerList;
 import bitcoupon.transaction.Creation;
 import bitcoupon.transaction.Input;
 import bitcoupon.transaction.Output;
@@ -137,22 +139,20 @@ public class BitCoupon {
    * This function lists the addresses of all users who owns a coupon with the specified creator address and payload.
    *
    * @param creatorAddress The creator address of coupons to list coupon owner for.
-   * @param payload        The payload of coupons to list coupon owner for.
    * @param outputHistory  Output history for which coupon owners should be listed.
    * @return A list of all owners of coupons (as specified) in the output history.
    */
-  public static List<String> getCouponOwners(String creatorAddress, String payload, OutputHistory outputHistory) {
-    List<String> couponOwners = new ArrayList<>();
+  public static CouponOwnerList getCouponOwners(String creatorAddress, OutputHistory outputHistory) {
+    List<CouponOwner> couponOwners = new ArrayList<>();
     for (Output output : outputHistory.getOutputList()) {
-      if (output.getCreatorAddress().equals(creatorAddress)
-          && output.getPayload().equals(payload)
-          && output.getReferringInput() == 0) {
+      if (output.getCreatorAddress().equals(creatorAddress) && output.getReferringInput() == 0) {
         for (int i = 0; i < output.getAmount(); i++) {
-          couponOwners.add(output.getReceiverAddress());
+          couponOwners.add(new CouponOwner(new Coupon(output.getCreatorAddress(), output.getPayload()),
+                                           output.getReceiverAddress()));
         }
       }
     }
-    return couponOwners;
+    return new CouponOwnerList(couponOwners);
   }
 
   /**

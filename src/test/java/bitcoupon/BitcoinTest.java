@@ -1,29 +1,40 @@
-//package bitcoupon;
-//
-//import org.junit.Assert;
-//import org.junit.Test;
-//
-//import java.math.BigInteger;
-//import java.util.ArrayList;
-//import java.util.HashMap;
-//import java.util.List;
-//import java.util.Map;
-//
-//import bitcoupon.BitCoupon;
-//import bitcoupon.transaction.Transaction;
-//import bitcoupon.transaction.TransactionHistory;
-//
-///**
-//* Created by Patrick on 01.10.2014.
-//*/
-//public class BitcoinTest {
-//
-//  @Test
-//  public void test_GeneratePrivateKey() {
-//
-//  }
-//
-//
+package bitcoupon;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import bitcoupon.BitCoupon;
+import bitcoupon.transaction.Transaction;
+
+/**
+* Created by Patrick on 01.10.2014.
+*/
+public class BitcoinTest {
+
+  @Test
+  public void test_GeneratePrivateKey() {
+
+  }
+
+  public void test_DecodePrivateKey() {
+
+  }
+
+  public void test_generatePublicKey() {
+
+  }
+
+  public void test_PublicKeyToAddress() {
+
+  }
+
+
 //  @Test
 //  public void test_TransactionJsonConvertion() {
 //    Transaction trans = BitCoupon.generateCreationTransaction("5Kf9gd8faKhhq9jZTsNhq2MtViHA1dWdhRg9k4ovszTKz5DCeBT");
@@ -100,4 +111,4 @@
 //      Assert.assertNotEquals(address, incorrectPrivateKeyAddresses.get(strPrivateKey));
 //    }
 //  }
-//}
+}

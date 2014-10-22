@@ -4,6 +4,7 @@ import java.util.List;
 
 import bitcoupon.transaction.Coupon;
 import bitcoupon.transaction.CouponList;
+import bitcoupon.transaction.CouponOwnerList;
 import bitcoupon.transaction.OutputHistory;
 import bitcoupon.transaction.OutputHistoryRequest;
 import bitcoupon.transaction.Transaction;
@@ -50,12 +51,10 @@ public class BitCouponCli {
     System.out.println(CouponList.toJson(couponList));
   }
 
-  public static void getCouponOwners(String creatorAddress, String payload, String outputHistoryJson) {
+  public static void getCouponOwners(String creatorAddress, String outputHistoryJson) {
     OutputHistory outputHistory = OutputHistory.fromJson(outputHistoryJson);
-    List<String> couponOwners = BitCoupon.getCouponOwners(creatorAddress, payload, outputHistory);
-    for (String couponOwner : couponOwners) {
-      System.out.println(couponOwner);
-    }
+    CouponOwnerList couponOwnerList = BitCoupon.getCouponOwners(creatorAddress, outputHistory);
+    System.out.println(CouponOwnerList.toJson(couponOwnerList));
   }
 
   public static void generatePrivateKey() {
