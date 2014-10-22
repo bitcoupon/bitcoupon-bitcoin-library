@@ -63,4 +63,9 @@ public class BitCouponCli {
     System.out.println(privateKey);
   }
 
+  public static void generateAddress(String strPrivateKey) {
+    String address = BitCoupon.generateAddress(strPrivateKey);
+    System.out.println(address);
+  }
+
 }

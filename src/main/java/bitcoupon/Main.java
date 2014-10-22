@@ -13,6 +13,7 @@ public class Main {
   private static final String GET_COUPONS = "getCoupons";
   private static final String GET_COUPON_OWNERS = "getCouponOwners";
   private static final String GENERATE_PRIVATE_KEY = "generatePrivateKey";
+  private static final String GENERATE_ADDRESS = "generateAddress";
 
   /**
    * This method takes a String array. It is passed on to evaluateMethod(args).
@@ -50,6 +51,7 @@ public class Main {
       System.out.println("Name: " + GET_COUPONS + " - Arguments: String strPrivateKey, String outputHistoryJson");
       System.out.println("Name: " + GET_COUPON_OWNERS + " - Arguments: String creatorAddress, String payload, String outputHistoryJson");
       System.out.println("Name: " + GENERATE_PRIVATE_KEY + " - Arguments: none");
+      System.out.println("Name: " + GENERATE_ADDRESS + " - Arguments: String strPrivateKey");
     } else {
 
       String methodName = args[0];
@@ -74,6 +76,8 @@ public class Main {
         BitCouponCli.getCouponOwners(args[1], args[2], args[3]);
       } else if (methodName.equalsIgnoreCase(GENERATE_PRIVATE_KEY)) {
         BitCouponCli.generatePrivateKey();
+      } else if (methodName.equalsIgnoreCase(GENERATE_ADDRESS)) {
+        BitCouponCli.generateAddress(args[1]);
       }
     }
   }
@@ -118,6 +122,8 @@ public class Main {
       length = 4;
     } else if (methodName.equalsIgnoreCase(GENERATE_PRIVATE_KEY)) {
       length = 1;
+    } else if (methodName.equalsIgnoreCase(GENERATE_ADDRESS)) {
+      length = 2;
     }
     return length == argsLength;
   }
