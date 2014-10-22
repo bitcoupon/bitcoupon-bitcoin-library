@@ -196,7 +196,7 @@ public class Transaction {
   }
 
   public boolean verifyConsistency(OutputHistory outputHistory) {
-    List<Coupon> availableCoupons = new LinkedList<Coupon>();
+    List<Coupon> availableCoupons = new LinkedList<>();
     for (Creation creation : creations) {
       if (creation.getAmount() <= 0) {
         return false;
@@ -205,7 +205,7 @@ public class Transaction {
         availableCoupons.add(new Coupon(creation.getCreatorAddress(), creation.getPayload()));
       }
     }
-    Map<Long, Output> outputHistoryMap = new HashMap<Long, Output>();
+    Map<Long, Output> outputHistoryMap = new HashMap<>();
     for (Output output : outputHistory.getOutputList()) {
       outputHistoryMap.put(output.getOutputId(), output);
     }
@@ -227,6 +227,13 @@ public class Transaction {
           return false;
         }
       }
+    }
+    return true;
+  }
+
+  public boolean verifyReceiverAddresses() {
+    for (Output output : outputs) {
+      Bitcoin.decodeBase58(output.getReceiverAddress());
     }
     return true;
   }

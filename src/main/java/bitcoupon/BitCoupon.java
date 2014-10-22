@@ -92,7 +92,8 @@ public class BitCoupon {
    * @return True if the transaction is consistent with the output history and all signatures are valid.
    */
   public static boolean verifyTransaction(Transaction transaction, OutputHistory outputHistory) {
-    return transaction.verifyConsistency(outputHistory) && transaction.verifySignatures(outputHistory);
+    return transaction.verifyConsistency(outputHistory) && transaction.verifyReceiverAddresses()
+           && transaction.verifySignatures(outputHistory);
   }
 
 
