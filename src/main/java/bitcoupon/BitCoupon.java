@@ -86,6 +86,38 @@ public class BitCoupon {
     return transaction;
   }
 
+  public static Transaction generateDeleteTransaction(String strPrivateKey, Coupon coupon,
+                                                      OutputHistory outputHistory) {
+    List<Creation> creations = new ArrayList<>();
+    List<Input> inputs = new ArrayList<>();
+    List<Output> outputs = new ArrayList<>();
+    Transaction transaction = new Transaction(creations, inputs, outputs);
+    BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
+    byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
+    String senderAddress = Bitcoin.publicKeyToAddress(publicKey);
+    int couponsInInputs = 0;
+    for (Output output : outputHistory.getOutputList()) {
+      if (output.getCreatorAddress().equals(coupon.getCreatorAddress())
+          && output.getPayload().equals(coupon.getPayload())
+          && output.getReceiverAddress().equals(senderAddress)
+          && output.getReferringInput() == 0) {
+        inputs.add(new Input(output.getOutputId()));
+        couponsInInputs += output.getAmount();
+        if (couponsInInputs >= 1) {
+          break;
+        }
+      }
+    }
+    if (couponsInInputs < 1) {
+      throw new IllegalArgumentException();
+    }
+    if (couponsInInputs > 1) {
+      outputs.add(new Output(coupon.getCreatorAddress(), coupon.getPayload(), couponsInInputs - 1, senderAddress));
+    }
+    transaction.signTransaction(privateKey);
+    return transaction;
+  }
+
   /**
    * This function checks that a transaction is consistent with an output history and that all signatures are valid.
    *
@@ -116,7 +148,7 @@ public class BitCoupon {
   /**
    * This function lists all coupons in an output history that are owned by a user (defined by strPrivateKey).
    *
-   * @param address The private key of the user listing his/her coupons.
+   * @param address       The private key of the user listing his/her coupons.
    * @param outputHistory Output history for which the user wants to list his/her coupons.
    * @return A list of all coupons that the user owns in the output history.
    */

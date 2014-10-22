@@ -1,7 +1,5 @@
 package bitcoupon;
 
-import java.util.List;
-
 import bitcoupon.transaction.Coupon;
 import bitcoupon.transaction.CouponList;
 import bitcoupon.transaction.CouponOwnerList;
@@ -19,11 +17,19 @@ public class BitCouponCli {
     System.out.println(Transaction.toJson(transaction));
   }
 
-  public static void generateSendTransaction(String strPrivateKey, String creatorAddress, String payload, String receiverAddress,
-                                             String outputHistoryJson) {
+  public static void generateSendTransaction(String strPrivateKey, String creatorAddress, String payload,
+                                             String receiverAddress, String outputHistoryJson) {
     Coupon coupon = new Coupon(creatorAddress, payload);
     OutputHistory outputHistory = OutputHistory.fromJson(outputHistoryJson);
     Transaction transaction = BitCoupon.generateSendTransaction(strPrivateKey, coupon, receiverAddress, outputHistory);
+    System.out.println(Transaction.toJson(transaction));
+  }
+
+  public static void generateDeleteTransaction(String strPrivateKey, String creatorAddress, String payload,
+                                               String outputHistoryJson) {
+    Coupon coupon = new Coupon(creatorAddress, payload);
+    OutputHistory outputHistory = OutputHistory.fromJson(outputHistoryJson);
+    Transaction transaction = BitCoupon.generateDeleteTransaction(strPrivateKey, coupon, outputHistory);
     System.out.println(Transaction.toJson(transaction));
   }
 
