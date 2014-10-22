@@ -116,14 +116,11 @@ public class BitCoupon {
   /**
    * This function lists all coupons in an output history that are owned by a user (defined by strPrivateKey).
    *
-   * @param strPrivateKey The private key of the user listing his/her coupons.
+   * @param address The private key of the user listing his/her coupons.
    * @param outputHistory Output history for which the user wants to list his/her coupons.
    * @return A list of all coupons that the user owns in the output history.
    */
-  public static CouponList getCoupons(String strPrivateKey, OutputHistory outputHistory) {
-    BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
-    byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
-    String address = Bitcoin.publicKeyToAddress(publicKey);
+  public static CouponList getCoupons(String address, OutputHistory outputHistory) {
     List<Coupon> coupons = new ArrayList<>();
     for (Output output : outputHistory.getOutputList()) {
       if (output.getReceiverAddress().equals(address) && output.getReferringInput() == 0) {

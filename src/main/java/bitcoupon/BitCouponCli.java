@@ -45,9 +45,9 @@ public class BitCouponCli {
     System.out.println(validOutputHistoryRequest);
   }
 
-  public static void getCoupons(String strPrivateKey, String outputHistoryJson) {
+  public static void getCoupons(String address, String outputHistoryJson) {
     OutputHistory outputHistory = OutputHistory.fromJson(outputHistoryJson);
-    CouponList couponList = BitCoupon.getCoupons(strPrivateKey, outputHistory);
+    CouponList couponList = BitCoupon.getCoupons(address, outputHistory);
     System.out.println(CouponList.toJson(couponList));
   }
 

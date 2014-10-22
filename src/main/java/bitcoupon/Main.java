@@ -48,7 +48,7 @@ public class Main {
       System.out.println("Name: " + VERIFY_TRANSACTION + " - Arguments: String transactionJson, String outputHistoryJson");
       System.out.println("Name: " + GENERATE_OUTPUT_HISTORY_REQUEST + " - Arguments: String strPrivateKey");
       System.out.println("Name: " + VERIFY_OUTPUT_HISTORY_REQUEST + " - Arguments: String outputHistoryRequestJson");
-      System.out.println("Name: " + GET_COUPONS + " - Arguments: String strPrivateKey, String outputHistoryJson");
+      System.out.println("Name: " + GET_COUPONS + " - Arguments: String address, String outputHistoryJson");
       System.out.println("Name: " + GET_COUPON_OWNERS + " - Arguments: String creatorAddress, String outputHistoryJson");
       System.out.println("Name: " + GENERATE_PRIVATE_KEY + " - Arguments: none");
       System.out.println("Name: " + GENERATE_ADDRESS + " - Arguments: String strPrivateKey");
