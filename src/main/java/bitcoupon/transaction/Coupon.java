@@ -35,12 +35,4 @@ public class Coupon {
     return creatorAddress.hashCode() + payload.hashCode();
   }
 
-  public static Coupon fromJson(String couponJson) {
-    return new Gson().fromJson(couponJson, Coupon.class);
-  }
-
-  public static String toJson(Coupon coupon) {
-    return new Gson().toJson(coupon, Coupon.class);
-  }
-
 }

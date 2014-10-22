@@ -44,7 +44,7 @@ public class Main {
     if (args.length == 0) {
       System.out.println("Available methods:");
       System.out.println("Name: " + GENERATE_CREATE_TRANSACTION + " - Arguments: String strPrivateKey, String payload");
-      System.out.println("Name: " + GENERATE_SEND_TRANSACTION + " - Arguments: String strPrivateKey, String couponJson, String receiverAddress, String outputHistoryJson");
+      System.out.println("Name: " + GENERATE_SEND_TRANSACTION + " - Arguments: String strPrivateKey, String creatorAddress, String payload, String receiverAddress, String outputHistoryJson");
       System.out.println("Name: " + VERIFY_TRANSACTION + " - Arguments: String transactionJson, String outputHistoryJson");
       System.out.println("Name: " + GENERATE_OUTPUT_HISTORY_REQUEST + " - Arguments: String strPrivateKey");
       System.out.println("Name: " + VERIFY_OUTPUT_HISTORY_REQUEST + " - Arguments: String outputHistoryRequestJson");
@@ -63,7 +63,7 @@ public class Main {
       if (methodName.equalsIgnoreCase(GENERATE_CREATE_TRANSACTION)) {
         BitCouponCli.generateCreateTransaction(args[1], args[2]);
       } else if (methodName.equalsIgnoreCase(GENERATE_SEND_TRANSACTION)) {
-        BitCouponCli.generateSendTransaction(args[1], args[2], args[3], args[4]);
+        BitCouponCli.generateSendTransaction(args[1], args[2], args[3], args[4], args[5]);
       } else if (methodName.equalsIgnoreCase(VERIFY_TRANSACTION)) {
         BitCouponCli.verifyTransaction(args[1], args[2]);
       } else if (methodName.equalsIgnoreCase(GENERATE_OUTPUT_HISTORY_REQUEST)) {
@@ -109,7 +109,7 @@ public class Main {
     if (methodName.equalsIgnoreCase(GENERATE_CREATE_TRANSACTION)) {
       length = 3;
     } else if (methodName.equalsIgnoreCase(GENERATE_SEND_TRANSACTION)) {
-      length = 5;
+      length = 6;
     } else if (methodName.equalsIgnoreCase(VERIFY_TRANSACTION)) {
       length = 3;
     } else if (methodName.equalsIgnoreCase(GENERATE_OUTPUT_HISTORY_REQUEST)) {

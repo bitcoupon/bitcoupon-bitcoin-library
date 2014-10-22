@@ -19,9 +19,9 @@ public class BitCouponCli {
     System.out.println(Transaction.toJson(transaction));
   }
 
-  public static void generateSendTransaction(String strPrivateKey, String couponJson, String receiverAddress,
+  public static void generateSendTransaction(String strPrivateKey, String creatorAddress, String payload, String receiverAddress,
                                              String outputHistoryJson) {
-    Coupon coupon = Coupon.fromJson(couponJson);
+    Coupon coupon = new Coupon(creatorAddress, payload);
     OutputHistory outputHistory = OutputHistory.fromJson(outputHistoryJson);
     Transaction transaction = BitCoupon.generateSendTransaction(strPrivateKey, coupon, receiverAddress, outputHistory);
     System.out.println(Transaction.toJson(transaction));
