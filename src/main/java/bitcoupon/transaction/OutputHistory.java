@@ -2,6 +2,7 @@ package bitcoupon.transaction;
 
 import com.google.gson.Gson;
 
+import java.io.BufferedReader;
 import java.util.List;
 
 public class OutputHistory {
@@ -20,8 +21,13 @@ public class OutputHistory {
     return new Gson().fromJson(outputHistoryJson, OutputHistory.class);
   }
 
+  public static OutputHistory fromJson(BufferedReader outputHistoryJson) {
+    return new Gson().fromJson(outputHistoryJson, OutputHistory.class);
+  }
+
   public static String toJson(OutputHistory outputHistory) {
     return new Gson().toJson(outputHistory, OutputHistory.class);
   }
+
 
 }

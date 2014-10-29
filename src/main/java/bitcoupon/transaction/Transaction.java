@@ -10,6 +10,7 @@ import org.spongycastle.crypto.params.ECPrivateKeyParameters;
 import org.spongycastle.crypto.params.ECPublicKeyParameters;
 import org.spongycastle.crypto.signers.ECDSASigner;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -240,6 +241,9 @@ public class Transaction {
 
   public static Transaction fromJson(String transactionJson) {
     return new Gson().fromJson(transactionJson, Transaction.class);
+  }
+  public static Transaction fromJson(BufferedReader reader) {
+    return new Gson().fromJson(reader, Transaction.class);
   }
 
   public static String toJson(Transaction transaction) {
