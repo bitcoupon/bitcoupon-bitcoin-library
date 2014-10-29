@@ -86,6 +86,14 @@ public class BitCoupon {
     return transaction;
   }
 
+  /**
+   * This function generates a transaction where a coupon is deleted.
+   *
+   * @param strPrivateKey The private key of the user deleting the coupon.
+   * @param coupon        The coupon that is to be deleted.
+   * @param outputHistory Output history in which the user owns the coupon.
+   * @return A transaction deleting a coupon. This transaction needs to be sent to the server.
+   */
   public static Transaction generateDeleteTransaction(String strPrivateKey, Coupon coupon,
                                                       OutputHistory outputHistory) {
     List<Creation> creations = new ArrayList<>();
@@ -130,7 +138,13 @@ public class BitCoupon {
            && transaction.verifySignatures(outputHistory);
   }
 
-
+  /**
+   * This function generates an output history request which is used by clients to request information about previous
+   * transactions from the server.
+   *
+   * @param strPrivateKey The private key of the user requesting output history.
+   * @return Output history that can be used when calling other functions in the library.
+   */
   public static OutputHistoryRequest generateOutputHistoryRequest(String strPrivateKey) {
     BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
     byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
@@ -140,15 +154,20 @@ public class BitCoupon {
     return outputHistoryRequest;
   }
 
-
+  /**
+   * This function is used by the server for verifying that the signature in an output history request i valid.
+   *
+   * @param outputHistoryRequest The output history request that should be verified.
+   * @return True if the signature of the output history request is valid.
+   */
   public static boolean verifyOutputHistoryRequest(OutputHistoryRequest outputHistoryRequest) {
     return outputHistoryRequest.verifySignature();
   }
 
   /**
-   * This function lists all coupons in an output history that are owned by a user (defined by strPrivateKey).
+   * This function lists all coupons in an output history that are owned by a user.
    *
-   * @param address       The private key of the user listing his/her coupons.
+   * @param address       The address of the user listing his/her coupons.
    * @param outputHistory Output history for which the user wants to list his/her coupons.
    * @return A list of all coupons that the user owns in the output history.
    */
@@ -165,11 +184,12 @@ public class BitCoupon {
   }
 
   /**
-   * This function lists the addresses of all users who owns a coupon with the specified creator address and payload.
+   * This function lists  all coupons along with the addresses of the current owner of the coupon for all coupons
+   * created by creatorAddress.
    *
    * @param creatorAddress The creator address of coupons to list coupon owner for.
    * @param outputHistory  Output history for which coupon owners should be listed.
-   * @return A list of all owners of coupons (as specified) in the output history.
+   * @return A list of all owners of coupons created by creatorAddress.
    */
   public static CouponOwnerList getCouponOwners(String creatorAddress, OutputHistory outputHistory) {
     List<CouponOwner> couponOwners = new ArrayList<>();
