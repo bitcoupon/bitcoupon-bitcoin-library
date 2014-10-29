@@ -1,7 +1,5 @@
 package bitcoupon.transaction;
 
-import com.google.gson.Gson;
-
 public class Coupon {
 
   private final String creatorAddress;

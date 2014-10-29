@@ -222,8 +222,7 @@ public class BitCoupon {
   public static String generateAddress(String strPrivateKey) {
     BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
     byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
-    String address = Bitcoin.publicKeyToAddress(publicKey);
-    return address;
+    return Bitcoin.publicKeyToAddress(publicKey);
   }
 
 }

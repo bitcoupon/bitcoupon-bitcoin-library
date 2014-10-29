@@ -21,22 +21,10 @@ public class Main {
    */
   public static void main(String[] args) {
     evaluateMethod(args);
-
-//    testTransaction();
   }
 
   /**
    * This method takes a String array. args[0] contains the method the programs that calls the library wishes to use.
-   * These methods include:
-   *
-   * GENERATE_CREATION_TRANSACTION
-   *
-   * GENERATE_SEND_TRANSACTION
-   *
-   * GET_CREATOR_ADDRESSES
-   *
-   * VERIFY_TRANSACTION <p/>
-   *
    * The rest of the tuples contains the argument for the corresponding method. This method reads which method is being
    * called, runs isValidArgumentsLength(), and if that checks out, sends the arguments to that method. If args[] is
    * empty, the method returns a list of available methods.
@@ -44,24 +32,31 @@ public class Main {
   private static void evaluateMethod(String[] args) {
     if (args.length == 0) {
       System.out.println("Available methods:");
-      System.out.println("Name: " + GENERATE_CREATE_TRANSACTION + " - Arguments: String strPrivateKey, String payload");
-      System.out.println("Name: " + GENERATE_SEND_TRANSACTION + " - Arguments: String strPrivateKey, String creatorAddress, String payload, String receiverAddress, String outputHistoryJson");
-      System.out.println("Name: " + GENERATE_DELETE_TRANSACTION + " - Arguments: String strPrivateKey, String creatorAddress, String payload, String outputHistoryJson");
-      System.out.println("Name: " + VERIFY_TRANSACTION + " - Arguments: String transactionJson, String outputHistoryJson");
-      System.out.println("Name: " + GENERATE_OUTPUT_HISTORY_REQUEST + " - Arguments: String strPrivateKey");
-      System.out.println("Name: " + VERIFY_OUTPUT_HISTORY_REQUEST + " - Arguments: String outputHistoryRequestJson");
-      System.out.println("Name: " + GET_COUPONS + " - Arguments: String address, String outputHistoryJson");
-      System.out.println("Name: " + GET_COUPON_OWNERS + " - Arguments: String creatorAddress, String outputHistoryJson");
-      System.out.println("Name: " + GENERATE_PRIVATE_KEY + " - Arguments: none");
-      System.out.println("Name: " + GENERATE_ADDRESS + " - Arguments: String strPrivateKey");
+      System.out.println("Name: " + GENERATE_CREATE_TRANSACTION
+                         + " - Arguments: String strPrivateKey, String payload");
+      System.out.println("Name: " + GENERATE_SEND_TRANSACTION
+                         + " - Arguments: String strPrivateKey, String creatorAddress, String payload, String receiverAddress, String outputHistoryJson");
+      System.out.println("Name: " + GENERATE_DELETE_TRANSACTION
+                         + " - Arguments: String strPrivateKey, String creatorAddress, String payload, String outputHistoryJson");
+      System.out.println("Name: " + VERIFY_TRANSACTION
+                         + " - Arguments: String transactionJson, String outputHistoryJson");
+      System.out.println("Name: " + GENERATE_OUTPUT_HISTORY_REQUEST
+                         + " - Arguments: String strPrivateKey");
+      System.out.println("Name: " + VERIFY_OUTPUT_HISTORY_REQUEST
+                         + " - Arguments: String outputHistoryRequestJson");
+      System.out.println("Name: " + GET_COUPONS
+                         + " - Arguments: String address, String outputHistoryJson");
+      System.out.println("Name: " + GET_COUPON_OWNERS
+                         + " - Arguments: String creatorAddress, String outputHistoryJson");
+      System.out.println("Name: " + GENERATE_PRIVATE_KEY
+                         + " - Arguments: none");
+      System.out.println("Name: " + GENERATE_ADDRESS
+                         + " - Arguments: String strPrivateKey");
     } else {
-
       String methodName = args[0];
-
       if (!isValidArgumentsLength(methodName, args.length)) {
         return;
       }
-
       if (methodName.equalsIgnoreCase(GENERATE_CREATE_TRANSACTION)) {
         BitCouponCli.generateCreateTransaction(args[1], args[2]);
       } else if (methodName.equalsIgnoreCase(GENERATE_SEND_TRANSACTION)) {
@@ -92,7 +87,6 @@ public class Main {
    * print out an error message.
    */
   private static boolean isValidArgumentsLength(String methodName, int argsLength) {
-
     boolean correct = checkLength(methodName, argsLength);
     if (!correct) {
       String message = "Wrong number of arguments to method: " + methodName;
