@@ -13,7 +13,7 @@ public class Output {
   /**
    * Id of this output. This is set by the server when the output is added to the database.
    */
-  private final long outputId;
+  private long outputId;
   /**
    * The address of the creator of the coupons that are sent.
    */
@@ -34,7 +34,7 @@ public class Output {
    * The id of the input that is referring to this output. If this is 0 then no input is referring to this output which
    * means that the output is unspent.
    */
-  private final long referringInput;
+  private long referringInput;
 
   /**
    * Constructor of an output.
@@ -112,6 +112,16 @@ public class Output {
 
   public long getReferringInput() {
     return referringInput;
+  }
+
+
+  // These methods are only for use in unit testing
+  public void setOutputId(long outputId) {
+    this.outputId = outputId;
+  }
+
+  public void setReferringInput(long referringInput) {
+    this.referringInput = referringInput;
   }
 
 }

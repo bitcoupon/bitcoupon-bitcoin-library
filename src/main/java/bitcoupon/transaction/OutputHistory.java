@@ -30,4 +30,15 @@ public class OutputHistory {
   }
 
 
+  // This function is only for use in unit testing
+  public void addTransactionToHistory(Transaction transaction) {
+    for (Input input : transaction.getInputs()) {
+      outputList.get((int) input.getReferredOutput() - 1).setReferringInput(1);
+    }
+    for (Output output : transaction.getOutputs()) {
+      output.setOutputId(outputList.size() + 1);
+      outputList.add(output);
+    }
+  }
+
 }

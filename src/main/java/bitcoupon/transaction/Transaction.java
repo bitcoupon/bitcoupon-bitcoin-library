@@ -132,8 +132,14 @@ public class Transaction {
     byte[] hashedTransaction = Bitcoin.hash256(getBytes());
     String creatorAddress = creation.getCreatorAddress();
     String signature = creation.getSignature();
-    byte[] ecdsaSignature = Bitcoin.decodeBase58(signature.split(" ")[0]);
-    byte[] publicKey = Bitcoin.decodeBase58(signature.split(" ")[1]);
+    byte[] ecdsaSignature;
+    byte[] publicKey;
+    try {
+      ecdsaSignature = Bitcoin.decodeBase58(signature.split(" ")[0]);
+      publicKey = Bitcoin.decodeBase58(signature.split(" ")[1]);
+    } catch (IllegalArgumentException e) {
+      return false;
+    }
     if (!Bitcoin.publicKeyToAddress(publicKey).equals(creatorAddress)) {
       return false;
     }
@@ -170,8 +176,14 @@ public class Transaction {
     }
     String receiverAddress = referredOutput.getReceiverAddress();
     String signature = input.getSignature();
-    byte[] ecdsaSignature = Bitcoin.decodeBase58(signature.split(" ")[0]);
-    byte[] publicKey = Bitcoin.decodeBase58(signature.split(" ")[1]);
+    byte[] ecdsaSignature;
+    byte[] publicKey;
+    try {
+      ecdsaSignature = Bitcoin.decodeBase58(signature.split(" ")[0]);
+      publicKey = Bitcoin.decodeBase58(signature.split(" ")[1]);
+    } catch (IllegalArgumentException e) {
+      return false;
+    }
     if (!Bitcoin.publicKeyToAddress(publicKey).equals(receiverAddress)) {
       return false;
     }
@@ -234,7 +246,11 @@ public class Transaction {
 
   public boolean verifyReceiverAddresses() {
     for (Output output : outputs) {
-      Bitcoin.decodeBase58(output.getReceiverAddress());
+      try {
+        Bitcoin.decodeBase58(output.getReceiverAddress());
+      } catch (IllegalArgumentException e) {
+        return false;
+      }
     }
     return true;
   }
