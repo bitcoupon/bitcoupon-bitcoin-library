@@ -11,6 +11,7 @@ import bitcoupon.transaction.Creation;
 import bitcoupon.transaction.Input;
 import bitcoupon.transaction.Output;
 import bitcoupon.transaction.OutputHistory;
+import bitcoupon.transaction.OutputHistoryRequest;
 import bitcoupon.transaction.Transaction;
 
 public class BitCouponTest extends TestCase {
@@ -72,7 +73,7 @@ public class BitCouponTest extends TestCase {
     assertFalse(BitCoupon.verifyTransaction(transaction9, outputHistory));
   }
 
-  private Transaction generateCreateTransactionWithSpecificCreatorAddress(String strPrivateKey, String creatorAddress, String payload) {
+  private static Transaction generateCreateTransactionWithSpecificCreatorAddress(String strPrivateKey, String creatorAddress, String payload) {
     List<Creation> creations = new ArrayList<>();
     List<Input> inputs = new ArrayList<>();
     List<Output> outputs = new ArrayList<>();
@@ -86,7 +87,7 @@ public class BitCouponTest extends TestCase {
     return transaction;
   }
 
-  private Transaction generateCreateTransactionWithoutCreation(String strPrivateKey, String creatorAddress, String payload) {
+  private static Transaction generateCreateTransactionWithoutCreation(String strPrivateKey, String creatorAddress, String payload) {
     List<Creation> creations = new ArrayList<>();
     List<Input> inputs = new ArrayList<>();
     List<Output> outputs = new ArrayList<>();
@@ -99,7 +100,7 @@ public class BitCouponTest extends TestCase {
     return transaction;
   }
 
-  private Transaction generateSendTransactionWithoutSignature(String senderAddress, Coupon coupon, String receiverAddress, OutputHistory outputHistory) {
+  private static Transaction generateSendTransactionWithoutSignature(String senderAddress, Coupon coupon, String receiverAddress, OutputHistory outputHistory) {
     List<Creation> creations = new ArrayList<>();
     List<Input> inputs = new ArrayList<>();
     List<Output> outputs = new ArrayList<>();
@@ -141,8 +142,27 @@ public class BitCouponTest extends TestCase {
     String privateKey5 = "5KJYugZugsM6Vh8dAu8gcg8P4Wg1JmXYUc2xG5w2hRfWqtUWH2G";
     String address5 = "1FG73czRCvF8R8QqHF6FVzBJS2i8xMTeRo";
 
-    
+    OutputHistoryRequest outputHistoryRequest1 = BitCoupon.generateOutputHistoryRequest(privateKey1);
+    assertTrue(BitCoupon.verifyOutputHistoryRequest(outputHistoryRequest1));
 
+    OutputHistoryRequest outputHistoryRequest2 = generateOutputHistoryRequestWithSpecificAddress(privateKey2, address1);
+    assertFalse(BitCoupon.verifyOutputHistoryRequest(outputHistoryRequest2));
+
+    OutputHistoryRequest outputHistoryRequest3 = generateOutputHistoryRequestWithoutSignature(address1);
+    assertFalse(BitCoupon.verifyOutputHistoryRequest(outputHistoryRequest3));
+
+  }
+
+  private static OutputHistoryRequest generateOutputHistoryRequestWithSpecificAddress(String strPrivateKey, String address) {
+    BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
+    OutputHistoryRequest outputHistoryRequest = new OutputHistoryRequest(address);
+    outputHistoryRequest.signOutputHistoryRequest(privateKey);
+    return outputHistoryRequest;
+  }
+
+  private static OutputHistoryRequest generateOutputHistoryRequestWithoutSignature(String address) {
+    OutputHistoryRequest outputHistoryRequest = new OutputHistoryRequest(address);
+    return outputHistoryRequest;
   }
 
 }

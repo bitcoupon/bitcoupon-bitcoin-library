@@ -71,8 +71,14 @@ public class OutputHistoryRequest {
       e.printStackTrace();
       return false;
     }
-    byte[] ecdsaSignature = Bitcoin.decodeBase58(signature.split(" ")[0]);
-    byte[] publicKey = Bitcoin.decodeBase58(signature.split(" ")[1]);
+    byte[] ecdsaSignature;
+    byte[] publicKey;
+    try {
+      ecdsaSignature = Bitcoin.decodeBase58(signature.split(" ")[0]);
+      publicKey = Bitcoin.decodeBase58(signature.split(" ")[1]);
+    } catch (IllegalArgumentException e) {
+      return false;
+    }
     if (!Bitcoin.publicKeyToAddress(publicKey).equals(address)) {
       return false;
     }
