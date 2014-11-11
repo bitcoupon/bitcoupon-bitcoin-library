@@ -23,3 +23,9 @@ jar {
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     manifest { attributes 'Main-Class': 'bitcoupon.Main' }
 }
+
+test{
+    testLogging{
+        events "passed", "skipped", "failed"
+    }
+}
