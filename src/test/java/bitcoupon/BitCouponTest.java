@@ -45,7 +45,7 @@ public class BitCouponTest extends TestCase {
 
     // Transaction 3, User 2 sends "Coupon" to User 3
     Transaction transaction3 = BitCoupon.generateSendTransaction(privateKey2, new Coupon(address1, "Coupon"), address3, outputHistory);
-    assertTrue(BitCoupon.verifyTransaction(transaction3, outputHistory));
+    assertFalse(BitCoupon.verifyTransaction(transaction3, outputHistory));
     outputHistory.addTransactionToHistory(transaction3);
 
     // Transaction 4-5, User 3 sends "Coupon" to User 1 and to himself (double spend coupon)
