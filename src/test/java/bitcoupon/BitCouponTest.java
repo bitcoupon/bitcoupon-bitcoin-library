@@ -53,7 +53,7 @@ public class BitCouponTest extends TestCase {
     Transaction transaction5 = BitCoupon.generateSendTransaction(privateKey3, new Coupon(address1, "Coupon"), address3, outputHistory);
     assertTrue(BitCoupon.verifyTransaction(transaction4, outputHistory));
     outputHistory.addTransactionToHistory(transaction4);
-    assertTrue(BitCoupon.verifyTransaction(transaction5, outputHistory));
+    assertFalse(BitCoupon.verifyTransaction(transaction5, outputHistory));
 
     // Transaction 6, User 1 creates "Coupon" to User 3 with User 3's signature (forge coupon)
     Transaction transaction6 = generateCreateTransactionWithSpecificCreatorAddress(privateKey3, address1, "Coupon");
