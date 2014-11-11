@@ -1,35 +1,30 @@
 package bitcoupon;
 
+/**
+ * This class provides a console interface for the class BitCouponCli.java.
+ */
 public class Main {
 
-  private static final String GENERATE_CREATION_TRANSACTION = "generateCreationTransaction";
+  private static final String GENERATE_CREATE_TRANSACTION = "generateCreateTransaction";
   private static final String GENERATE_SEND_TRANSACTION = "generateSendTransaction";
-  private static final String GET_CREATOR_ADDRESSES = "getCreatorAddresses";
+  private static final String GENERATE_DELETE_TRANSACTION = "generateDeleteTransaction";
   private static final String VERIFY_TRANSACTION = "verifyTransaction";
+  private static final String GENERATE_OUTPUT_HISTORY_REQUEST = "generateOutputHistoryRequest";
+  private static final String VERIFY_OUTPUT_HISTORY_REQUEST = "verifyOutputHistoryRequest";
+  private static final String GET_COUPONS = "getCoupons";
+  private static final String GET_COUPON_OWNERS = "getCouponOwners";
   private static final String GENERATE_PRIVATE_KEY = "generatePrivateKey";
-
+  private static final String GENERATE_ADDRESS = "generateAddress";
 
   /**
    * This method takes a String array. It is passed on to evaluateMethod(args).
    */
   public static void main(String[] args) {
     evaluateMethod(args);
-
-//    testTransaction();
   }
 
   /**
    * This method takes a String array. args[0] contains the method the programs that calls the library wishes to use.
-   * These methods include:
-   *
-   * GENERATE_CREATION_TRANSACTION
-   *
-   * GENERATE_SEND_TRANSACTION
-   *
-   * GET_CREATOR_ADDRESSES
-   *
-   * VERIFY_TRANSACTION <p/>
-   *
    * The rest of the tuples contains the argument for the corresponding method. This method reads which method is being
    * called, runs isValidArgumentsLength(), and if that checks out, sends the arguments to that method. If args[] is
    * empty, the method returns a list of available methods.
@@ -37,32 +32,51 @@ public class Main {
   private static void evaluateMethod(String[] args) {
     if (args.length == 0) {
       System.out.println("Available methods:");
-      System.out.println("Name: " + GENERATE_CREATION_TRANSACTION + " - Argumentss: String privateKey");
+      System.out.println("Name: " + GENERATE_CREATE_TRANSACTION
+                         + " - Arguments: String strPrivateKey, String payload");
       System.out.println("Name: " + GENERATE_SEND_TRANSACTION
-                         + " - Argumentss: String privateKey, String creatorAddress, String transactionHistoryJson, String receiverAddress");
-      System.out.println(
-          "Name: " + GET_CREATOR_ADDRESSES + " - Argumentss: String privateKey, String transactionHistoryJson");
-      System.out.println(
-          "Name: " + VERIFY_TRANSACTION + " - Argumentss: String transactionJson, String transactionHistoryJson");
-      System.out.println("Name: " + GENERATE_PRIVATE_KEY + " - Arguments: none");
+                         + " - Arguments: String strPrivateKey, String creatorAddress, String payload, String receiverAddress, String outputHistoryJson");
+      System.out.println("Name: " + GENERATE_DELETE_TRANSACTION
+                         + " - Arguments: String strPrivateKey, String creatorAddress, String payload, String outputHistoryJson");
+      System.out.println("Name: " + VERIFY_TRANSACTION
+                         + " - Arguments: String transactionJson, String outputHistoryJson");
+      System.out.println("Name: " + GENERATE_OUTPUT_HISTORY_REQUEST
+                         + " - Arguments: String strPrivateKey");
+      System.out.println("Name: " + VERIFY_OUTPUT_HISTORY_REQUEST
+                         + " - Arguments: String outputHistoryRequestJson");
+      System.out.println("Name: " + GET_COUPONS
+                         + " - Arguments: String address, String outputHistoryJson");
+      System.out.println("Name: " + GET_COUPON_OWNERS
+                         + " - Arguments: String creatorAddress, String outputHistoryJson");
+      System.out.println("Name: " + GENERATE_PRIVATE_KEY
+                         + " - Arguments: none");
+      System.out.println("Name: " + GENERATE_ADDRESS
+                         + " - Arguments: String strPrivateKey");
     } else {
-
       String methodName = args[0];
-
       if (!isValidArgumentsLength(methodName, args.length)) {
         return;
       }
-
-      if (methodName.equalsIgnoreCase(GENERATE_CREATION_TRANSACTION)) {
-        BitCouponCli.generateCreationTransaction(args[1]);
+      if (methodName.equalsIgnoreCase(GENERATE_CREATE_TRANSACTION)) {
+        BitCouponCli.generateCreateTransaction(args[1], args[2]);
       } else if (methodName.equalsIgnoreCase(GENERATE_SEND_TRANSACTION)) {
-        BitCouponCli.generateSendTransaction(args[1], args[2], args[3], args[4]);
-      } else if (methodName.equalsIgnoreCase(GET_CREATOR_ADDRESSES)) {
-        BitCouponCli.getCreatorAddresses(args[1], args[2]);
+        BitCouponCli.generateSendTransaction(args[1], args[2], args[3], args[4], args[5]);
+      } else if (methodName.equalsIgnoreCase(GENERATE_DELETE_TRANSACTION)) {
+        BitCouponCli.generateDeleteTransaction(args[1], args[2], args[3], args[4]);
       } else if (methodName.equalsIgnoreCase(VERIFY_TRANSACTION)) {
         BitCouponCli.verifyTransaction(args[1], args[2]);
+      } else if (methodName.equalsIgnoreCase(GENERATE_OUTPUT_HISTORY_REQUEST)) {
+        BitCouponCli.generateOutputHistoryRequest(args[1]);
+      } else if (methodName.equalsIgnoreCase(VERIFY_OUTPUT_HISTORY_REQUEST)) {
+        BitCouponCli.verifyOutputHistoryRequest(args[1]);
+      } else if (methodName.equalsIgnoreCase(GET_COUPONS)) {
+        BitCouponCli.getCoupons(args[1], args[2]);
+      } else if (methodName.equalsIgnoreCase(GET_COUPON_OWNERS)) {
+        BitCouponCli.getCouponOwners(args[1], args[2]);
       } else if (methodName.equalsIgnoreCase(GENERATE_PRIVATE_KEY)) {
         BitCouponCli.generatePrivateKey();
+      } else if (methodName.equalsIgnoreCase(GENERATE_ADDRESS)) {
+        BitCouponCli.generateAddress(args[1]);
       }
     }
   }
@@ -73,11 +87,10 @@ public class Main {
    * print out an error message.
    */
   private static boolean isValidArgumentsLength(String methodName, int argsLength) {
-
     boolean correct = checkLength(methodName, argsLength);
     if (!correct) {
       String message = "Wrong number of arguments to method: " + methodName;
-      System.err.println(message + methodName);
+      System.err.println(message);
       return false;
 
     }
@@ -91,16 +104,26 @@ public class Main {
    */
   private static boolean checkLength(String methodName, int argsLength) {
     int length = 0;
-    if (methodName.equalsIgnoreCase(GENERATE_CREATION_TRANSACTION)) {
-      length = 2;
-    } else if (methodName.equalsIgnoreCase(GENERATE_SEND_TRANSACTION)) {
-      length = 5;
-    } else if (methodName.equalsIgnoreCase(GET_CREATOR_ADDRESSES)) {
+    if (methodName.equalsIgnoreCase(GENERATE_CREATE_TRANSACTION)) {
       length = 3;
+    } else if (methodName.equalsIgnoreCase(GENERATE_SEND_TRANSACTION)) {
+      length = 6;
+    } else if (methodName.equalsIgnoreCase(GENERATE_DELETE_TRANSACTION)) {
+      length = 5;
     } else if (methodName.equalsIgnoreCase(VERIFY_TRANSACTION)) {
+      length = 3;
+    } else if (methodName.equalsIgnoreCase(GENERATE_OUTPUT_HISTORY_REQUEST)) {
+      length = 2;
+    } else if (methodName.equalsIgnoreCase(VERIFY_OUTPUT_HISTORY_REQUEST)) {
+      length = 2;
+    } else if (methodName.equalsIgnoreCase(GET_COUPONS)) {
+      length = 3;
+    } else if (methodName.equalsIgnoreCase(GET_COUPON_OWNERS)) {
       length = 3;
     } else if (methodName.equalsIgnoreCase(GENERATE_PRIVATE_KEY)) {
       length = 1;
+    } else if (methodName.equalsIgnoreCase(GENERATE_ADDRESS)) {
+      length = 2;
     }
     return length == argsLength;
   }

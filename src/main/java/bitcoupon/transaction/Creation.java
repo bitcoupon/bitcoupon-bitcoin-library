@@ -6,83 +6,111 @@ import java.io.UnsupportedEncodingException;
 import bitcoupon.Bitcoin;
 
 /**
- * Creation is the class that handles all methods that has to do with the generateCreationTransaction.
+ * This class is used by transactions to specify coupons that are created.
  */
 public class Creation {
 
   /**
-   * creationId is the unique ID of the transaction in the database
+   * Id of this creation. This is set by the server when the creation is added to the database.
    */
   private final long creationId;
   /**
-   *creatorAddress is the address of the creator
+   * The address of the creator of the coupons. This address needs to match the signature of the creation.
    */
   private final String creatorAddress;
   /**
-   * amount is the amount of coupons in the transaction
+   * The payload of the coupons that are created.
+   */
+  private final String payload;
+  /**
+   * The number of coupons that are created.
    */
   private final int amount;
   /**
-   * signature is the digital signature of the creator. Virtually unforgeable.
+   * Signature verifying that it is the owner of the address creatorAddress who are creating the coupons.
    */
   private String signature;
 
   /**
-   * The constructor of the Creation class.
-   * @param creatorAddress: Address of the creator. Can't be null.
-   * @param amount: The amount of coupons in the transaction. Can't be negative
+   * Constructor of a creation.
+   *
+   * @param creatorAddress Address of the creator of the coupons.
+   * @param payload        Payload of the coupons that are created.
+   * @param amount         Number of coupons that are created.
    */
-  public Creation(String creatorAddress, int amount) {
-
+  public Creation(String creatorAddress, String payload, int amount) {
     // Should this be changed to 'assert creatorAddress != null'?
     if (creatorAddress == null) {
       throw new IllegalArgumentException("Creator Address can't be null!");
     }
-
+    // Should this be changed to 'assert payload != null'?
+    if (payload == null) {
+      throw new IllegalArgumentException("Payload can't be null?");
+    }
     // Should this be changed to 'assert amount < 0'?
     if (amount < 0) {
       throw new IllegalArgumentException("Amount can't be negative!");
     }
-
     this.creationId = 0;
-    this.amount = amount;
     this.creatorAddress = creatorAddress;
+    this.payload = payload;
+    this.amount = amount;
     this.signature = "";
   }
 
-  byte[] getBytes() {
+  /**
+   * This method is used to get a byte array representation of a creation. Transaction uses this to get a byte array
+   * representation for the entire transaction. This representation of a transaction is used when signing a
+   * transaction.
+   *
+   * @return Byte array representation of this creation.
+   */
+  public byte[] getBytes() {
     try {
+      // Initiate byte array
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
+      // Add creatorAddress to byte array
       byte[] bCreatorAddress = creatorAddress.getBytes("UTF-8");
       byte[] bCreatorAddressLength = Bitcoin.intToByteArray(bCreatorAddress.length);
       baos.write(bCreatorAddressLength, 0, bCreatorAddressLength.length);
       baos.write(bCreatorAddress, 0, bCreatorAddress.length);
-
+      // Add payload to byte array
+      byte[] bPayload = payload.getBytes("UTF-8");
+      byte[] bPayloadLength = Bitcoin.intToByteArray(bPayload.length);
+      baos.write(bPayloadLength, 0, bPayloadLength.length);
+      baos.write(bPayload, 0, bPayload.length);
+      // Add amount to byte array
       byte[] bAmount = Bitcoin.intToByteArray(amount);
       baos.write(bAmount, 0, bAmount.length);
-
+      // Return byte array
       return baos.toByteArray();
-
     } catch (UnsupportedEncodingException e) {
       e.printStackTrace();
       return null;
     }
   }
 
-  String getCreatorAddress() {
+  public long getCreationId() {
+    return creationId;
+  }
+
+  public String getCreatorAddress() {
     return creatorAddress;
   }
 
-  int getAmount() {
+  public String getPayload() {
+    return payload;
+  }
+
+  public int getAmount() {
     return amount;
   }
 
-  void setSignature(String signature) {
+  public void setSignature(String signature) {
     this.signature = signature;
   }
 
-  String getSignature() {
+  public String getSignature() {
     return signature;
   }
 

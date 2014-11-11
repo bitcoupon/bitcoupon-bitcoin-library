@@ -2,177 +2,227 @@ package bitcoupon;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
+import bitcoupon.transaction.Coupon;
+import bitcoupon.transaction.CouponList;
+import bitcoupon.transaction.CouponOwner;
+import bitcoupon.transaction.CouponOwnerList;
 import bitcoupon.transaction.Creation;
 import bitcoupon.transaction.Input;
 import bitcoupon.transaction.Output;
+import bitcoupon.transaction.OutputHistory;
+import bitcoupon.transaction.OutputHistoryRequest;
 import bitcoupon.transaction.Transaction;
-import bitcoupon.transaction.TransactionHistory;
 
+/**
+ * This class contains static functions that are used by both server and clients to handle coupon transactions.
+ */
 public class BitCoupon {
 
-
-  private static final boolean DEBUG = true;
+  // private static final boolean DEBUG = true;
 
   /**
-   * This function generates a transaction saying a coupon is sent from one user to another. The returned transaction
-   * need to be sent to the server for validation and storage.
+   * This function generates a transaction where a coupon is created.
    *
-   * @param strPrivateKey      The private key of the user that is sending the coupon.
-   * @param creatorAddress     The creatorAddress of the coupon that is going to be sent.
-   * @param receiverAddress    The address to which the coupon should be sent.
-   * @param transactionHistory Transaction history saying that the sender owns a coupon that could be sent.
-   * @return A transaction saying that a coupon created by the user with address creatorAddress is sent from the user
-   * with private key strPrivateKey to the user with address receiverAddress.
+   * @param strPrivateKey The private key of the user creating the coupon.
+   * @param payload       The payload of the coupon that is to be created.
+   * @return A transaction creating a coupon. This transaction needs to be sent to the server.
    */
-  public static Transaction generateSendTransaction(String strPrivateKey, String creatorAddress, String receiverAddress,
-                                                    TransactionHistory transactionHistory) {
-
-    // Lists for creations, inputs and outputs in the transaction
+  public static Transaction generateCreateTransaction(String strPrivateKey, String payload) {
     List<Creation> creations = new ArrayList<>();
     List<Input> inputs = new ArrayList<>();
     List<Output> outputs = new ArrayList<>();
+    Transaction transaction = new Transaction(creations, inputs, outputs);
+    BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
+    byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
+    String creatorAddress = Bitcoin.publicKeyToAddress(publicKey);
+    creations.add(new Creation(creatorAddress, payload, 1));
+    outputs.add(new Output(creatorAddress, payload, 1, creatorAddress));
+    transaction.signTransaction(privateKey);
+    return transaction;
+  }
 
-    // Get sender address from private key
+  /**
+   * This function generates a transaction where a coupon is sent from one user (defined by strPrivateKey) to another
+   * user (defined by receiverAddress).
+   *
+   * @param strPrivateKey   The private key of the user sending the coupon.
+   * @param coupon          The coupon that is to be sent.
+   * @param receiverAddress The address of the user receiving the coupon.
+   * @param outputHistory   Output history in which the sender owns the coupon.
+   * @return A transaction sending a coupon. This transaction needs to be sent to the server.
+   */
+  public static Transaction generateSendTransaction(String strPrivateKey, Coupon coupon, String receiverAddress,
+                                                    OutputHistory outputHistory) {
+    List<Creation> creations = new ArrayList<>();
+    List<Input> inputs = new ArrayList<>();
+    List<Output> outputs = new ArrayList<>();
+    Transaction transaction = new Transaction(creations, inputs, outputs);
     BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
     byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
     String senderAddress = Bitcoin.publicKeyToAddress(publicKey);
-
-    // Variable for counting number of coupons in referred transaction outputs
     int couponsInInputs = 0;
-
-    // Find previous transaction outputs to refer to
-    Iterator<Transaction> transactionIterator = transactionHistory.iterator();
-    while (transactionIterator.hasNext() && couponsInInputs < 1) {
-      Transaction transaction = transactionIterator.next();
-      Iterator<Output> outputIterator = transaction.getOutputs().iterator();
-      while (outputIterator.hasNext() && couponsInInputs < 1) {
-        Output output = outputIterator.next();
-        if (output.getCreatorAddress().equals(creatorAddress) && output.getAddress().equals(senderAddress)
-            && output.getInputId() == 0) {
-          Input input = new Input(output.getOutputId());
-          inputs.add(input);
-          couponsInInputs += output.getAmount();
+    for (Output output : outputHistory.getOutputList()) {
+      if (output.getCreatorAddress().equals(coupon.getCreatorAddress())
+          && output.getPayload().equals(coupon.getPayload())
+          && output.getReceiverAddress().equals(senderAddress)
+          && output.getReferringInput() == 0) {
+        inputs.add(new Input(output.getOutputId()));
+        couponsInInputs += output.getAmount();
+        if (couponsInInputs >= 1) {
+          break;
         }
       }
     }
-
-    // Check if enough coupons are available
     if (couponsInInputs < 1) {
       throw new IllegalArgumentException();
     }
-
-    // Set that 1 coupon should be sent to receiver address
-    Output output = new Output(creatorAddress, 1, receiverAddress);
-    outputs.add(output);
-
-    // Send remaining coupons in referred transaction outputs back to the user as change
+    outputs.add(new Output(coupon.getCreatorAddress(), coupon.getPayload(), 1, receiverAddress));
     if (couponsInInputs > 1) {
-      Output changeOutput = new Output(creatorAddress, couponsInInputs - 1, senderAddress);
-      outputs.add(changeOutput);
+      outputs.add(new Output(coupon.getCreatorAddress(), coupon.getPayload(), couponsInInputs - 1, senderAddress));
     }
-
-    // Create transaction, sign it and return it
-    Transaction transaction = new Transaction(creations, inputs, outputs);
     transaction.signTransaction(privateKey);
     return transaction;
-
-  }
-
-  public static List<String> getCreatorAddresses(String strPrivateKey, TransactionHistory transactionHistory) {
-
-    // Get address from private key
-    BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
-    byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
-    String address = Bitcoin.publicKeyToAddress(publicKey);
-
-    // Create list for creator addresses
-    ArrayList<String> creatorAddresses = new ArrayList<>();
-
-    // For every output in every transaction
-    for (Transaction transaction : transactionHistory) {
-      for (Output output : transaction.getOutputs()) {
-        // Check if output is addressed to this user
-        if (output.getAddress().equals(address) && output.getInputId() == 0) {
-
-          // Add the coupons in the output to the list of creator addresses
-          for (int i = 0; i < output.getAmount(); i++) {
-            creatorAddresses.add(output.getCreatorAddress());
-          }
-        }
-      }
-    }
-
-    // Return creator addresses for the coupons this user owns
-    return creatorAddresses;
-
   }
 
   /**
+   * This function generates a transaction where a coupon is deleted.
    *
-   * @param strPrivateKey
-   * @return
+   * @param strPrivateKey The private key of the user deleting the coupon.
+   * @param coupon        The coupon that is to be deleted.
+   * @param outputHistory Output history in which the user owns the coupon.
+   * @return A transaction deleting a coupon. This transaction needs to be sent to the server.
    */
-  public static Transaction generateCreationTransaction(String strPrivateKey) {
-
-    // Lists for creations, inputs and outputs in the transaction
+  public static Transaction generateDeleteTransaction(String strPrivateKey, Coupon coupon,
+                                                      OutputHistory outputHistory) {
     List<Creation> creations = new ArrayList<>();
     List<Input> inputs = new ArrayList<>();
     List<Output> outputs = new ArrayList<>();
+    Transaction transaction = new Transaction(creations, inputs, outputs);
+    BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
+    byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
+    String senderAddress = Bitcoin.publicKeyToAddress(publicKey);
+    int couponsInInputs = 0;
+    for (Output output : outputHistory.getOutputList()) {
+      if (output.getCreatorAddress().equals(coupon.getCreatorAddress())
+          && output.getPayload().equals(coupon.getPayload())
+          && output.getReceiverAddress().equals(senderAddress)
+          && output.getReferringInput() == 0) {
+        inputs.add(new Input(output.getOutputId()));
+        couponsInInputs += output.getAmount();
+        if (couponsInInputs >= 1) {
+          break;
+        }
+      }
+    }
+    if (couponsInInputs < 1) {
+      throw new IllegalArgumentException();
+    }
+    if (couponsInInputs > 1) {
+      outputs.add(new Output(coupon.getCreatorAddress(), coupon.getPayload(), couponsInInputs - 1, senderAddress));
+    }
+    transaction.signTransaction(privateKey);
+    return transaction;
+  }
 
-    // Get address from private key
+  /**
+   * This function checks that a transaction is consistent with an output history and that all signatures are valid.
+   *
+   * @param transaction   The transaction that is going to be checked.
+   * @param outputHistory Output history that transaction should be consistent with.
+   * @return True if the transaction is consistent with the output history and all signatures are valid.
+   */
+  public static boolean verifyTransaction(Transaction transaction, OutputHistory outputHistory) {
+    return transaction.verifyConsistency(outputHistory) && transaction.verifyReceiverAddresses()
+           && transaction.verifySignatures(outputHistory);
+  }
+
+  /**
+   * This function generates an output history request which is used by clients to request information about previous
+   * transactions from the server.
+   *
+   * @param strPrivateKey The private key of the user requesting output history.
+   * @return Output history that can be used when calling other functions in the library.
+   */
+  public static OutputHistoryRequest generateOutputHistoryRequest(String strPrivateKey) {
     BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
     byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
     String address = Bitcoin.publicKeyToAddress(publicKey);
-
-    // Create 1 coupon
-    Creation creation = new Creation(address, 1);
-    creations.add(creation);
-
-    // Send the coupon to the creator
-    Output output = new Output(address, 1, address);
-    outputs.add(output);
-
-    // Create transaction, sign it and return it
-    Transaction transaction = new Transaction(creations, inputs, outputs);
-    transaction.signTransaction(privateKey);
-    return transaction;
-
+    OutputHistoryRequest outputHistoryRequest = new OutputHistoryRequest(address);
+    outputHistoryRequest.signOutputHistoryRequest(privateKey);
+    return outputHistoryRequest;
   }
 
   /**
-   * This function verifies that a transaction is consistent with previous transactions and that all signatures are
-   * correct. This function is used by the server to verify every new transaction it receives.
+   * This function is used by the server for verifying that the signature in an output history request i valid.
    *
-   * @param transaction        The transaction that is going to be verified.
-   * @param transactionHistory Previous transactions that the transaction needs to be consistent with.
-   * @return Returns true is the transaction is valid.
+   * @param outputHistoryRequest The output history request that should be verified.
+   * @return True if the signature of the output history request is valid.
    */
-  public static boolean verifyTransaction(Transaction transaction, TransactionHistory transactionHistory) {
-    boolean inputIsValid = transaction.verifyInput(transactionHistory);
-    boolean signatureIsValid = transaction.verifySignatures(transactionHistory);
-    boolean amountIsValid = transaction.verifyAmount(transactionHistory);
-    return inputIsValid && signatureIsValid && amountIsValid;
+  public static boolean verifyOutputHistoryRequest(OutputHistoryRequest outputHistoryRequest) {
+    return outputHistoryRequest.verifySignature();
   }
 
   /**
-   * This method will return a list of which addresses owns coupons issued by the entity asking.
+   * This function lists all coupons in an output history that are owned by a user.
+   *
+   * @param address       The address of the user listing his/her coupons.
+   * @param outputHistory Output history for which the user wants to list his/her coupons.
+   * @return A list of all coupons that the user owns in the output history.
    */
-  public static List<String> listCouponsOwners(TransactionHistory transactionHistory) {
-    List<String> owners = new ArrayList<>();
+  public static CouponList getCoupons(String address, OutputHistory outputHistory) {
+    List<Coupon> coupons = new ArrayList<>();
+    for (Output output : outputHistory.getOutputList()) {
+      if (output.getReceiverAddress().equals(address) && output.getReferringInput() == 0) {
+        for (int i = 0; i < output.getAmount(); i++) {
+          coupons.add(new Coupon(output.getCreatorAddress(), output.getPayload()));
+        }
+      }
+    }
+    return new CouponList(coupons);
+  }
 
-    return owners;
+  /**
+   * This function lists  all coupons along with the addresses of the current owner of the coupon for all coupons
+   * created by creatorAddress.
+   *
+   * @param creatorAddress The creator address of coupons to list coupon owner for.
+   * @param outputHistory  Output history for which coupon owners should be listed.
+   * @return A list of all owners of coupons created by creatorAddress.
+   */
+  public static CouponOwnerList getCouponOwners(String creatorAddress, OutputHistory outputHistory) {
+    List<CouponOwner> couponOwners = new ArrayList<>();
+    for (Output output : outputHistory.getOutputList()) {
+      if (output.getCreatorAddress().equals(creatorAddress) && output.getReferringInput() == 0) {
+        for (int i = 0; i < output.getAmount(); i++) {
+          couponOwners.add(new CouponOwner(new Coupon(output.getCreatorAddress(), output.getPayload()),
+                                           output.getReceiverAddress()));
+        }
+      }
+    }
+    return new CouponOwnerList(couponOwners);
   }
 
   /**
    * This function generates a private key by calling the generatePrivateKey function in Bitcoin.java.
    *
-   * @return Private key
+   * @return Private key in Base58 representation.
    */
   public static String generatePrivateKey() {
     return Bitcoin.generatePrivateKey();
+  }
+
+  /**
+   * This function generates the address corresponding to a private key.
+   *
+   * @param strPrivateKey The private key to generate address for.
+   * @return The address corresponding to the private key.
+   */
+  public static String generateAddress(String strPrivateKey) {
+    BigInteger privateKey = Bitcoin.decodePrivateKey(strPrivateKey);
+    byte[] publicKey = Bitcoin.generatePublicKey(privateKey);
+    return Bitcoin.publicKeyToAddress(publicKey);
   }
 
 }
