@@ -104,6 +104,9 @@ public class Bitcoin {
    * @return Double SHA256-hash of the input data.
    */
   public static byte[] hash256(byte[] bytes) {
+    if (bytes == null) {
+      throw new IllegalArgumentException();
+    }
     SHA256Digest firstDigest = new SHA256Digest();
     firstDigest.update(bytes, 0, bytes.length);
     byte[] firstHash = new byte[32];
@@ -123,6 +126,9 @@ public class Bitcoin {
    * @return RIPEMD160-hash of SHA256-hash of the input data.
    */
   public static byte[] hash160(byte[] bytes) {
+    if (bytes == null) {
+      throw new IllegalArgumentException();
+    }
     SHA256Digest firstDigest = new SHA256Digest();
     firstDigest.update(bytes, 0, bytes.length);
     byte[] firstHash = new byte[32];
@@ -142,6 +148,9 @@ public class Bitcoin {
    * @return Base58 representation of the input data.
    */
   public static String encodeBase58(byte[] data) {
+    if (data == null) {
+      throw new IllegalArgumentException();
+    }
     byte[] checksum = hash256(data);
     byte[] bytes = new byte[data.length + 4];
     System.arraycopy(data, 0, bytes, 0, data.length);

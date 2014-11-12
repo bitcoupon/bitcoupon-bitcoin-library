@@ -2,6 +2,8 @@ package bitcoupon;
 
 import junit.framework.TestCase;
 
+import org.junit.Test;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,19 +18,15 @@ import bitcoupon.transaction.Transaction;
 
 public class BitCouponTest extends TestCase {
 
-  public void testVerifyTransaction() {
+  private static String privateKey1 = "5KJk52cBLWUF1PVHzGrmGeGULX6wqCwgt2WyoAALN3iw4UU6U17";
+  private static String address1 = "144jGLYm61jqk7rpra6R5scicLx8BmE8ai";
+  private static String privateKey2 = "5J4L1KDQeyCtECrTYoGUcsqtJ894zpnRXhsJd3eXNttJzWKMELQ";
+  private static String address2 = "15xvd7yEdMzFMbJHD5BTEbVYYNmjamQh5T";
+  private static String privateKey3 = "5JRgTW4S9Vzqw9YVBwcWh8gkzNi4eW9iQb1oBqisD7Xe4HgHeyt";
+  private static String address3 = "17fzNLv6oNyfbsnA66mr1DBVy2Zb7wdFu2";
 
-    // Private keys and addresses of five users
-    String privateKey1 = "5KJk52cBLWUF1PVHzGrmGeGULX6wqCwgt2WyoAALN3iw4UU6U17";
-    String address1 = "144jGLYm61jqk7rpra6R5scicLx8BmE8ai";
-    String privateKey2 = "5J4L1KDQeyCtECrTYoGUcsqtJ894zpnRXhsJd3eXNttJzWKMELQ";
-    String address2 = "15xvd7yEdMzFMbJHD5BTEbVYYNmjamQh5T";
-    String privateKey3 = "5JRgTW4S9Vzqw9YVBwcWh8gkzNi4eW9iQb1oBqisD7Xe4HgHeyt";
-    String address3 = "17fzNLv6oNyfbsnA66mr1DBVy2Zb7wdFu2";
-    String privateKey4 = "5K52CWxfXyGCTHiuZSAET8GdDjoFE5PbHMsPs5cAPTssNnF35nn";
-    String address4 = "1HdbVb6NJs7BkhzyzCFf34xgR8gj6rSvEJ";
-    String privateKey5 = "5KJYugZugsM6Vh8dAu8gcg8P4Wg1JmXYUc2xG5w2hRfWqtUWH2G";
-    String address5 = "1FG73czRCvF8R8QqHF6FVzBJS2i8xMTeRo";
+  @Test
+  public void testVerifyTransaction() {
 
     // List of outputs for output history
     OutputHistory outputHistory = new OutputHistory(new ArrayList<Output>());
@@ -128,19 +126,8 @@ public class BitCouponTest extends TestCase {
     return transaction;
   }
 
+  @Test
   public void testVerifyOutputHistoryRequest() {
-
-    // Private keys and addresses of five users
-    String privateKey1 = "5KJk52cBLWUF1PVHzGrmGeGULX6wqCwgt2WyoAALN3iw4UU6U17";
-    String address1 = "144jGLYm61jqk7rpra6R5scicLx8BmE8ai";
-    String privateKey2 = "5J4L1KDQeyCtECrTYoGUcsqtJ894zpnRXhsJd3eXNttJzWKMELQ";
-    String address2 = "15xvd7yEdMzFMbJHD5BTEbVYYNmjamQh5T";
-    String privateKey3 = "5JRgTW4S9Vzqw9YVBwcWh8gkzNi4eW9iQb1oBqisD7Xe4HgHeyt";
-    String address3 = "17fzNLv6oNyfbsnA66mr1DBVy2Zb7wdFu2";
-    String privateKey4 = "5K52CWxfXyGCTHiuZSAET8GdDjoFE5PbHMsPs5cAPTssNnF35nn";
-    String address4 = "1HdbVb6NJs7BkhzyzCFf34xgR8gj6rSvEJ";
-    String privateKey5 = "5KJYugZugsM6Vh8dAu8gcg8P4Wg1JmXYUc2xG5w2hRfWqtUWH2G";
-    String address5 = "1FG73czRCvF8R8QqHF6FVzBJS2i8xMTeRo";
 
     OutputHistoryRequest outputHistoryRequest1 = BitCoupon.generateOutputHistoryRequest(privateKey1);
     assertTrue(BitCoupon.verifyOutputHistoryRequest(outputHistoryRequest1));
